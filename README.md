@@ -17,14 +17,14 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 
 ## Install Angular CLI (npm)
 
-To install Angular via npm run the following in PowerShell
-```PowerShell
+To install Angular via npm run the following in PowerShell or Bash
+```Bash
 npm install -g @angular/cli
 ```
 
 ## Run Angular app
 
 To run the Angular web app navigate to the Equipment_initial directory then run
-```PowerShell
+```Bash
 npm start
 ```
