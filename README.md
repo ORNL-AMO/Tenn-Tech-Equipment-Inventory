@@ -26,5 +26,6 @@ npm install -g @angular/cli
 
 To run the Angular web app navigate to the Equipment_initial directory then run
 ```Bash
+npm install
 npm start
 ```
