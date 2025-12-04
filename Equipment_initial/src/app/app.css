@@ -35,8 +35,8 @@ main {
 }
 
 .content {
-    display: flex;
-    /* justify-content: space-around; */
+    padding-top: 15px;
+    /* display: flex; */
     width: 100%;
     max-width: 700px;
     margin-bottom: 3rem;

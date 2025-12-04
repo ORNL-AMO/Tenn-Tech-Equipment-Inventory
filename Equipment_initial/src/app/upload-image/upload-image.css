@@ -1,0 +1,32 @@
+
+input[type="file"] {
+    border: solid 1px var(--primary-color);
+    padding: 10px;
+    border-radius: 8px;
+    margin-right: 7px;
+    display: inline-block;
+    min-width: 60%;
+}
+
+button {
+    padding: 10px;
+    border: solid 1px var(--primary-color);
+    background: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+}
+
+@media (min-width: 500px) and (max-width: 100%) {
+    .results {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    input[type="file"] {
+        width: 70%;
+    }
+}
+
+@media (max-width: 499px) {
+    .results {
+        grid-template-columns: 1fr;
+    }
+}
