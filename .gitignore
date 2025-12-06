@@ -1,15 +1,15 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
+Equipment_initial/dist
+Equipment_initial/tmp
+Equipment_initial/out-tsc
+Equipment_initial/bazel-out
 
 # Node
 Equipment_initial/node_modules
-npm-debug.log
-yarn-error.log
+Equipment_initial/npm-debug.log
+Equipment_initial/yarn-error.log
 
 # IDEs and editors
 .idea/
@@ -21,23 +21,23 @@ yarn-error.log
 *.sublime-workspace
 
 # Visual Studio Code
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.history/*
+Equipment_initial/.vscode/*
+!Equipment_initial/.vscode/settings.json
+!Equipment_initial/.vscode/tasks.json
+!Equipment_initial/.vscode/launch.json
+!Equipment_initial/.vscode/extensions.json
+Equipment_initial/.history/*
 
 # Miscellaneous
 Equipment_initial/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
-__screenshots__/
+Equipment_initial/.sass-cache/
+Equipment_initial/connect.lock
+Equipment_initial/coverage
+Equipment_initial/libpeerconnection.log
+Equipment_initial/testem.log
+Equipment_initial/typings
+Equipment_initial/__screenshots__/
 
 # System files
-.DS_Store
-Thumbs.db
+Equipment_initial/.DS_Store
+Equipment_initial/Thumbs.db

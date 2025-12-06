@@ -1,0 +1,19 @@
+:host {
+    --header-height: 60px;
+}
+
+header {
+    display: inline-block;
+    height: var(--header-height);
+    width: 100%;
+    padding: var(--content-padding);
+    box-shadow: 0px 5px 25px var(--shadow-color);
+}
+
+h1 {
+    display: inherit;
+}
+
+.brand-logo {
+    max-height: 100%;
+}

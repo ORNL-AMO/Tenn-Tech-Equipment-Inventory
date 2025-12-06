@@ -1,0 +1,32 @@
+input[type="file"] {
+    border: solid 1px var(--primary-color);
+    padding: 10px;
+    border-radius: 8px;
+    margin: var(--content-padding);
+    display: inline-block;
+}
+
+button {
+    padding: 10px;
+    border: solid 1px var(--primary-color);
+    background: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+}
+
+label {
+    display: block;
+    margin-left: var(--content-padding);
+}
+
+@media (min-width: 200px) and (max-width: 100%) {
+    input[type="file"] {
+        width: 70%;
+    }
+}
+
+@media (max-width: 199px) {
+    input[type="file"] {
+        width: 20%;
+    }
+}
