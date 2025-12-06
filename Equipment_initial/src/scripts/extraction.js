@@ -1,3 +1,7 @@
+import("https://proxy.corsfix.com/?https://docs.opencv.org/4.x/opencv.js");
+import("https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js");
+
+
 export async function processImage() {
     const input = document.getElementById("imageUpload");
     const canvasInput = document.getElementById("canvasInput");
@@ -47,3 +51,4 @@ export async function processImage() {
 
 
 }
+
