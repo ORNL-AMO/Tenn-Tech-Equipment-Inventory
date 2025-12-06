@@ -1,5 +1,4 @@
 :host {
-    --content-padding: 10px;
     --header-height: 60px;
 }
 
@@ -12,15 +11,9 @@ header {
 }
 
 h1 {
-    display: inline-block;
-    padding-inline: 15px;
-    padding-bottom: var(--content-padding);
+    display: inherit;
 }
 
-img {
+.brand-logo {
     max-height: 100%;
-}
-
-.content {
-    padding: var(--content-padding);
 }

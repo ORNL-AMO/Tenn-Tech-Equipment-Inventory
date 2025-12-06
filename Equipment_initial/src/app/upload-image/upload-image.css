@@ -1,11 +1,9 @@
-
 input[type="file"] {
     border: solid 1px var(--primary-color);
     padding: 10px;
     border-radius: 8px;
-    margin-right: 7px;
+    margin: var(--content-padding);
     display: inline-block;
-    min-width: 60%;
 }
 
 button {
@@ -16,17 +14,19 @@ button {
     border-radius: 8px;
 }
 
-@media (min-width: 500px) and (max-width: 100%) {
-    .results {
-        grid-template-columns: repeat(2, 1fr);
-    }
+label {
+    display: block;
+    margin-left: var(--content-padding);
+}
+
+@media (min-width: 200px) and (max-width: 100%) {
     input[type="file"] {
         width: 70%;
     }
 }
 
-@media (max-width: 499px) {
-    .results {
-        grid-template-columns: 1fr;
+@media (max-width: 199px) {
+    input[type="file"] {
+        width: 20%;
     }
 }
