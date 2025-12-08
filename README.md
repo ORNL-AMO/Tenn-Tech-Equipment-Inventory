@@ -33,3 +33,18 @@ To run the Angular web app navigate to the [Equipment_initial](Equipment_initial
 npm install
 npm start
 ```
+
+## Native package installation
+
+You can install Tesseract and OpenCV with these commands:
+```Bash
+sudo apt-get install tesseract-ocr libtesseract-dev
+sudo apt-get install libopencv-dev
+```
+
+## Java Library Load Installation
+
+On Ubuntu, System.loadLibrary(Core.NATIVE_LIBRARY_NAME) works immediately after:
+```Bash
+sudo apt-get install libopencv-dev
+```

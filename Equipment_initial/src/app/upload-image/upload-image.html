@@ -1,0 +1,16 @@
+<section>
+    <form>
+        <script src="https://docs.opencv.org/4.x/opencv.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
+
+        <label for="files">Select Image:</label>
+        <input type="file" id="imageUpload" placeholder="Upload Image Here" />
+        <button class="primary" type="button">Scan image</button>
+        <br><br>
+
+            <canvas class="img" id="canvasInput"></canvas>
+            <canvas class="img" id="canvasProcessed"></canvas>
+
+            <pre id="outputText"></pre>
+    </form>
+</section>
