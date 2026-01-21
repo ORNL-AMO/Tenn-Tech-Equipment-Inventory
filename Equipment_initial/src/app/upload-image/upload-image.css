@@ -30,3 +30,27 @@ label {
         width: 20%;
     }
 }
+
+
+body {
+    font-family: sans-serif;
+    padding: 20px;
+    text-align: center;
+}
+
+/* button {
+    padding: 15px 30px;
+    font-size: 18px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+} */
+
+#output {
+    margin-top: 20px;
+    white-space: pre-wrap;
+    text-align: left;
+    background: #f0f0f0;
+    padding: 10px;
+}

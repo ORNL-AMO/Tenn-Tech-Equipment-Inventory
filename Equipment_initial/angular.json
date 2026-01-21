@@ -26,6 +26,9 @@
             ],
             "styles": [
               "src/styles.css"
+            ],
+            "scripts":[
+              "src/scripts/extraction.js"
             ]
           },
           "configurations": {
