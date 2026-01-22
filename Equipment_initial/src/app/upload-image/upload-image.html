@@ -1,9 +1,3 @@
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Camera Access Example</title>
-</head>
-
 <section>
     <!-- <form>
         <script src="https://docs.opencv.org/4.x/opencv.js"></script>
@@ -23,32 +17,79 @@
 
     <!-- live camera preview-->
     <video id="video" autoplay playsinline></video>
+    <video id="webcam" autoplay muted playsinline></video>
+
     <br>
+    <button id="startBtn">Start Webcam</button>
     <button id="CaptureBtn">Capture Photo</button>
     <canvas id="canvas"></canvas>
+
+    
 </section>
 
 <script>
-    (async function() {
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const CaptureBtn = document.getElementById('captureBtn');
+    // (async function() {
+    //     const video = document.getElementById('video');
+    //     const canvas = document.getElementById('canvas');
+    //     const CaptureBtn = document.getElementById('captureBtn');
 
-        try{
-            //request camera access
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            video.srcObject = stream;
+    //     try{
+    //         //request camera access
+    //         const stream = await navigator.mediaDevices.getUserMedia.call({ video: true });
+    //         video.srcObject = stream;
 
-            //capture image from video
-            CaptureBtn.addEventListener('click', () => {
-                const context = canvas.getContext('2d');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            });
-        } catch (err) {
-            console.error("Camera access denied or not available:", err);
-            alert("Unable to access camera. Please check permissions. ");
+    //         //capture image from video
+    //         CaptureBtn.addEventListener('click', () => {
+    //             const context = canvas.getContext('2d');
+    //             canvas.width = video.videoWidth;
+    //             canvas.height = video.videoHeight;
+    //             context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    //         });
+    //     } catch (err) {
+    //         console.error("Camera access denied or not available:", err);
+    //         alert("Unable to access camera. Please check permissions. ");
+    //     }
+    // })();
+    // var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    // var cameraStream;
+
+    // getUserMedia.call(navigator, {
+    //     video: true,
+    //     audio: true //optional
+    // }, function (stream) {
+    //     /*
+    //     Here's where you handle the stream differently. Chrome needs to convert the stream
+    //     to an object URL, but Firefox's stream already is one.
+    //     */
+    //     if (window.webkitURL) {
+    //         video.src = window.webkitURL.createObjectURL(stream);
+    //     } else {
+    //         video.src = stream;
+    //     }
+
+    //     //save it for later
+    //     cameraStream = stream;
+
+    //     video.play();
+    // });
+
+    const webcamElement = document.getElementById('webcam');
+    const startBtn = document.getElementById('startBtn');
+
+    let mediaStream;
+
+    startBtn.addEventListener('click', startWebcam);
+
+    async function startWebcam() {
+        try {
+            const contraints = { video: true, audio: false };
+            mediaStream = await navigator.mediaDevices.getUserMedia(contraints);
+
+            webcamElement.sercObject = mediaStream;
+        
+        } catch (error) {
+            alert(error);
         }
-    })();
+    }
+
 </script>
