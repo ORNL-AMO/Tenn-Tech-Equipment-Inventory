@@ -1,15 +1,22 @@
 import { Component } from '@angular/core';
-import * as extraction from "../../scripts/extraction";
+import { CommonModule } from '@angular/common';
+// import * as extraction from "../../scripts/extraction";
 
 @Component({
   selector: 'app-upload-image',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './upload-image.html',
   styleUrl: './upload-image.css'
 })
 
 export class UploadImage {
-  processImg() {
-    extraction.processImage()
+  hasClickedButton: boolean = false;
+  processImg(): void {
+    // extraction.processImage()
+    if (this.hasClickedButton) {
+      this.hasClickedButton = false;
+    } else {
+      this.hasClickedButton = true;
+    }
   }
 }
