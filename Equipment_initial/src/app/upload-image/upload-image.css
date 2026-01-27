@@ -36,3 +36,44 @@ label {
         width: 20%;
     }
 }
+/* CSS for the Example hover-over - Sam*/
+.example-wrap {
+  position: relative;
+  display: inline-block;
+  margin-left: 8px;
+}
+.example-trigger {
+  color: #366b38;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.9rem;
+}
+.example-popover {
+  display: none;
+  position: absolute;
+  top: 1.4rem;
+  left: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 2px;
+  width: auto;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+.example-wrap:hover .example-popover {
+  display: block;
+}
+.example-img {
+  width: 30%;
+  height: auto;
+  display: flex;
+  border: 1px solid #ddd;
+}
+.example-images {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+.example-popover {
+  width: max-content;
+  max-width: 60vw;
+}
