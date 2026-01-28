@@ -22,14 +22,19 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
               }
             ],
             "styles": [
               "src/styles.css"
-            ]// ,
-            // "scripts":[
-            //   "src/scripts/extraction.js"
-            // ]
+            ],
+            "scripts": [
+              "src/scripts/extraction.js"
+            ]
           },
           "configurations": {
             "production": {
