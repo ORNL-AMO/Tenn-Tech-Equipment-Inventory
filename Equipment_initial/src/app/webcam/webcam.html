@@ -1,20 +1,19 @@
 <p>webcam works!</p>
 <button type="button" (click)="checkPermission()">Give Camera permission</button><br>
-<div *ngIf="true">
-    <button type="button" (click)="chooseDevice()">Choose Device</button>
+<div *ngIf="webcamPermission">
+    <button type="button" (click)="chooseDevice()">{{showDevices? 'Choose Device' : 'List Cameras'}}</button>
+    Current Selection: {{currentDevice}}
     <div *ngIf="showDevices">
-        <li class="device List" *ngFor="let device of mediaDevices">
-            <span>{{device.label}}</span>
-            <button class="device" type="button" (click)="selectDevice(device)">Select Device</button>
-        </li>
+        <ul class="List">
+            <li *ngFor="let device of mediaDevices">
+                <button class="devices" type="button" (click)="selectDevice(device)">Select {{device.label}}</button>
+            </li>
+        </ul>
     </div>
-    <br>
-    <button type="button" [disabled]="camOn" (click)="startCam()">{{camOn? 'Camera On' : 'Start Camera'}}</button>
-    <button type="button" disabled (click)="stopCam()">Stop Camera (doesn't work, reload page to stop)</button>
-    <!-- Temporary button until stop Camera works -->
-    <form>
-    <button type="submit">(temp) reload page</button>
-    </form>
+    <div>
+    <button type="button" *ngIf="!camOn" (click)="startCam()">Start Camera</button>
+    <button type="button" *ngIf="camOn" (click)="stopCam()">Stop Camera</button>
+    </div>
 
     <div class="webcam">
         <video id="videoElement" #videoElement></video>

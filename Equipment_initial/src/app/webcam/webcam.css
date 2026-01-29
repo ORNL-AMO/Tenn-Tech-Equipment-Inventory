@@ -6,6 +6,14 @@ video{
     max-height: 100%;
 }
 
-.device{
-    margin-left: 10px;
+.List{
+    margin: 4px;
+}
+
+.devices{
+    background-color: green;  
+    /*need to figure out a good color to differentiate these from other buttons*/  
+}
+.devices:hover{
+    background-color: #18afd9;
 }
