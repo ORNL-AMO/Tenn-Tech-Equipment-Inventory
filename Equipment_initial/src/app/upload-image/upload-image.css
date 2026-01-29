@@ -6,15 +6,6 @@ input[type="file"] {
     display: inline-block;
 }
 
-button {
-    padding: 10px;
-    border: solid 1px var(--primary-color);
-    background: var(--primary-color);
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
 label {
     display: block;
     margin-left: var(--content-padding);
