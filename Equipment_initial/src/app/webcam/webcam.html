@@ -11,6 +11,10 @@
     <br>
     <button type="button" (click)="startCam()">Start Camera</button>
     <button type="button" disabled (click)="stopCam()">Stop Camera (doesn't work, reload page to stop)</button>
+    <!-- Temporary button until stop Camera works -->
+    <form>
+    <button type="submit">(temp) reload page</button>
+    </form>
 
     <div class="webcam">
         <video id="videoElement" #videoElement></video>
