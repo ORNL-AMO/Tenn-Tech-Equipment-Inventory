@@ -1,0 +1,6 @@
+<input type="file" accept="image/*" (change)="onFile($event)" />
+
+<p *ngIf="loading">Extracting text...</p>
+
+<pre>{{ result }}</pre>
+<pre>{{ cleanedText }}</pre>
