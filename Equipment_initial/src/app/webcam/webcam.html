@@ -13,8 +13,15 @@
     <button type="button" *ngIf="!camOn" (click)="startCam()">Start Camera</button>
     <button type="button" *ngIf="camOn" (click)="stopCam()">Stop Camera</button>
     </div>
-
-    <div class="webcam">
-        <video id="videoElement" #videoElement></video>
+    <div>
+        <div class="webcam">
+            <video id="videoElement" #videoElement></video>
+        </div>
+        <div>
+            <button type="button" *ngIf="camOn" (click)="capCam()">Capture</button>
+        </div>
+    </div>
+    <div>
+        <img *ngIf="capturedImageDataUrl" [src]="capturedImageDataUrl" alt="Captured frame" />
     </div>
 </div>
