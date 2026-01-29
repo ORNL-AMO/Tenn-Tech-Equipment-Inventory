@@ -9,7 +9,7 @@
         </li>
     </div>
     <br>
-    <button type="button" (click)="startCam()">Start Camera</button>
+    <button type="button" [disabled]="camOn" (click)="startCam()">{{camOn? 'Camera On' : 'Start Camera'}}</button>
     <button type="button" disabled (click)="stopCam()">Stop Camera (doesn't work, reload page to stop)</button>
     <!-- Temporary button until stop Camera works -->
     <form>
