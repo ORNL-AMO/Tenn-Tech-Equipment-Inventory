@@ -1,7 +1,6 @@
-<p>webcam works!</p>
-<button type="button" (click)="checkPermission()">Give Camera permission</button><br>
+<button type="button" [disabled]="webcamPermission" (click)="checkPermission()">Give Camera permission</button><br>
 <div *ngIf="webcamPermission">
-    <button type="button" (click)="chooseDevice()">{{showDevices? 'Choose Device' : 'List Cameras'}}</button>
+    <button type="button" (click)="chooseDevice()">{{showDevices? 'Choose A Device' : 'List Cameras'}}</button>
     Current Selection: {{currentDevice}}
     <div *ngIf="showDevices">
         <ul class="List">
