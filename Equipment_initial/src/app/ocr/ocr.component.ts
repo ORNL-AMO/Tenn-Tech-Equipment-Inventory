@@ -1,11 +1,13 @@
 import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { OCRService } from "./ocr";
 import { prepareImage } from "./image-utils";
 import { normalizeText } from "./text-normalizer";
 
 @Component({
     selector: 'app-ocr',
-    templateUrl: './ocr.component.html'
+    templateUrl: './ocr.component.html',
+    imports: [CommonModule]
 })
 export class OCRComponent {
     result = '';
