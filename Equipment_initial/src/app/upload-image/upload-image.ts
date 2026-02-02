@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { OCRComponent } from '../ocr/ocr.component';
 // import * as extraction from "../../scripts/extraction";
 
 @Component({
   selector: 'app-upload-image',
-  imports: [CommonModule],
+  imports: [CommonModule, OCRComponent],
   templateUrl: './upload-image.html',
   styleUrl: './upload-image.css'
 })
