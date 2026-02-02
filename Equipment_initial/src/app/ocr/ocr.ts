@@ -14,8 +14,11 @@ export class OCRService {
     });
 
     const { data } = await worker.recognize(image);
+    console.log("worker recognized image");
     await worker.terminate();
+    console.log("worker terminated");
 
     return data.text;
+    console.log("why? are you here");
   }
 }

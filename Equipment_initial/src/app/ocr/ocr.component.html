@@ -1,6 +1,9 @@
-<input type="file" accept="image/*" (change)="onFile($event)" />
+<input id="imageIn" type="file" accept="image/*" (change)="onFile($event)" />
+<!-- <button type="button" (click)="onFile">Scan Image</button> -->
 
 <p *ngIf="loading">Extracting text...</p>
 
+<h4>Raw Result</h4>
 <pre>{{ result }}</pre>
+<h4>Cleaned Text</h4>
 <pre>{{ cleanedText }}</pre>

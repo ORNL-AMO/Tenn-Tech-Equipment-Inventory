@@ -1,4 +1,5 @@
 export function prepareImage(file: File): Promise<HTMLCanvasElement> {
+    console.log("Prepareing Image");
     return new Promise((resolve) => {
         const img = new Image();
         img.src = URL.createObjectURL(file);
