@@ -18,7 +18,6 @@ export class Webcam {
   checkPermission() {
     this.requestCameraPermissions();
     this.setMediaDevices();
-    this.webcamPermission = true;
   }
   chooseDevice() {
     this.setMediaDevices();
@@ -27,7 +26,7 @@ export class Webcam {
   selectDevice(device: MediaDeviceInfo) {
     this.deviceId = device.deviceId;
     this.showDevices = false;
-    if (this.camOn) {this.startCam();}
+    if (this.camOn) { this.startCam(); }
     console.log(this.deviceId);
     this.currentDevice = device.label;
     console.log(this.currentDevice);
@@ -54,6 +53,7 @@ export class Webcam {
       // }
       stream.getTracks().forEach(track => track.stop());
       console.log("Camera permission granted");
+      this.webcamPermission = true;
     } catch (err) {
       console.log("Camera Permission error");
       console.log(err);
