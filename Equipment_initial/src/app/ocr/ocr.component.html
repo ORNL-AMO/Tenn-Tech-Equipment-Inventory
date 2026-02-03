@@ -2,7 +2,7 @@
 
 <input type="file" id="fileInput" placeholder="Upload Image Here" accept=".jpg, .jpeg, .png"
     (change)="onFileSelected($event)" />
-<button type="button" (click)="onUpload()">Scan Image</button>
+<button type="button" (click)="onUpload()">Scan Image (temp click twice)</button>
 
 <p *ngIf="loading">Extracting text...</p>
 
