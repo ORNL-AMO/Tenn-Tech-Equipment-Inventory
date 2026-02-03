@@ -1,5 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ImagePasser } from '../image-passer';
 
 @Component({
   selector: 'app-webcam',
@@ -8,6 +9,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './webcam.css',
 })
 export class Webcam {
+  constructor(private imagePasser: ImagePasser) {}
   deviceId?: string;
   currentDevice?: string;
   showDevices: boolean = false;
@@ -74,6 +76,7 @@ export class Webcam {
 
     // Blob for uploads / saving.
     const blob = await this.canvasToBlob(canvas, 'image/png');
+    this.imagePasser.setBlob(blob);
     this.capturedImageBlob = blob;
     return blob;
   }
