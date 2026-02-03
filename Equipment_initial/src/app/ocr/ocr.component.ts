@@ -3,7 +3,6 @@ import { CommonModule } from "@angular/common";
 import { OCRService } from "./ocr";
 import { prepareImage } from "./image-utils";
 import { normalizeText } from "./text-normalizer";
-import { CommonModule } from "@angular/common";
 
 @Component({
     selector: 'app-ocr',
