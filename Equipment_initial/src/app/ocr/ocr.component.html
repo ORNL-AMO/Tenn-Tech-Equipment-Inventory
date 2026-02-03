@@ -1,5 +1,8 @@
-<input id="imageIn" type="file" accept="image/*" (change)="onFile($event)" />
-<!-- <button type="button" (click)="onFile">Scan Image</button> -->
+<label for="files">Select Image:</label>
+
+<input type="file" id="fileInput" placeholder="Upload Image Here" accept=".jpg, .jpeg, .png"
+    (change)="onFileSelected($event)" />
+<button type="button" (click)="onUpload()">Scan Image</button>
 
 <p *ngIf="loading">Extracting text...</p>
 

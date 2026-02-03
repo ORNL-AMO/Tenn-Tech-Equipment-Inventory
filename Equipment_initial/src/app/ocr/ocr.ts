@@ -19,6 +19,5 @@ export class OCRService {
     console.log("worker terminated");
 
     return data.text;
-    console.log("why? are you here");
   }
 }
