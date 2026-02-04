@@ -2,6 +2,9 @@
 <input type="file" id="fileInput" placeholder="Upload Image Here" accept=".jpg, .jpeg, .png"
     (change)="onFileSelected($event)" />
 <button type="button" [disabled]="loading" (click)="onUpload()">Scan Image</button>
+@defer (when imageSrc){
+<img [src]="imageSrc" />}
+
 @if(loading){
 <p>Extracting text...</p>
 } @else {
