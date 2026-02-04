@@ -1,26 +1,26 @@
-import { Component } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, inject, ChangeDetectorRef } from "@angular/core";
 import { OCRService } from "./ocr";
-import { prepareImage } from "./image-utils";
-import { normalizeText } from "./text-normalizer";
+import { ImageUtils } from "./image-utils";
+import { NormalizeTextPipe } from "./normalize-text-pipe";
 
 @Component({
     selector: 'app-ocr',
     templateUrl: './ocr.component.html',
     styleUrl: './ocr.component.css',
-    imports: [CommonModule]
+    imports: [NormalizeTextPipe]
 })
 export class OCRComponent {
-    result = '';
-    loading = false;
-    cleanedText = '';
+    result: string = '';
+    loading: boolean = false;
     selectedFile: File | null = null;
+    private imageUtils = inject(ImageUtils);
 
-    constructor(private ocr: OCRService) {}
+    constructor(private ocr: OCRService,
+        private readonly cd: ChangeDetectorRef) { }
 
-    async onFileSelected(event: Event): Promise<void>{
+    async onFileSelected(event: Event): Promise<void> {
         const input = event.target as HTMLInputElement;
-        if (input.files && input.files.length > 0){
+        if (input.files && input.files.length > 0) {
             this.selectedFile = input.files[0];
             console.log('File selected:', this.selectedFile.name);
         } else {
@@ -28,18 +28,23 @@ export class OCRComponent {
         }
     }
     async onUpload(): Promise<void> {
-        if(!this.selectedFile){
+        if (!this.selectedFile) {
             console.error('No File Selected');
+            alert("Please select a file to process")
             return;
         }
 
         this.loading = true;
         console.log("Loading = " + this.loading);
-        
-        const canvas = await prepareImage(this.selectedFile);
+
+        const canvas = await this.imageUtils.prepareImage(this.selectedFile);
         this.result = await this.ocr.extractText(canvas);
-        this.cleanedText = normalizeText(this.result);
+        // this.result = new Promise<string>((resolve) => {
+        //     this.ocr.extractText(canvas);
+        // });
         this.loading = false;
-        console.log("Loading = " + this.loading);    
+        console.log("Loading = " + this.loading);
+        this.cd.detectChanges();
+        return;
     }
 }
