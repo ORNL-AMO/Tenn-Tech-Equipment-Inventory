@@ -10,19 +10,26 @@ import { NormalizeTextPipe } from "./normalize-text-pipe";
     imports: [NormalizeTextPipe]
 })
 export class OCRComponent {
+    imageSrc: string | ArrayBuffer | null = null;
     result: string = '';
     loading: boolean = false;
     selectedFile: File | null = null;
     private imageUtils = inject(ImageUtils);
+    reader = new FileReader();
 
     constructor(private ocr: OCRService,
         private readonly cd: ChangeDetectorRef) { }
 
-    async onFileSelected(event: Event): Promise<void> {
-        const input = event.target as HTMLInputElement;
-        if (input.files && input.files.length > 0) {
-            this.selectedFile = input.files[0];
-            console.log('File selected:', this.selectedFile.name);
+        async onFileSelected(event: Event): Promise<void> {
+            const input = event.target as HTMLInputElement;
+            if (input.files && input.files.length > 0) {
+                this.selectedFile = input.files[0];
+                console.log('File selected:', this.selectedFile.name);
+                this.reader.readAsDataURL(input.files[0]);
+                this.reader.onload = () => {
+                    this.imageSrc = this.reader.result;
+                    this.cd.detectChanges();
+                };
         } else {
             this.selectedFile = null;
         }
@@ -36,6 +43,7 @@ export class OCRComponent {
 
         this.loading = true;
         console.log("Loading = " + this.loading);
+
 
         const canvas = await this.imageUtils.prepareImage(this.selectedFile);
         this.result = await this.ocr.extractText(canvas);
