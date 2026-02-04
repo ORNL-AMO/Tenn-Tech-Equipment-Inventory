@@ -39,9 +39,6 @@ export class OCRComponent {
 
         const canvas = await this.imageUtils.prepareImage(this.selectedFile);
         this.result = await this.ocr.extractText(canvas);
-        // this.result = new Promise<string>((resolve) => {
-        //     this.ocr.extractText(canvas);
-        // });
         this.loading = false;
         console.log("Loading = " + this.loading);
         this.cd.detectChanges();
