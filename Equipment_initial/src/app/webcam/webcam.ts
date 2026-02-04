@@ -1,5 +1,9 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ImagePasser } from '../image-passer';
+import { OCRComponent } from '../ocr/ocr.component';
+import { OCRService } from "../ocr/ocr";
+import { ImageUtils } from "../ocr/image-utils";
 
 @Component({
   selector: 'app-webcam',
@@ -8,6 +12,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './webcam.css',
 })
 export class Webcam {
+
+  constructor(private imagePasser: ImagePasser) { }
   deviceId?: string;
   currentDevice?: string;
   showDevices: boolean = false;
@@ -39,7 +45,79 @@ export class Webcam {
     this.closeStream()
     this.camOn = false;
   }
+  capturedImageDataUrl?: string;
+  capturedImageBlob?: Blob;
 
+  async capCam(): Promise<Blob> {
+    if (!this.camOn || !this.videoElement?.nativeElement) {
+      throw new Error('Camera is not running');
+    }
+  
+    const video = this.videoElement.nativeElement as HTMLVideoElement;
+    await this.waitForVideoReady(video);
+
+    const width = video.videoWidth;
+    const height = video.videoHeight;
+    if (!width || !height) {
+      throw new Error('Unable to read video dimensions');
+    }
+
+    // Use an offscreen canvas to capture a frame.
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      throw new Error('Unable to create canvas context');
+    }
+    ctx.drawImage(video, 0, 0, width, height);
+
+    // Data URL for simple previews.
+    this.capturedImageDataUrl = canvas.toDataURL('image/png');
+
+    // Blob for uploads / saving.
+    const blob = await this.canvasToBlob(canvas, 'image/png');
+    this.imagePasser.setBlobAsFile(blob, 'capture.png');
+    this.capturedImageBlob = blob;
+    return blob;
+  }
+
+  private waitForVideoReady(video: HTMLVideoElement): Promise<void> {
+    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && video.videoWidth > 0) {
+      return Promise.resolve();
+    }
+    return new Promise((resolve, reject) => {
+      const onLoaded = () => {
+        cleanup();
+        resolve();
+      };
+      const onError = () => {
+        cleanup();
+        reject(new Error('Video element failed to load data'));
+      };
+      const cleanup = () => {
+        video.removeEventListener('loadeddata', onLoaded);
+        video.removeEventListener('loadedmetadata', onLoaded);
+        video.removeEventListener('error', onError);
+      };
+      video.addEventListener('loadeddata', onLoaded, { once: true });
+      video.addEventListener('loadedmetadata', onLoaded, { once: true });
+      video.addEventListener('error', onError, { once: true });
+    });
+  }
+
+  private canvasToBlob(canvas: HTMLCanvasElement, type: string): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      canvas.toBlob((b) => {
+        if (!b) {
+          reject(new Error('Canvas toBlob returned null'));
+          return;
+        }
+        resolve(b);
+      }, type);
+    });
+  }
 
   async requestCameraPermissions() {
     try {
