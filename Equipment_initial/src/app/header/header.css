@@ -5,15 +5,16 @@
 header {
     display: inline-block;
     height: var(--header-height);
-    width: 100%;
+    width: 98%; /*prevents a horizontal scroll bar*/
+    scroll-behavior: smooth;
     padding: var(--content-padding);
     box-shadow: 0px 5px 25px var(--shadow-color);
 }
-
-h1 {
+h1{
     display: inherit;
 }
 
 .brand-logo {
     max-height: 100%;
+    max-width: 100%;
 }
