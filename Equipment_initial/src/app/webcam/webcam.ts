@@ -1,16 +1,18 @@
-import { Component, ElementRef, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ImagePasser } from '../image-passer';
+import { NgOptimizedImage } from '@angular/common';
+
 
 @Component({
   selector: 'app-webcam',
-  imports: [CommonModule],
+  imports: [NgOptimizedImage],
   templateUrl: './webcam.html',
   styleUrl: './webcam.css',
 })
 export class Webcam {
 
-  constructor(private imagePasser: ImagePasser) { }
+  constructor(private imagePasser: ImagePasser,
+    private readonly cd: ChangeDetectorRef) { }
   deviceId?: string;
   currentDevice?: string;
   showDevices: boolean = false;
@@ -21,10 +23,12 @@ export class Webcam {
   checkPermission() {
     this.requestCameraPermissions();
     this.setMediaDevices();
+    this.cd.detectChanges();
   }
   chooseDevice() {
     this.setMediaDevices();
     this.showDevices = !this.showDevices;
+    this.cd.detectChanges();
   }
   selectDevice(device: MediaDeviceInfo) {
     this.deviceId = device.deviceId;
@@ -33,14 +37,17 @@ export class Webcam {
     console.log(this.deviceId);
     this.currentDevice = device.label;
     console.log(this.currentDevice);
+    this.cd.detectChanges();
   }
   startCam() {
     this.startStreaming();
     this.camOn = true;
+    this.cd.detectChanges();
   }
   stopCam() {
     this.closeStream()
     this.camOn = false;
+    this.cd.detectChanges();
   }
   capturedImageDataUrl?: string;
   capturedImageBlob?: Blob;
@@ -49,7 +56,7 @@ export class Webcam {
     if (!this.camOn || !this.videoElement?.nativeElement) {
       throw new Error('Camera is not running');
     }
-  
+
     const video = this.videoElement.nativeElement as HTMLVideoElement;
     await this.waitForVideoReady(video);
 
@@ -87,7 +94,7 @@ export class Webcam {
     if (!this.camOn || !this.videoElement?.nativeElement) {
       throw new Error('Camera is not running');
     }
-  
+
     const video = this.videoElement.nativeElement as HTMLVideoElement;
     await this.waitForVideoReady(video);
 
@@ -153,7 +160,7 @@ export class Webcam {
       }, type);
     });
   }
-  
+
   async requestCameraPermissions() {
     try {
       console.log("Camera Permission request");

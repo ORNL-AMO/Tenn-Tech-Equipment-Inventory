@@ -1,19 +1,18 @@
-
-
-video{
+video {
     display: block;
     max-width: 100%;
     max-height: 100%;
 }
 
-.List{
+.List {
     margin: 4px;
 }
 
-.devices{
-    background-color: green;  
-    /*need to figure out a good color to differentiate these from other buttons*/  
+.devices {
+    background-color: green;
+    /*need to figure out a good color to differentiate these from other buttons*/
 }
-.devices:hover{
+
+.devices:hover {
     background-color: #18afd9;
 }

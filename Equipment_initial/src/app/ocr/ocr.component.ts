@@ -19,30 +19,30 @@ export class OCRComponent {
     reader = new FileReader();
 
     constructor(private ocr: OCRService,
-        private readonly cd: ChangeDetectorRef, 
+        private readonly cd: ChangeDetectorRef,
         private imagePasser: ImagePasser) { }
 
-        async onFileSelected(event: Event): Promise<void> {
-            const input = event.target as HTMLInputElement;
-            if (input.files && input.files.length > 0) {
-                this.selectedFile = input.files[0];
-                console.log('File selected:', this.selectedFile.name);
-                this.reader.readAsDataURL(input.files[0]);
-                this.reader.onload = () => {
-                    this.imageSrc = this.reader.result;
-                    this.cd.detectChanges();
-                };
+    async onFileSelected(event: Event): Promise<void> {
+        const input = event.target as HTMLInputElement;
+        if (input.files && input.files.length > 0) {
+            this.selectedFile = input.files[0];
+            console.log('File selected:', this.selectedFile.name);
+            this.reader.readAsDataURL(input.files[0]);
+            this.reader.onload = () => {
+                this.imageSrc = this.reader.result;
+                this.cd.detectChanges();
+            };
         } else {
             this.selectedFile = null;
         }
     }
     async onUpload(): Promise<void> {
-        if (!this.selectedFile && !this.imagePasser.currentFile) { 
+        if (!this.selectedFile && !this.imagePasser.currentFile) {
             console.error('No File Selected');
             alert("Please select a file to process")
             return;
         }
-    
+
         this.loading = true;
         console.log("Loading = " + this.loading);
 
@@ -53,15 +53,15 @@ export class OCRComponent {
             console.log("Loading = " + this.loading);
             this.cd.detectChanges();
             return;
-            }
-        else if(this.imagePasser.currentFile) {
+        }
+        else if (this.imagePasser.currentFile) {
             const canvas = await this.imageUtils.prepareImage(this.imagePasser.currentFile!);
             this.result = await this.ocr.extractText(canvas);
             this.loading = false;
             console.log("Loading = " + this.loading);
             this.cd.detectChanges();
             return;
-            }
+        }
 
     }
 }

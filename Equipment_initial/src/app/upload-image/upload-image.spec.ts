@@ -10,7 +10,7 @@ describe('UploadImage', () => {
     await TestBed.configureTestingModule({
       imports: [UploadImage]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(UploadImage);
     component = fixture.componentInstance;

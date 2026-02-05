@@ -1,27 +1,30 @@
 <button type="button" [disabled]="webcamPermission" (click)="checkPermission()">Give Camera permission</button><br>
-<div *ngIf="webcamPermission">
+@if(webcamPermission){
+<div>
     <button type="button" (click)="chooseDevice()">{{showDevices? 'Choose A Device' : 'List Cameras'}}</button>
     Current Selection: {{currentDevice}}
-    <div *ngIf="showDevices">
+    @if(showDevices){<div>
         <ul class="List">
-            <li *ngFor="let device of mediaDevices">
+            @for (let device of mediaDevices){
+            <li>
                 <button class="devices" type="button" (click)="selectDevice(device)">Select {{device.label}}</button>
             </li>
+            }
         </ul>
-    </div>
+    </div>}
     <div>
-    <button type="button" *ngIf="!camOn" (click)="startCam()">Start Camera</button>
-    <button type="button" *ngIf="camOn" (click)="stopCam()">Stop Camera</button>
+        @if(!camOn){ <button type="button" (click)="startCam()">Start Camera</button>}
+        @if(camOn){ <button type="button" (click)="stopCam()">Stop Camera</button>}
     </div>
     <div>
         <div class="webcam">
             <video id="videoElement" #videoElement></video>
         </div>
         <div>
-            <button type="button" *ngIf="camOn" (click)="capCam()">Capture</button>
+            @if(camOn){<button type="button" (click)="capCam()">Capture</button>}
         </div>
     </div>
     <div>
-        <img *ngIf="capturedImageDataUrl" [src]="capturedImageDataUrl" alt="Captured frame" />
+        @if(capturedImageDataUrl){<img [ngSrc]="capturedImageDataUrl" alt="Captured frame" width="100" height="100" />}
     </div>
-</div>
+</div>}
