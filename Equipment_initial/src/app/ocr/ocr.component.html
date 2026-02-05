@@ -2,14 +2,20 @@
 <input type="file" id="fileInput" placeholder="Upload Image Here" accept=".jpg, .jpeg, .png"
     (change)="onFileSelected($event)" />
 <button type="button" [disabled]="loading" (click)="onUpload()">Scan Image</button>
-@defer (when imageSrc){
-<img [src]="imageSrc" />}
 
+<br>
+<!-- Defer loading of preview image until there is an image to preview -->
+@defer (when imageSrc){
+<img [src]="imageSrc" style="max-inline-size: 100%;"/>
+}
+<!-- toggled statement to let user know if the ocr service is processing their image -->
 @if(loading){
 <p>Extracting text...</p>
 } @else {
 <p>Upload an image to process</p>
 }
+
+<!-- Defer to prevent headings from showing up until result has information in it -->
 @defer (when result) {
 <h4>Raw Result</h4>
 <pre>{{ result }}</pre>
