@@ -20,7 +20,6 @@
         <div>
             <button type="button" *ngIf="camOn" (click)="capCam()">Capture</button>
         </div>
-
     </div>
     <div>
         <img *ngIf="capturedImageDataUrl" [src]="capturedImageDataUrl" alt="Captured frame" />
