@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORNL Prototype</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; text-align: center; }
+        button { padding: 15px 30px; font-size: 18px; background: #007bff; color: white; border: none; border-radius: 8px; }
+        #output { margin-top: 20px; white-space: pre-wrap; text-align: left; background: #f0f0f0; padding: 10px; }
+    </style>
+</head>
+<body>
+
+    <h1>Camera Logic Test</h1>
+    <button id="scanBtn">Scan Document</button>
+    
+    <div id="status" style="margin-top:10px; color: gray;"></div>
+    <div id="output"></div>
+
+    <script type="module">
+        import { captureImage, extractText } from './image-logic.js';
+
+        const btn = document.getElementById('scanBtn');
+        const status = document.getElementById('status');
+        const output = document.getElementById('output');
+
+        btn.addEventListener('click', async () => {
+            try {
+                //Get the Image
+                status.innerText = "Waiting for camera...";
+                const file = await captureImage();
+                
+                //Extract Text
+                status.innerText = "Processing (this may take a moment)...";
+                
+                //We pass the global 'Tesseract' object loaded from the CDN
+                const text = await extractText(file, window.Tesseract);
+                
+                status.innerText = "Done!";
+                output.innerText = text;
+
+            } catch (err) {
+                console.error(err);
+                status.innerText = "Error: " + err;
+            }
+        });
+    </script>
+</body>
+</html>
