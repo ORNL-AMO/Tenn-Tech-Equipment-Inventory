@@ -1,11 +1,11 @@
 import { Component, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ImagePasser } from '../image-passer';
-import { NgOptimizedImage } from '@angular/common';
+// import { NgOptimizedImage } from '@angular/common';
 
 
 @Component({
   selector: 'app-webcam',
-  imports: [NgOptimizedImage],
+  imports: [],
   templateUrl: './webcam.html',
   styleUrl: './webcam.css',
 })
@@ -87,44 +87,6 @@ export class Webcam {
     return blob;
   }
 
-  capturedImageDataUrl?: string;
-  capturedImageBlob?: Blob;
-
-  async capCam(): Promise<Blob> {
-    if (!this.camOn || !this.videoElement?.nativeElement) {
-      throw new Error('Camera is not running');
-    }
-
-    const video = this.videoElement.nativeElement as HTMLVideoElement;
-    await this.waitForVideoReady(video);
-
-    const width = video.videoWidth;
-    const height = video.videoHeight;
-    if (!width || !height) {
-      throw new Error('Unable to read video dimensions');
-    }
-
-    // Use an offscreen canvas to capture a frame.
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      throw new Error('Unable to create canvas context');
-    }
-    ctx.drawImage(video, 0, 0, width, height);
-
-    // Data URL for simple previews.
-    this.capturedImageDataUrl = canvas.toDataURL('image/png');
-
-    // Blob for uploads / saving.
-    const blob = await this.canvasToBlob(canvas, 'image/png');
-    this.imagePasser.setBlob(blob);
-    this.capturedImageBlob = blob;
-    return blob;
-  }
-
   private waitForVideoReady(video: HTMLVideoElement): Promise<void> {
     if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && video.videoWidth > 0) {
       return Promise.resolve();
@@ -174,6 +136,7 @@ export class Webcam {
       stream.getTracks().forEach(track => track.stop());
       console.log("Camera permission granted");
       this.webcamPermission = true;
+      this.cd.detectChanges();
     } catch (err) {
       console.log("Camera Permission error");
       console.log(err);
@@ -192,6 +155,7 @@ export class Webcam {
         this.mediaDevices.push(device);
       }
     }
+    this.cd.detectChanges();
   }
 
   mediaStream!: MediaStream;
@@ -206,6 +170,7 @@ export class Webcam {
     this.videoElement.nativeElement.srcObject = this.mediaStream;
     this.videoElement.nativeElement.play();
     console.log("Camera Started");
+    this.cd.detectChanges();
   }
 
   closeStream(stream: MediaStream = this.mediaStream) {
@@ -251,6 +216,7 @@ export class Webcam {
         deviceId: webcamDevice.deviceId
       }
     });
+    this.cd.detectChanges();
     return stream;
   }
 }
