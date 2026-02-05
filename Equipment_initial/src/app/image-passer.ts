@@ -5,21 +5,29 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ImagePasser {
-  private readonly blobSubject = new BehaviorSubject<Blob | null>(null);
- 
-  setBlob(blob: Blob): void {
-    this.blobSubject.next(blob);
+  private readonly fileSubject = new BehaviorSubject<File | null>(null);
+
+  // If you already have a File, set it directly
+  setFile(file: File): void {
+    this.fileSubject.next(file);
   }
- 
-  blob$(): Observable<Blob | null> {
-    return this.blobSubject.asObservable();
+
+  // If you have a Blob (like from canvas/webcam), convert it to a File and set it
+  setBlobAsFile(blob: Blob, filename = 'capture.png'): void {
+    const type = blob.type || 'image/png';
+    const file = new File([blob], filename, { type });
+    this.fileSubject.next(file);
   }
- 
-  get currentBlob(): Blob | null {
-    return this.blobSubject.value;
+
+  file$(): Observable<File | null> {
+    return this.fileSubject.asObservable();
   }
- 
+
+  get currentFile(): File | null {
+    return this.fileSubject.value;
+  }
+
   clear(): void {
-    this.blobSubject.next(null);
+    this.fileSubject.next(null);
   }
 }

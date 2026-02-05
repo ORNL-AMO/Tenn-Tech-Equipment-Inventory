@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ImagePasser } from '../image-passer';
 
@@ -9,7 +9,8 @@ import { ImagePasser } from '../image-passer';
   styleUrl: './webcam.css',
 })
 export class Webcam {
-  constructor(private imagePasser: ImagePasser) {}
+
+  constructor(private imagePasser: ImagePasser) { }
   deviceId?: string;
   currentDevice?: string;
   showDevices: boolean = false;
@@ -20,7 +21,6 @@ export class Webcam {
   checkPermission() {
     this.requestCameraPermissions();
     this.setMediaDevices();
-    this.webcamPermission = true;
   }
   chooseDevice() {
     this.setMediaDevices();
@@ -29,7 +29,7 @@ export class Webcam {
   selectDevice(device: MediaDeviceInfo) {
     this.deviceId = device.deviceId;
     this.showDevices = false;
-    if (this.camOn) {this.startCam();}
+    if (this.camOn) { this.startCam(); }
     console.log(this.deviceId);
     this.currentDevice = device.label;
     console.log(this.currentDevice);
@@ -41,6 +41,43 @@ export class Webcam {
   stopCam() {
     this.closeStream()
     this.camOn = false;
+  }
+  capturedImageDataUrl?: string;
+  capturedImageBlob?: Blob;
+
+  async capCam(): Promise<Blob> {
+    if (!this.camOn || !this.videoElement?.nativeElement) {
+      throw new Error('Camera is not running');
+    }
+  
+    const video = this.videoElement.nativeElement as HTMLVideoElement;
+    await this.waitForVideoReady(video);
+
+    const width = video.videoWidth;
+    const height = video.videoHeight;
+    if (!width || !height) {
+      throw new Error('Unable to read video dimensions');
+    }
+
+    // Use an offscreen canvas to capture a frame.
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      throw new Error('Unable to create canvas context');
+    }
+    ctx.drawImage(video, 0, 0, width, height);
+
+    // Data URL for simple previews.
+    this.capturedImageDataUrl = canvas.toDataURL('image/png');
+
+    // Blob for uploads / saving.
+    const blob = await this.canvasToBlob(canvas, 'image/png');
+    this.imagePasser.setBlobAsFile(blob, 'capture.png');
+    this.capturedImageBlob = blob;
+    return blob;
   }
 
   capturedImageDataUrl?: string;
@@ -129,6 +166,7 @@ export class Webcam {
       // }
       stream.getTracks().forEach(track => track.stop());
       console.log("Camera permission granted");
+      this.webcamPermission = true;
     } catch (err) {
       console.log("Camera Permission error");
       console.log(err);
