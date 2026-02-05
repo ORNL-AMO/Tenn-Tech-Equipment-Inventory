@@ -9,3 +9,25 @@
     --primary-color: #a0c946;
     --shadow-color: #E8E8E8;
 }
+
+button {
+    padding: 7px;
+    margin: 2px;
+    border: solid 1px var(--primary-color);
+    background: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: lightblue;
+    border-color: lightblue;
+    color: black;
+}
+
+button:disabled {
+    background-color: lightgray;
+    cursor: not-allowed;
+    border-color: lightgray;
+}

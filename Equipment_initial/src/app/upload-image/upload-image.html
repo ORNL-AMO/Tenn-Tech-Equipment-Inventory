@@ -1,11 +1,10 @@
 <section>
     <form>
-        <script src="https://docs.opencv.org/4.x/opencv.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
+        <!-- <script src="https://docs.opencv.org/4.x/opencv.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script> -->
 
         <label for="files">Select Image:</label>
-        <input type="file" id="imageUpload" placeholder="Upload Image Here" />
-
+        <input type="file" id="imageUpload" placeholder="Upload Image Here" accept=".jpg, .jpeg, .png"/>        
         <div class="example-wrap">
             <span class="example-trigger">Examples </span>
             <div class="example-popover">
@@ -21,9 +20,26 @@
         <button class="primary" type="button">Scan image</button>
         <br><br>
 
-            <canvas class="img" id="canvasInput"></canvas>
-            <canvas class="img" id="canvasProcessed"></canvas>
+        <div class="example-wrap">
+            <span class="example-trigger">Examples </span>
+            <div class="example-popover">
+                <div class="example-images">
+                    <img class="example-img" src="assets/motor-nameplate-example1.jpg" alt="Motor nameplate example 1" />
+                    <img class="example-img" src="assets/motor-nameplate-example2.jpg" alt="Motor nameplate example 2" />
+                    <img class="example-img" src="assets/motor-nameplate-example3.jpg" alt="Motor nameplate example 3" />
+                </div>
+            </div>
+        </div>
 
-            <pre id="outputText"></pre>
+        
+        <button class="primary" type="button" (click)="processImg()">Scan image</button>
+        <br><br>
+        <!-- <canvas class="img" id="canvasInput"></canvas>
+        <canvas class="img" id="canvasProcessed"></canvas>
+
+        <pre id="outputText"></pre> -->
     </form>
+    <div *ngIf="hasClickedButton">
+        Good job, you clicked the button!
+    </div>
 </section>
