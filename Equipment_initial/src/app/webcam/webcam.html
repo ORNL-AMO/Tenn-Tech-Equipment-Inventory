@@ -1,0 +1,28 @@
+<button type="button" [disabled]="webcamPermission" (click)="checkPermission()">Give Camera permission</button><br>
+<div *ngIf="webcamPermission">
+    <button type="button" (click)="chooseDevice()">{{showDevices? 'Choose A Device' : 'List Cameras'}}</button>
+    Current Selection: {{currentDevice}}
+    <div *ngIf="showDevices">
+        <ul class="List">
+            <li *ngFor="let device of mediaDevices">
+                <button class="devices" type="button" (click)="selectDevice(device)">Select {{device.label}}</button>
+            </li>
+        </ul>
+    </div>
+    <div>
+    <button type="button" *ngIf="!camOn" (click)="startCam()">Start Camera</button>
+    <button type="button" *ngIf="camOn" (click)="stopCam()">Stop Camera</button>
+    </div>
+    <div>
+        <div class="webcam">
+            <video id="videoElement" #videoElement></video>
+        </div>
+        <div>
+            <button type="button" *ngIf="camOn" (click)="capCam()">Capture</button>
+        </div>
+
+    </div>
+    <div>
+        <img *ngIf="capturedImageDataUrl" [src]="capturedImageDataUrl" alt="Captured frame" />
+    </div>
+</div>
