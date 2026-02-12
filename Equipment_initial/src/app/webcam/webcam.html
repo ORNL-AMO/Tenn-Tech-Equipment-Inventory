@@ -5,9 +5,11 @@
     Current Selection: {{currentDevice}}
     @if(showDevices){<div>
         <ul class="List">
-            @for (device of mediaDevices; track device){
+            @for (device of mediaDevices; track device.deviceId){
             <li>
                 <button class="devices" type="button" (click)="selectDevice(device)">Select {{device.label}}</button>
+                <!-- use this second button for multi-cam support
+                     <button class="devices" type="button" (click)="selectDevice(device.deviceId, device.label, videoElement)">Select {{device.label}}</button> -->
             </li>
             }
         </ul>
@@ -18,7 +20,7 @@
     </div>
     <div>
         <div class="webcam">
-            <video id="videoElement" #videoElement></video>
+            <video id="videoElement" #videoElement autoplay playsinline></video>
         </div>
         <div>
             @if(camOn){<button type="button" (click)="capCam()">Capture</button>}

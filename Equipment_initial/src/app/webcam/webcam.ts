@@ -30,6 +30,7 @@ export class Webcam {
     this.showDevices = !this.showDevices;
     this.cd.detectChanges();
   }
+  //disable this function for multi-cam support
   selectDevice(device: MediaDeviceInfo) {
     this.deviceId = device.deviceId;
     this.showDevices = false;
@@ -39,6 +40,28 @@ export class Webcam {
     console.log(this.currentDevice);
     this.cd.detectChanges();
   }
+  //enable this function for multi-cam support
+  // async startStream(deviceId: string, label: string, videoElement: HTMLVideoElement) {
+  //   if(this.mediaStream){this.closeStream()};
+  //   const constraints: MediaStreamConstraints = {
+  //     video: {
+  //       deviceId: { exact: deviceId }
+  //     },
+  //     audio: false
+  //   };
+
+  //   try {
+  //     const stream = await navigator.mediaDevices.getUserMedia(constraints);
+  //     videoElement.srcObject = stream;
+  //     this.camOn = true;
+  //     this.currentDevice = label;
+  //   } catch (error) {
+  //     console.error('Error starting stream for device', deviceId, error);
+  //     alert(error);
+  //   }
+  //   this.cd.detectChanges();
+  // }
+
   startCam() {
     this.startStreaming();
     this.camOn = true;
