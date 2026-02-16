@@ -164,7 +164,7 @@ export class Webcam {
       console.log("Camera Permission error");
       console.log(err);
       this.webcamPermission = false;
-      alert("Camera Permission Denied\nPlease grant camera permission to this website to use camera functionality");
+      alert(err + "\nPlease grant permission to use your camera.");
     }
   }
 
@@ -187,13 +187,19 @@ export class Webcam {
     if (this.mediaStream) {
       this.closeStream(this.mediaStream);
     }
+    try{
     this.mediaStream = await this.getSelectedDeviceMediaStream();
     //put this into html page to show webcam
     /*<video id="videoElement" #videoElement />*/
     this.videoElement.nativeElement.srcObject = this.mediaStream;
     this.videoElement.nativeElement.play();
     console.log("Camera Started");
-    this.cd.detectChanges();
+    this.cd.detectChanges();}
+      catch(err){
+        console.log("Camera start error");
+        console.log(err);
+        alert("Cannot start camera\n" + err);
+      }
   }
 
   closeStream(stream: MediaStream = this.mediaStream) {
