@@ -32,6 +32,15 @@ export class OCRComponent {
                 this.imageSrc = this.reader.result;
                 this.cd.detectChanges();
             };
+        const maxSizeMB = 10;
+        const fileSizeMB = input.files[0].size / (1024 * 1024);
+        
+        if (fileSizeMB > maxSizeMB) {
+            alert('File must be smaller than 10MB.');
+            this.selectedFile = null;
+            return;
+        }
+
         } else {
             this.selectedFile = null;
         }
