@@ -1,4 +1,5 @@
 import { Component, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
+// import { catchError } from 'rxjs';
 import { ImagePasser } from '../image-passer';
 // import { NgOptimizedImage } from '@angular/common';
 
@@ -9,7 +10,28 @@ import { ImagePasser } from '../image-passer';
   templateUrl: './webcam.html',
   styleUrl: './webcam.css',
 })
+
 export class Webcam {
+
+  // Centralized error handler
+  private handleError(error: any) {
+    console.error('An error occurred:', error);
+    if (error.name == "NotReadableError") {
+      alert("Could not confirm camera presence\nMake sure main camera is not in use.");
+    }
+    else if (error.name == "NotAllowedError") {
+      alert("Camera permission is denied.\nPlease allow camera to use this function.");
+    }
+    else {
+      alert("General Error" + error);
+    }
+  }
+
+  // Wrapper for promises
+  // Call a function as `this.withCatch(this.functionName());` to use main error handler
+  private async withCatch<T>(promise: Promise<T>): Promise<T | void> {
+    return promise.catch(err => this.handleError(err));
+  }
 
   constructor(private imagePasser: ImagePasser,
     private readonly cd: ChangeDetectorRef) { }
@@ -21,12 +43,12 @@ export class Webcam {
 
   //Call these functions via buttons on the HTML page
   checkPermission() {
-    this.requestCameraPermissions();
-    this.setMediaDevices();
+    this.withCatch(this.requestCameraPermissions());
+    this.withCatch(this.setMediaDevices());
     this.cd.detectChanges();
   }
   chooseDevice() {
-    this.setMediaDevices();
+    this.withCatch(this.setMediaDevices());
     this.showDevices = !this.showDevices;
     this.cd.detectChanges();
   }
@@ -63,15 +85,17 @@ export class Webcam {
   // }
 
   startCam() {
-    this.startStreaming();
+    this.withCatch(this.startStreaming());
     this.camOn = true;
     this.cd.detectChanges();
   }
+
   stopCam() {
-    this.closeStream()
+    this.closeStream();
     this.camOn = false;
     this.cd.detectChanges();
   }
+
   capturedImageDataUrl?: string;
   capturedImageBlob?: Blob;
 
@@ -155,30 +179,41 @@ export class Webcam {
       // for (let i = 0; i < tracks.length; i++) {
       //   const track = tracks[i];
       //   track.stop();
-      // }
+      // } //replaced by the line below (try this if other doesn't work)
       stream.getTracks().forEach(track => track.stop());
       console.log("Camera permission granted");
       this.webcamPermission = true;
       this.cd.detectChanges();
-    } catch (err) {
-      console.log("Camera Permission error");
-      console.log(err);
+      await this.setMediaDevices();
+    } catch (err: any) {
       this.webcamPermission = false;
-      alert(err + "\nPlease grant permission to use your camera.");
+      throw (err);
+      // console.error("Error Occured\n", err);
+      // if (err.name == "NotReadableError") {
+      //   alert("Could not confirm camera presence\nMake sure main camera is not in use.");
+      // }
+      // else if (err.name == "NotAllowedError") {
+      //   alert("Camera permission is denied.\nPlease allow camera to use this function.");
+      // }
     }
   }
 
   mediaDevices: Array<MediaDeviceInfo> = []
   async setMediaDevices() {
-    let allDevices = await navigator.mediaDevices.enumerateDevices();
-    this.mediaDevices = new Array();
-    for (let i = 0; i < allDevices.length; i++) {
-      let device = allDevices[i];
-      if (device.kind == 'videoinput') {
-        this.mediaDevices.push(device);
+    try {
+      let allDevices = await navigator.mediaDevices.enumerateDevices();
+      this.mediaDevices = new Array();
+      for (let i = 0; i < allDevices.length; i++) {
+        let device = allDevices[i];
+        if (device.kind == 'videoinput') {
+          this.mediaDevices.push(device);
+        }
       }
+      this.cd.detectChanges();
     }
-    this.cd.detectChanges();
+    catch (err) {
+      throw (err);
+    }
   }
 
   mediaStream!: MediaStream;
@@ -187,19 +222,19 @@ export class Webcam {
     if (this.mediaStream) {
       this.closeStream(this.mediaStream);
     }
-    try{
-    this.mediaStream = await this.getSelectedDeviceMediaStream();
-    //put this into html page to show webcam
-    /*<video id="videoElement" #videoElement />*/
-    this.videoElement.nativeElement.srcObject = this.mediaStream;
-    this.videoElement.nativeElement.play();
-    console.log("Camera Started");
-    this.cd.detectChanges();}
-      catch(err){
-        console.log("Camera start error");
-        console.log(err);
-        alert("Cannot start camera\n" + err);
-      }
+    try {
+      this.mediaStream = await this.getSelectedDeviceMediaStream();
+      //put this into html page to show webcam
+      /*<video id="videoElement" #videoElement />*/
+      this.videoElement.nativeElement.srcObject = this.mediaStream;
+      this.videoElement.nativeElement.play();
+      console.log("Camera Started");
+      this.cd.detectChanges();
+    }
+    catch (err) {
+      console.error("Camera start error", err);
+      alert("Cannot start camera\n" + err);
+    }
   }
 
   closeStream(stream: MediaStream = this.mediaStream) {
