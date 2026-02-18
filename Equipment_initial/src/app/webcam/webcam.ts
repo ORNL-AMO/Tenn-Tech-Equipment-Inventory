@@ -17,13 +17,16 @@ export class Webcam {
   private handleError(error: any) {
     console.error('An error occurred:', error);
     if (error.name == "NotReadableError") {
-      alert("Could not confirm camera presence\nMake sure main camera is not in use.");
+      alert("Could not confirm camera presence.\nMake sure main camera is not in use.\nMake sure camera is on.");
     }
     else if (error.name == "NotAllowedError") {
       alert("Camera permission is denied.\nPlease allow camera to use this function.");
     }
+    else if (error.name == "AbortError") {
+      alert("Could not open camera.\nAnother application may be using it already.");
+    }
     else {
-      alert("General Error" + error);
+      alert("Unexpected Error\n" + error);
     }
   }
 
@@ -77,10 +80,7 @@ export class Webcam {
   //     videoElement.srcObject = stream;
   //     this.camOn = true;
   //     this.currentDevice = label;
-  //   } catch (error) {
-  //     console.error('Error starting stream for device', deviceId, error);
-  //     alert(error);
-  //   }
+  //   } catch (error) { throw (error); }
   //   this.cd.detectChanges();
   // }
 
@@ -96,10 +96,14 @@ export class Webcam {
     this.cd.detectChanges();
   }
 
+  capCam() {
+    this.withCatch(this.captureCamera());
+  }
+
   capturedImageDataUrl?: string;
   capturedImageBlob?: Blob;
 
-  async capCam(): Promise<Blob> {
+  async captureCamera(): Promise<Blob> {
     if (!this.camOn || !this.videoElement?.nativeElement) {
       throw new Error('Camera is not running');
     }
@@ -232,6 +236,7 @@ export class Webcam {
       this.cd.detectChanges();
     }
     catch (err) {
+      throw(err);
       console.error("Camera start error", err);
       alert("Cannot start camera\n" + err);
     }
