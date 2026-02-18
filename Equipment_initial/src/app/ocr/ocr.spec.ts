@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Ocr } from './ocr';
+import { OCRService } from './ocr';
 
-describe('Ocr', () => {
-  let service: Ocr;
+describe('OCRService', () => {
+  let service: OCRService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(Ocr);
+    service = TestBed.inject(OCRService);
   });
 
   it('should be created', () => {
