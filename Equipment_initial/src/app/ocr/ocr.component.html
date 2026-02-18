@@ -5,7 +5,7 @@
 
 <br>
 <!-- Defer loading of preview image until there is an image to preview -->
-@defer (when imageSrc){
+@if (imageSrc){
 <img [src]="imageSrc" style="max-inline-size: 100%;" />
 }
 <!-- toggled statement to let user know if the ocr service is processing their image -->
