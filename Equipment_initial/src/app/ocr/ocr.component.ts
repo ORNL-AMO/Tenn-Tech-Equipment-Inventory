@@ -7,12 +7,39 @@ import { ImagePasser } from "../image-passer";
 @Component({
     selector: 'app-ocr',
     templateUrl: './ocr.component.html',
-    styleUrl: './ocr.component.css',
-    imports: [NormalizeTextPipe]
+    styleUrl: './ocr.component.css'
 })
 export class OCRComponent {
     imageSrc: string | ArrayBuffer | null = null;
     result: string = '';
+    cleanedText: string = '';
+    VARIABLE_LABEL_1: string = '';
+    VARIABLE_LABEL_2: string = '';
+    VARIABLE_LABEL_3: string = '';
+    VARIABLE_LABEL_4: string = '';
+    VARIABLE_LABEL_5: string = '';
+    VARIABLE_LABEL_6: string = '';
+    VARIABLE_LABEL_7: string = '';
+    VARIABLE_LABEL_8: string = '';
+    VARIABLE_LABEL_9: string = '';
+    VARIABLE_LABEL_10: string = '';
+    VARIABLE_LABEL_11: string = '';
+    VARIABLE_LABEL_12: string = '';
+    VARIABLE_LABEL_13: string = '';
+    VARIABLE_LABEL_14: string = '';
+    VARIABLE_LABEL_15: string = '';
+    VARIABLE_LABEL_16: string = '';
+    VARIABLE_LABEL_17: string = '';
+    VARIABLE_LABEL_18: string = '';
+    VARIABLE_LABEL_19: string = '';
+    VARIABLE_LABEL_20: string = '';
+    VARIABLE_LABEL_21: string = '';
+    VARIABLE_LABEL_22: string = '';
+    VARIABLE_LABEL_23: string = '';
+    VARIABLE_LABEL_24: string = '';
+    VARIABLE_LABEL_25: string = '';
+    VARIABLE_LABEL_26: string = '';
+    VARIABLE_LABEL_27: string = '';
     loading: boolean = false;
     selectedFile: File | null = null;
     private imageUtils = inject(ImageUtils);
@@ -26,6 +53,34 @@ export class OCRComponent {
         const input = event.target as HTMLInputElement;
         // Clear the image preview and extraction results
         this.result = '';
+        this.cleanedText = '';
+        this.VARIABLE_LABEL_1 = '';
+        this.VARIABLE_LABEL_2 = '';
+        this.VARIABLE_LABEL_3 = '';
+        this.VARIABLE_LABEL_4 = '';
+        this.VARIABLE_LABEL_5 = '';
+        this.VARIABLE_LABEL_6 = '';
+        this.VARIABLE_LABEL_7 = '';
+        this.VARIABLE_LABEL_8 = '';
+        this.VARIABLE_LABEL_9 = '';
+        this.VARIABLE_LABEL_10 = '';
+        this.VARIABLE_LABEL_11 = '';
+        this.VARIABLE_LABEL_12 = '';
+        this.VARIABLE_LABEL_13 = '';
+        this.VARIABLE_LABEL_14 = '';
+        this.VARIABLE_LABEL_15 = '';
+        this.VARIABLE_LABEL_16 = '';
+        this.VARIABLE_LABEL_17 = '';
+        this.VARIABLE_LABEL_18 = '';
+        this.VARIABLE_LABEL_19 = '';
+        this.VARIABLE_LABEL_20 = '';
+        this.VARIABLE_LABEL_21 = '';
+        this.VARIABLE_LABEL_22 = '';
+        this.VARIABLE_LABEL_23 = '';
+        this.VARIABLE_LABEL_24 = '';
+        this.VARIABLE_LABEL_25 = '';
+        this.VARIABLE_LABEL_26 = '';
+        this.VARIABLE_LABEL_27 = '';
         this.imageSrc = null;
 
         // Check if a file was selected
@@ -69,6 +124,35 @@ export class OCRComponent {
         if (this.selectedFile) {
             const canvas = await this.imageUtils.prepareImage(this.selectedFile)
             this.result = await this.ocr.extractText(canvas);
+            this.cleanedText = new NormalizeTextPipe().transform(this.result);
+            // Populate developer fields so it's easy to see where to edit
+            this.VARIABLE_LABEL_1 = '';
+            this.VARIABLE_LABEL_2 = '';
+            this.VARIABLE_LABEL_3 = '';
+            this.VARIABLE_LABEL_4 = '';
+            this.VARIABLE_LABEL_5 = '';
+            this.VARIABLE_LABEL_6 = '';
+            this.VARIABLE_LABEL_7 = '';
+            this.VARIABLE_LABEL_8 = '';
+            this.VARIABLE_LABEL_9 = '';
+            this.VARIABLE_LABEL_10 = '';
+            this.VARIABLE_LABEL_11 = '';
+            this.VARIABLE_LABEL_12 = '';
+            this.VARIABLE_LABEL_13 = '';
+            this.VARIABLE_LABEL_14 = '';
+            this.VARIABLE_LABEL_15 = '';
+            this.VARIABLE_LABEL_16 = '';
+            this.VARIABLE_LABEL_17 = '';
+            this.VARIABLE_LABEL_18 = '';
+            this.VARIABLE_LABEL_19 = '';
+            this.VARIABLE_LABEL_20 = '';
+            this.VARIABLE_LABEL_21 = '';
+            this.VARIABLE_LABEL_22 = '';
+            this.VARIABLE_LABEL_23 = '';
+            this.VARIABLE_LABEL_24 = '';
+            this.VARIABLE_LABEL_25 = '';
+            this.VARIABLE_LABEL_26 = '';
+            this.VARIABLE_LABEL_27 = '';
             // OCR complete, no more loading message
             this.loading = false;
             console.log("Loading = " + this.loading);
@@ -79,12 +163,43 @@ export class OCRComponent {
         else if (this.imagePasser.currentFile) {
             const canvas = await this.imageUtils.prepareImage(this.imagePasser.currentFile!);
             this.result = await this.ocr.extractText(canvas);
+            this.cleanedText = new NormalizeTextPipe().transform(this.result);
+
+            // Populate developer fields so it's easy to see where to edit
+            this.VARIABLE_LABEL_1 = '';
+            this.VARIABLE_LABEL_2 = '';
+            this.VARIABLE_LABEL_3 = '';
+            this.VARIABLE_LABEL_4 = '';
+            this.VARIABLE_LABEL_5 = '';
+            this.VARIABLE_LABEL_6 = '';
+            this.VARIABLE_LABEL_7 = '';
+            this.VARIABLE_LABEL_8 = '';
+            this.VARIABLE_LABEL_9 = '';
+            this.VARIABLE_LABEL_10 = '';
+            this.VARIABLE_LABEL_11 = '';
+            this.VARIABLE_LABEL_12 = '';
+            this.VARIABLE_LABEL_13 = '';
+            this.VARIABLE_LABEL_14 = '';
+            this.VARIABLE_LABEL_15 = '';
+            this.VARIABLE_LABEL_16 = '';
+            this.VARIABLE_LABEL_17 = '';
+            this.VARIABLE_LABEL_18 = '';
+            this.VARIABLE_LABEL_19 = '';
+            this.VARIABLE_LABEL_20 = '';
+            this.VARIABLE_LABEL_21 = '';
+            this.VARIABLE_LABEL_22 = '';
+            this.VARIABLE_LABEL_23 = '';
+            this.VARIABLE_LABEL_24 = '';
+            this.VARIABLE_LABEL_25 = '';
+            this.VARIABLE_LABEL_26 = '';
+            this.VARIABLE_LABEL_27 = '';
+
             // OCR complete, no more loading message
             this.loading = false;
             console.log("Loading = " + this.loading);
             this.cd.detectChanges();
             return;
-        }
+            }
 
+        }
     }
-}
