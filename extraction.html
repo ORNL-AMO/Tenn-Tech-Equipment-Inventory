@@ -437,21 +437,69 @@
         imgObj.status = 'processing';
         renderSidebar(); 
         document.getElementById('loader').classList.remove('d-none');
+        document.getElementById('loader-msg').innerText = "Processing..."; // Ensure default text
         
-        try {
-            let canvas = appState.cropper.getCroppedCanvas();
-            canvas = optimizeCanvas(canvas);
-            
-            const worker = await Tesseract.createWorker("eng");
-            const { data: { text } } = await worker.recognize(canvas);
-            await worker.terminate();
+        const TIMEOUT_MS = 1;
+        let attempts = 0;
+        const maxAttempts = 2;
 
-            imgObj.text = text.trim();
-            imgObj.status = 'done';
-            document.getElementById('text-output').value = imgObj.text;
-        } catch (e) { console.error(e); imgObj.status = 'error'; }
+        while (attempts < maxAttempts) {
+            attempts++;
+            let worker = null;
+            try {
+                let canvas = appState.cropper.getCroppedCanvas();
+                canvas = optimizeCanvas(canvas);
+                
+                worker = await Tesseract.createWorker("eng");
 
+                // THE RACE: Tesseract vs 12-second timer
+                const result = await Promise.race([
+                    worker.recognize(canvas),
+                    new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error("Timeout")), TIMEOUT_MS)
+                    )
+                ]);
+
+                // SUCCESS PATH
+                await worker.terminate();
+                imgObj.text = result.data.text.trim();
+                imgObj.status = 'done';
+                document.getElementById('text-output').value = imgObj.text;
+                break; // Exit the loop
+
+            } catch (e) {
+                // FAILURE PATH
+                if (worker) await worker.terminate();
+                console.error(`Attempt ${attempts} failed:`, e.message);
+
+                if (attempts < maxAttempts) {
+                    // Update UI and wait half a second before trying again
+                    document.getElementById('loader-msg').innerText = `Retrying (Attempt ${attempts + 1})...`;
+                    await new Promise(r => setTimeout(r, 500)); 
+                } else {
+                    // Final failure after max attempts
+                    imgObj.status = 'error';
+                    
+                    let errorMsg = e.message === "Timeout"
+                        ? "Processing took too long. The image might be too blurry or complex." 
+                        : "The system encountered an error.";
+
+                    imgObj.text = `[ERROR: ${errorMsg}]`;
+                    document.getElementById('text-output').value = imgObj.text;
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Extraction Failed',
+                        text: errorMsg,
+                        confirmButtonColor: '#2c3e50'
+                    });
+                }
+            }
+        }
+
+        // CLEANUP
         document.getElementById('loader').classList.add('d-none');
+        document.getElementById('loader-msg').innerText = "Processing..."; 
         renderSidebar();
     }
 
