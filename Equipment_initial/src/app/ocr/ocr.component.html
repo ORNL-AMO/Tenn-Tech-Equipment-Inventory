@@ -16,7 +16,7 @@
 }
 
 <!-- Defer to prevent headings from showing up until result has information in it -->
-@defer (when result) {
+@if (result) {
 <h4>Raw Result</h4>
 <pre>{{ result }}</pre>
 <h4>Cleaned Text</h4>
