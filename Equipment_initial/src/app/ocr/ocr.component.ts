@@ -102,11 +102,12 @@ export class OCRComponent {
         this.VARIABLE_LABEL_26 = '';
         this.VARIABLE_LABEL_27 = '';
         this.imageSrc = null;
+        this.filesInput = []; //Clear previous files
+        this.inventory = []; //Clear previous inventory
 
         // Check if a file was selected
         if (input.files && input.files.length > 0) {
             // Load a preview of images for the user
-            this.filesInput = []; //Clear previous previews
             const maxSizeMB = 10;
 
             Array.from(input.files).forEach(file => {
