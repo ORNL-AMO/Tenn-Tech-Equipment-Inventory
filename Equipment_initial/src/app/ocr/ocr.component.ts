@@ -5,12 +5,14 @@ import { ImageUtils } from "./image-utils";
 import { NormalizeTextPipe } from "./normalize-text-pipe";
 import { ImagePasser } from "../image-passer";
 
-interface FilePreview {
+interface uploadedFiles {
     name: string;
     type: string;
     size: number;
     content?: string | ArrayBuffer | null;
 }
+
+
 
 @Component({
     selector: 'app-ocr',
@@ -20,7 +22,7 @@ interface FilePreview {
 })
 export class OCRComponent {
     imageSrc: string | ArrayBuffer | null = null;
-    filesInput: FilePreview[] = [];
+    filesInput: uploadedFiles[] = [];
     result: string = '';
     cleanedText: string = '';
     VARIABLE_LABEL_1: string = '';
