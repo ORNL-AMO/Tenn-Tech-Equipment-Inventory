@@ -1,13 +1,32 @@
 <label for="files">Select Image:</label>
 <input type="file" id="fileInput" placeholder="Upload Image Here" accept=".jpg, .jpeg, .png"
-    (change)="onFileSelected($event)" multiple="true" />
+    (change)="onFileSelected($event)" multiple />
 <button type="button" [disabled]="loading" (click)="onUpload()">Scan Image</button>
 
-<br>
-<!-- Defer loading of preview image until there is an image to preview -->
-@if (imageSrc){
-<img [src]="imageSrc" style="max-inline-size: 100%;" />
+<!-- Dynamically load the file preview window only when files selected -->
+@if(filesInput.length > 0){
+<div class="image-grid">
+
+    <!-- File preview loop to display up to 10 files to prevent extremely long page -->
+    @for(file of filesInput.slice(0, 10); track file.name){
+    <div class="image-item">
+        <!-- Image Preview -->
+        <img [src]="file.content" alt="{{file.name}}" class="preview-img" />
+        <!-- Image File name with size -->
+        <div class="caption">{{ file.name }} ({{ file.size / 1024 | number:'1.0-2' }} KB)</div>
+    </div>
+    }
+    <!-- Notification if more than 10 images uploaded (so user isn't confused)-->
+    @if(filesInput.length > 10){
+    <h2 style="text-align: center">10 Image Preview Limit Reached</h2>
+    }
+</div>
+<!-- information of how many files where uploaded (so user isn't confused)-->
+<p>recieved {{filesInput.length}} files </p>
 }
+
+<br>
+
 <!-- toggled statement to let user know if the ocr service is processing their image -->
 @if(loading){
 <p>Extracting text...</p>
@@ -27,137 +46,164 @@
     <!-- 1 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var1 [value]="VARIABLE_LABEL_1" (input)="VARIABLE_LABEL_1 = var1.value" placeholder="VARIABLE_LABEL_1" rows="1" style="width:100%"></textarea>
+        <textarea #var1 [value]="VARIABLE_LABEL_1" (input)="VARIABLE_LABEL_1 = var1.value"
+            placeholder="VARIABLE_LABEL_1" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 2 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var2 [value]="VARIABLE_LABEL_2" (input)="VARIABLE_LABEL_2 = var2.value" placeholder="VARIABLE_LABEL_2" rows="1" style="width:100%"></textarea>
+        <textarea #var2 [value]="VARIABLE_LABEL_2" (input)="VARIABLE_LABEL_2 = var2.value"
+            placeholder="VARIABLE_LABEL_2" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 3 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var3 [value]="VARIABLE_LABEL_3" (input)="VARIABLE_LABEL_3 = var3.value" placeholder="VARIABLE_LABEL_3" rows="1" style="width:100%"></textarea>
+        <textarea #var3 [value]="VARIABLE_LABEL_3" (input)="VARIABLE_LABEL_3 = var3.value"
+            placeholder="VARIABLE_LABEL_3" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 4 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var4 [value]="VARIABLE_LABEL_4" (input)="VARIABLE_LABEL_4 = var4.value" placeholder="VARIABLE_LABEL_4" rows="1" style="width:100%"></textarea>
+        <textarea #var4 [value]="VARIABLE_LABEL_4" (input)="VARIABLE_LABEL_4 = var4.value"
+            placeholder="VARIABLE_LABEL_4" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 5 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var5 [value]="VARIABLE_LABEL_5" (input)="VARIABLE_LABEL_5 = var5.value" placeholder="VARIABLE_LABEL_5" rows="1" style="width:100%"></textarea>
+        <textarea #var5 [value]="VARIABLE_LABEL_5" (input)="VARIABLE_LABEL_5 = var5.value"
+            placeholder="VARIABLE_LABEL_5" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 6 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var6 [value]="VARIABLE_LABEL_6" (input)="VARIABLE_LABEL_6 = var6.value" placeholder="VARIABLE_LABEL_6" rows="1" style="width:100%"></textarea>
+        <textarea #var6 [value]="VARIABLE_LABEL_6" (input)="VARIABLE_LABEL_6 = var6.value"
+            placeholder="VARIABLE_LABEL_6" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 7 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var7 [value]="VARIABLE_LABEL_7" (input)="VARIABLE_LABEL_7 = var7.value" placeholder="VARIABLE_LABEL_7" rows="1" style="width:100%"></textarea>
+        <textarea #var7 [value]="VARIABLE_LABEL_7" (input)="VARIABLE_LABEL_7 = var7.value"
+            placeholder="VARIABLE_LABEL_7" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 8 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var8 [value]="VARIABLE_LABEL_8" (input)="VARIABLE_LABEL_8 = var8.value" placeholder="VARIABLE_LABEL_8" rows="1" style="width:100%"></textarea>
+        <textarea #var8 [value]="VARIABLE_LABEL_8" (input)="VARIABLE_LABEL_8 = var8.value"
+            placeholder="VARIABLE_LABEL_8" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 9 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var9 [value]="VARIABLE_LABEL_9" (input)="VARIABLE_LABEL_9 = var9.value" placeholder="VARIABLE_LABEL_9" rows="1" style="width:100%"></textarea>
+        <textarea #var9 [value]="VARIABLE_LABEL_9" (input)="VARIABLE_LABEL_9 = var9.value"
+            placeholder="VARIABLE_LABEL_9" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 10 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var10 [value]="VARIABLE_LABEL_10" (input)="VARIABLE_LABEL_10 = var10.value" placeholder="VARIABLE_LABEL_10" rows="1" style="width:100%"></textarea>
+        <textarea #var10 [value]="VARIABLE_LABEL_10" (input)="VARIABLE_LABEL_10 = var10.value"
+            placeholder="VARIABLE_LABEL_10" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 11 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var11 [value]="VARIABLE_LABEL_11" (input)="VARIABLE_LABEL_11 = var11.value" placeholder="VARIABLE_LABEL_11" rows="1" style="width:100%"></textarea>
+        <textarea #var11 [value]="VARIABLE_LABEL_11" (input)="VARIABLE_LABEL_11 = var11.value"
+            placeholder="VARIABLE_LABEL_11" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 12 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var12 [value]="VARIABLE_LABEL_12" (input)="VARIABLE_LABEL_12 = var12.value" placeholder="VARIABLE_LABEL_12" rows="1" style="width:100%"></textarea>
+        <textarea #var12 [value]="VARIABLE_LABEL_12" (input)="VARIABLE_LABEL_12 = var12.value"
+            placeholder="VARIABLE_LABEL_12" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 13 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var13 [value]="VARIABLE_LABEL_13" (input)="VARIABLE_LABEL_13 = var13.value" placeholder="VARIABLE_LABEL_13" rows="1" style="width:100%"></textarea>
+        <textarea #var13 [value]="VARIABLE_LABEL_13" (input)="VARIABLE_LABEL_13 = var13.value"
+            placeholder="VARIABLE_LABEL_13" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 14 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var14 [value]="VARIABLE_LABEL_14" (input)="VARIABLE_LABEL_14 = var14.value" placeholder="VARIABLE_LABEL_14" rows="1" style="width:100%"></textarea>
+        <textarea #var14 [value]="VARIABLE_LABEL_14" (input)="VARIABLE_LABEL_14 = var14.value"
+            placeholder="VARIABLE_LABEL_14" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 15 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var15 [value]="VARIABLE_LABEL_15" (input)="VARIABLE_LABEL_15 = var15.value" placeholder="VARIABLE_LABEL_15" rows="1" style="width:100%"></textarea>
+        <textarea #var15 [value]="VARIABLE_LABEL_15" (input)="VARIABLE_LABEL_15 = var15.value"
+            placeholder="VARIABLE_LABEL_15" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 16 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var16 [value]="VARIABLE_LABEL_16" (input)="VARIABLE_LABEL_16 = var16.value" placeholder="VARIABLE_LABEL_16" rows="1" style="width:100%"></textarea>
+        <textarea #var16 [value]="VARIABLE_LABEL_16" (input)="VARIABLE_LABEL_16 = var16.value"
+            placeholder="VARIABLE_LABEL_16" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 17 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var17 [value]="VARIABLE_LABEL_17" (input)="VARIABLE_LABEL_17 = var17.value" placeholder="VARIABLE_LABEL_17" rows="1" style="width:100%"></textarea>
+        <textarea #var17 [value]="VARIABLE_LABEL_17" (input)="VARIABLE_LABEL_17 = var17.value"
+            placeholder="VARIABLE_LABEL_17" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 18 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var18 [value]="VARIABLE_LABEL_18" (input)="VARIABLE_LABEL_18 = var18.value" placeholder="VARIABLE_LABEL_18" rows="1" style="width:100%"></textarea>
+        <textarea #var18 [value]="VARIABLE_LABEL_18" (input)="VARIABLE_LABEL_18 = var18.value"
+            placeholder="VARIABLE_LABEL_18" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 19 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var19 [value]="VARIABLE_LABEL_19" (input)="VARIABLE_LABEL_19 = var19.value" placeholder="VARIABLE_LABEL_19" rows="1" style="width:100%"></textarea>
+        <textarea #var19 [value]="VARIABLE_LABEL_19" (input)="VARIABLE_LABEL_19 = var19.value"
+            placeholder="VARIABLE_LABEL_19" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 20 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var20 [value]="VARIABLE_LABEL_20" (input)="VARIABLE_LABEL_20 = var20.value" placeholder="VARIABLE_LABEL_20" rows="1" style="width:100%"></textarea>
+        <textarea #var20 [value]="VARIABLE_LABEL_20" (input)="VARIABLE_LABEL_20 = var20.value"
+            placeholder="VARIABLE_LABEL_20" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 21 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var21 [value]="VARIABLE_LABEL_21" (input)="VARIABLE_LABEL_21 = var21.value" placeholder="VARIABLE_LABEL_21" rows="1" style="width:100%"></textarea>
+        <textarea #var21 [value]="VARIABLE_LABEL_21" (input)="VARIABLE_LABEL_21 = var21.value"
+            placeholder="VARIABLE_LABEL_21" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 22 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var22 [value]="VARIABLE_LABEL_22" (input)="VARIABLE_LABEL_22 = var22.value" placeholder="VARIABLE_LABEL_22" rows="1" style="width:100%"></textarea>
+        <textarea #var22 [value]="VARIABLE_LABEL_22" (input)="VARIABLE_LABEL_22 = var22.value"
+            placeholder="VARIABLE_LABEL_22" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 23 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var23 [value]="VARIABLE_LABEL_23" (input)="VARIABLE_LABEL_23 = var23.value" placeholder="VARIABLE_LABEL_23" rows="1" style="width:100%"></textarea>
+        <textarea #var23 [value]="VARIABLE_LABEL_23" (input)="VARIABLE_LABEL_23 = var23.value"
+            placeholder="VARIABLE_LABEL_23" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 24 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var24 [value]="VARIABLE_LABEL_24" (input)="VARIABLE_LABEL_24 = var24.value" placeholder="VARIABLE_LABEL_24" rows="1" style="width:100%"></textarea>
+        <textarea #var24 [value]="VARIABLE_LABEL_24" (input)="VARIABLE_LABEL_24 = var24.value"
+            placeholder="VARIABLE_LABEL_24" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 25 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var25 [value]="VARIABLE_LABEL_25" (input)="VARIABLE_LABEL_25 = var25.value" placeholder="VARIABLE_LABEL_25" rows="1" style="width:100%"></textarea>
+        <textarea #var25 [value]="VARIABLE_LABEL_25" (input)="VARIABLE_LABEL_25 = var25.value"
+            placeholder="VARIABLE_LABEL_25" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 26 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var26 [value]="VARIABLE_LABEL_26" (input)="VARIABLE_LABEL_26 = var26.value" placeholder="VARIABLE_LABEL_26" rows="1" style="width:100%"></textarea>
+        <textarea #var26 [value]="VARIABLE_LABEL_26" (input)="VARIABLE_LABEL_26 = var26.value"
+            placeholder="VARIABLE_LABEL_26" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 27 -->
     <div>
         <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var27 [value]="VARIABLE_LABEL_27" (input)="VARIABLE_LABEL_27 = var27.value" placeholder="VARIABLE_LABEL_27" rows="1" style="width:100%"></textarea>
+        <textarea #var27 [value]="VARIABLE_LABEL_27" (input)="VARIABLE_LABEL_27 = var27.value"
+            placeholder="VARIABLE_LABEL_27" rows="1" style="width:100%"></textarea>
     </div>
 </div>
 }

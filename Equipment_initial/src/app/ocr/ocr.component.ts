@@ -1,16 +1,26 @@
 import { Component, inject, ChangeDetectorRef } from "@angular/core";
+import { DecimalPipe } from "@angular/common"
 import { OCRService } from "./ocr";
 import { ImageUtils } from "./image-utils";
 import { NormalizeTextPipe } from "./normalize-text-pipe";
 import { ImagePasser } from "../image-passer";
 
+interface FilePreview {
+    name: string;
+    type: string;
+    size: number;
+    content?: string | ArrayBuffer | null;
+}
+
 @Component({
     selector: 'app-ocr',
     templateUrl: './ocr.component.html',
-    styleUrl: './ocr.component.css'
+    styleUrl: './ocr.component.css',
+    imports: [DecimalPipe]
 })
 export class OCRComponent {
     imageSrc: string | ArrayBuffer | null = null;
+    filesInput: FilePreview[] = [];
     result: string = '';
     cleanedText: string = '';
     VARIABLE_LABEL_1: string = '';
@@ -42,6 +52,7 @@ export class OCRComponent {
     VARIABLE_LABEL_27: string = '';
     loading: boolean = false;
     selectedFile: File | null = null;
+    selectedFiles: FileList | null = null;
     private imageUtils = inject(ImageUtils);
     reader = new FileReader();
 
@@ -85,27 +96,39 @@ export class OCRComponent {
 
         // Check if a file was selected
         if (input.files && input.files.length > 0) {
-            this.selectedFile = input.files[0];
-            console.log('File selected:', this.selectedFile.name);
-
-            // Validate file size (maximum 10MB)
+            // Load a preview of images for the user
+            this.filesInput = []; //Clear previous previews
             const maxSizeMB = 10;
-            const fileSizeMB = input.files[0].size / (1024 * 1024);
-            if (fileSizeMB > maxSizeMB) {
-                alert('File must be smaller than 10MB.');
-                this.selectedFile = null;
-                this.imageSrc = null;
-                return;
-            }
 
-            this.reader.readAsDataURL(input.files[0]);
-            this.reader.onload = () => {
-                this.imageSrc = this.reader.result;
-                this.cd.detectChanges();
-            };
-        // No file selected, set it to null
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+
+                reader.onload = () => {
+                    const fileSizeMB = file.size / (1024 * 1024);
+                    if (fileSizeMB > maxSizeMB) {
+                        console.log("${file.name} is too big of a file. Skipping file.");
+                    }
+                    else {
+                        this.filesInput.push({
+                            name: file.name,
+                            type: file.type,
+                            size: file.size,
+                            content: reader.result
+                        });
+                        console.log('File added:', file.name);
+                    }
+                    this.cd.detectChanges();
+                };
+                reader.onerror = () => {
+                    console.error('Error reading file: ${file.name}');
+                    throw ("Error reading file: ${file.name}");
+                };
+                // Read as Data URL
+                reader.readAsDataURL(file);
+            });
         } else {
-            this.selectedFile = null;
+            this.filesInput = [];
+            this.cd.detectChanges();
         }
     }
     async onUpload(): Promise<void> {
@@ -199,7 +222,7 @@ export class OCRComponent {
             console.log("Loading = " + this.loading);
             this.cd.detectChanges();
             return;
-            }
-
         }
+
     }
+}
