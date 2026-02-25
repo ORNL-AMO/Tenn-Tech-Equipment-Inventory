@@ -1,6 +1,6 @@
 <label for="files">Select Image:</label>
 <input type="file" id="fileInput" placeholder="Upload Image Here" accept=".jpg, .jpeg, .png"
-    (change)="onFileSelected($event)" />
+    (change)="onFileSelected($event)" multiple="true" />
 <button type="button" [disabled]="loading" (click)="onUpload()">Scan Image</button>
 
 <br>
@@ -15,7 +15,7 @@
 <p>Upload an image to process</p>
 }
 
-<!-- Defer to prevent headings from showing up until result has information in it -->
+<!-- @if to prevent everything from showing up unless result has information in it -->
 @if (result) {
 <h4>Raw Result</h4>
 <pre>{{ result }}</pre>
