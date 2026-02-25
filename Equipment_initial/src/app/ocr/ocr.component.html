@@ -34,8 +34,18 @@
 <p>Upload an image to process</p>
 }
 
+@if(inventory){
+    @for(result of inventory; track result.name){
+        <h4>Raw result for {{result.name}}</h4>
+        <pre> {{result.rawData}}</pre><br>
+        <h4>Cleaned Text for {{result.name}}</h4>
+        <p> {{result.cleanedData}} </p><br>
+        <hr>
+    }
+}
+
 <!-- @if to prevent everything from showing up unless result has information in it -->
-@if (result) {
+@if (false) {
 <h4>Raw Result</h4>
 <pre>{{ result }}</pre>
 <h4>Cleaned Text</h4>

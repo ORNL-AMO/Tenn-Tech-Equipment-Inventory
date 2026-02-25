@@ -10,9 +10,14 @@ interface uploadedFiles {
     type: string;
     size: number;
     content?: string | ArrayBuffer | null;
+    fullFile: File;
 }
 
-
+interface motorData {
+    name: string;
+    rawData: string;
+    cleanedData: string;
+}
 
 @Component({
     selector: 'app-ocr',
@@ -23,6 +28,7 @@ interface uploadedFiles {
 export class OCRComponent {
     imageSrc: string | ArrayBuffer | null = null;
     filesInput: uploadedFiles[] = [];
+    inventory: motorData[] = [];
     result: string = '';
     cleanedText: string = '';
     VARIABLE_LABEL_1: string = '';
@@ -57,7 +63,8 @@ export class OCRComponent {
     selectedFiles: FileList | null = null;
     private imageUtils = inject(ImageUtils);
     reader = new FileReader();
-
+    allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+    
     constructor(private ocr: OCRService,
         private readonly cd: ChangeDetectorRef,
         private imagePasser: ImagePasser) { }
@@ -110,12 +117,17 @@ export class OCRComponent {
                     if (fileSizeMB > maxSizeMB) {
                         console.log("${file.name} is too big of a file. Skipping file.");
                     }
+                    else if (!this.allowedTypes.includes(file.type)) {
+                        alert(file.name + "is an invalid file type. Skipping file");
+                        return;
+                    }
                     else {
                         this.filesInput.push({
                             name: file.name,
                             type: file.type,
                             size: file.size,
-                            content: reader.result
+                            content: reader.result,
+                            fullFile: file
                         });
                         console.log('File added:', file.name);
                     }
@@ -135,7 +147,7 @@ export class OCRComponent {
     }
     async onUpload(): Promise<void> {
         // No file selected, let the user know and stop
-        if (!this.selectedFile && !this.imagePasser.currentFile) {
+        if (!this.filesInput && !this.imagePasser.currentFile) {
             console.error('No File Selected');
             alert("Please select a file to process")
             return;
@@ -144,10 +156,40 @@ export class OCRComponent {
         // Show the extracting message and begin processing
         this.loading = true;
         console.log("Loading = " + this.loading);
+        if (!this.filesInput) {
+            throw ("no files selected");
+        } else {
+            try {
+                const promiseCanvas = this.filesInput.map(inFile => this.imageUtils.prepareImage(inFile.fullFile));
+                const canvas = await Promise.all(promiseCanvas);
 
+                const promises = canvas.map(cnvs => this.ocr.extractText(cnvs));
+                const rawData = await Promise.all(promises);
+
+                const promiseClean = rawData.map(rd => new NormalizeTextPipe().transform(rd));
+                const cleanResult = await Promise.all(promiseClean);
+
+                cleanResult.forEach((data, index) => {
+                    this.inventory.push({
+                        name: "Motor " + index,
+                        rawData: rawData[index],
+                        cleanedData: data
+                    })
+                })
+            } catch (error) {
+                throw (error);
+            }
+            this.loading = false;
+            console.log("Loading = " + this.loading);
+            this.result = this.inventory[0].rawData;
+            this.cleanedText = this.inventory[0].cleanedData;
+            console.log(this.inventory);
+            this.cd.detectChanges();
+            return;
+        }
         // Proceed with OCR extraction on the image, first using imageUtils to preprocess, then using Tesseract for OCR
-        if (this.selectedFile) {
-            const canvas = await this.imageUtils.prepareImage(this.selectedFile)
+        if (this.filesInput) {
+            const canvas = await this.imageUtils.prepareImage(this.filesInput[0].fullFile)
             this.result = await this.ocr.extractText(canvas);
             this.cleanedText = new NormalizeTextPipe().transform(this.result);
             // Populate developer fields so it's easy to see where to edit
