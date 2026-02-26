@@ -12,34 +12,29 @@ import { ImagePasser } from "../image-passer";
 export class OCRComponent {
     imageSrc: string | ArrayBuffer | null = null;
     result: string = '';
-    cleanedText: string = '';
-    VARIABLE_LABEL_1: string = '';
-    VARIABLE_LABEL_2: string = '';
-    VARIABLE_LABEL_3: string = '';
-    VARIABLE_LABEL_4: string = '';
-    VARIABLE_LABEL_5: string = '';
-    VARIABLE_LABEL_6: string = '';
-    VARIABLE_LABEL_7: string = '';
-    VARIABLE_LABEL_8: string = '';
-    VARIABLE_LABEL_9: string = '';
-    VARIABLE_LABEL_10: string = '';
-    VARIABLE_LABEL_11: string = '';
-    VARIABLE_LABEL_12: string = '';
-    VARIABLE_LABEL_13: string = '';
-    VARIABLE_LABEL_14: string = '';
-    VARIABLE_LABEL_15: string = '';
-    VARIABLE_LABEL_16: string = '';
-    VARIABLE_LABEL_17: string = '';
-    VARIABLE_LABEL_18: string = '';
-    VARIABLE_LABEL_19: string = '';
-    VARIABLE_LABEL_20: string = '';
-    VARIABLE_LABEL_21: string = '';
-    VARIABLE_LABEL_22: string = '';
-    VARIABLE_LABEL_23: string = '';
-    VARIABLE_LABEL_24: string = '';
-    VARIABLE_LABEL_25: string = '';
-    VARIABLE_LABEL_26: string = '';
-    VARIABLE_LABEL_27: string = '';
+    description: string = '';
+    CAT_NO: string = '';
+    SPEC: string = '';
+    HORSEPOWER: string = '';
+    VOLTAGE: string = '';
+    AMPERAGE: string = '';
+    RPM: string = '';
+    FRAME: string = '';
+    HERTZ: string = '';
+    PH: string = '';
+    SER_F: string = '';
+    CODE: string = '';
+    DES: string = '';
+    CLASS: string = '';
+    NEMA_NOM_EFF: string = '';
+    P_F: string = '';
+    RATING: string = '';
+    CC: string = '';
+    USABLE_AT: string = '';
+    BEARINGS_DE: string = '';
+    BEARINGS_ODE: string = '';
+    ENCL: string = '';
+    SERIAL_NUMBER: string = '';
     loading: boolean = false;
     selectedFile: File | null = null;
     private imageUtils = inject(ImageUtils);
@@ -53,34 +48,29 @@ export class OCRComponent {
         const input = event.target as HTMLInputElement;
         // Clear the image preview and extraction results
         this.result = '';
-        this.cleanedText = '';
-        this.VARIABLE_LABEL_1 = '';
-        this.VARIABLE_LABEL_2 = '';
-        this.VARIABLE_LABEL_3 = '';
-        this.VARIABLE_LABEL_4 = '';
-        this.VARIABLE_LABEL_5 = '';
-        this.VARIABLE_LABEL_6 = '';
-        this.VARIABLE_LABEL_7 = '';
-        this.VARIABLE_LABEL_8 = '';
-        this.VARIABLE_LABEL_9 = '';
-        this.VARIABLE_LABEL_10 = '';
-        this.VARIABLE_LABEL_11 = '';
-        this.VARIABLE_LABEL_12 = '';
-        this.VARIABLE_LABEL_13 = '';
-        this.VARIABLE_LABEL_14 = '';
-        this.VARIABLE_LABEL_15 = '';
-        this.VARIABLE_LABEL_16 = '';
-        this.VARIABLE_LABEL_17 = '';
-        this.VARIABLE_LABEL_18 = '';
-        this.VARIABLE_LABEL_19 = '';
-        this.VARIABLE_LABEL_20 = '';
-        this.VARIABLE_LABEL_21 = '';
-        this.VARIABLE_LABEL_22 = '';
-        this.VARIABLE_LABEL_23 = '';
-        this.VARIABLE_LABEL_24 = '';
-        this.VARIABLE_LABEL_25 = '';
-        this.VARIABLE_LABEL_26 = '';
-        this.VARIABLE_LABEL_27 = '';
+        this.description = '';
+        this.CAT_NO = '';
+        this.SPEC = '';
+        this.HORSEPOWER = '';
+        this.VOLTAGE = '';
+        this.AMPERAGE = '';
+        this.RPM = '';
+        this.FRAME = '';
+        this.HERTZ = '';
+        this.PH = '';
+        this.SER_F = '';
+        this.CODE = '';
+        this.DES = '';
+        this.CLASS = '';
+        this.NEMA_NOM_EFF = '';
+        this.P_F = '';
+        this.RATING = '';
+        this.CC = '';
+        this.USABLE_AT = '';
+        this.BEARINGS_DE = '';
+        this.BEARINGS_ODE = '';
+        this.ENCL = '';
+        this.SERIAL_NUMBER = '';
         this.imageSrc = null;
 
         // Check if a file was selected
@@ -128,45 +118,30 @@ export class OCRComponent {
             console.log("Instanceof File:", this.selectedFile instanceof File);
             const canvas = await this.imageUtils.prepareImage(this.selectedFile!);
             this.result = await this.ocr.extractText(canvas);
-            }
-            catch (error)
-            {
-                console.error("Error during OCR processing:", error);
-                alert("An error occurred during OCR processing. Please try again with a different image or ensure the image is clear and well-lit.");
-            }
-            finally
-            {
-                this.loading = false;
-            }
             this.cleanedText = new NormalizeTextPipe().transform(this.result);
             // Populate developer fields so it's easy to see where to edit
-            this.VARIABLE_LABEL_1 = '';
-            this.VARIABLE_LABEL_2 = '';
-            this.VARIABLE_LABEL_3 = '';
-            this.VARIABLE_LABEL_4 = '';
-            this.VARIABLE_LABEL_5 = '';
-            this.VARIABLE_LABEL_6 = '';
-            this.VARIABLE_LABEL_7 = '';
-            this.VARIABLE_LABEL_8 = '';
-            this.VARIABLE_LABEL_9 = '';
-            this.VARIABLE_LABEL_10 = '';
-            this.VARIABLE_LABEL_11 = '';
-            this.VARIABLE_LABEL_12 = '';
-            this.VARIABLE_LABEL_13 = '';
-            this.VARIABLE_LABEL_14 = '';
-            this.VARIABLE_LABEL_15 = '';
-            this.VARIABLE_LABEL_16 = '';
-            this.VARIABLE_LABEL_17 = '';
-            this.VARIABLE_LABEL_18 = '';
-            this.VARIABLE_LABEL_19 = '';
-            this.VARIABLE_LABEL_20 = '';
-            this.VARIABLE_LABEL_21 = '';
-            this.VARIABLE_LABEL_22 = '';
-            this.VARIABLE_LABEL_23 = '';
-            this.VARIABLE_LABEL_24 = '';
-            this.VARIABLE_LABEL_25 = '';
-            this.VARIABLE_LABEL_26 = '';
-            this.VARIABLE_LABEL_27 = '';
+            this.CAT_NO = 'CAT_NO';
+            this.SPEC = 'SPEC';
+            this.HORSEPOWER = 'HP';
+            this.VOLTAGE = 'VOLTS';
+            this.AMPERAGE = 'AMPS';
+            this.RPM = 'RPM';
+            this.FRAME = 'FRAME';
+            this.HERTZ = 'HERTZ';
+            this.PH = 'PH';
+            this.SER_F = 'SER_F';
+            this.CODE = 'CODE';
+            this.DES = 'DES';
+            this.CLASS = 'CLASS';
+            this.NEMA_NOM_EFF = 'NEMA_NOM_EFF';
+            this.P_F = 'P_F';
+            this.RATING = 'RATING';
+            this.CC = 'CC';
+            this.USABLE_AT = 'USABLE_AT';
+            this.BEARINGS_DE = 'BEARINGS_DE';
+            this.BEARINGS_ODE = 'BEARINGS_ODE';
+            this.ENCL = 'ENCL';
+            this.SERIAL_NUMBER = 'SERIAL_NUMBER';
             // OCR complete, no more loading message
             this.loading = false;
             console.log("Loading = " + this.loading);
@@ -178,46 +153,31 @@ export class OCRComponent {
             try {
             const canvas = await this.imageUtils.prepareImage(this.imagePasser.currentFile!);
             this.result = await this.ocr.extractText(canvas);
-            }
-            catch (error)
-            {
-                console.error("Error during OCR processing:", error);
-                alert("An error occurred during OCR processing. Please try again with a different image or ensure the image is clear and well-lit.");
-            }
-            finally
-            {
-                this.loading = false;
-            }
             this.cleanedText = new NormalizeTextPipe().transform(this.result);
 
             // Populate developer fields so it's easy to see where to edit
-            this.VARIABLE_LABEL_1 = '';
-            this.VARIABLE_LABEL_2 = '';
-            this.VARIABLE_LABEL_3 = '';
-            this.VARIABLE_LABEL_4 = '';
-            this.VARIABLE_LABEL_5 = '';
-            this.VARIABLE_LABEL_6 = '';
-            this.VARIABLE_LABEL_7 = '';
-            this.VARIABLE_LABEL_8 = '';
-            this.VARIABLE_LABEL_9 = '';
-            this.VARIABLE_LABEL_10 = '';
-            this.VARIABLE_LABEL_11 = '';
-            this.VARIABLE_LABEL_12 = '';
-            this.VARIABLE_LABEL_13 = '';
-            this.VARIABLE_LABEL_14 = '';
-            this.VARIABLE_LABEL_15 = '';
-            this.VARIABLE_LABEL_16 = '';
-            this.VARIABLE_LABEL_17 = '';
-            this.VARIABLE_LABEL_18 = '';
-            this.VARIABLE_LABEL_19 = '';
-            this.VARIABLE_LABEL_20 = '';
-            this.VARIABLE_LABEL_21 = '';
-            this.VARIABLE_LABEL_22 = '';
-            this.VARIABLE_LABEL_23 = '';
-            this.VARIABLE_LABEL_24 = '';
-            this.VARIABLE_LABEL_25 = '';
-            this.VARIABLE_LABEL_26 = '';
-            this.VARIABLE_LABEL_27 = '';
+            this.CAT_NO = 'CAT_NO';
+            this.SPEC = 'SPEC';
+            this.HORSEPOWER = 'HP';
+            this.VOLTAGE = 'VOLTS';
+            this.AMPERAGE = 'AMPS';
+            this.RPM = 'RPM';
+            this.FRAME = 'FRAME';
+            this.HERTZ = 'HERTZ';
+            this.PH = 'PH';
+            this.SER_F = 'SER_F';
+            this.CODE = 'CODE';
+            this.DES = 'DES';
+            this.CLASS = 'CLASS';
+            this.NEMA_NOM_EFF = 'NEMA_NOM_EFF';
+            this.P_F = 'P_F';
+            this.RATING = 'RATING';
+            this.CC = 'CC';
+            this.USABLE_AT = 'USABLE_AT';
+            this.BEARINGS_DE = 'BEARINGS_DE';
+            this.BEARINGS_ODE = 'BEARINGS_ODE';
+            this.ENCL = 'ENCL';
+            this.SERIAL_NUMBER = 'SERIAL_NUMBER';
 
             // OCR complete, no more loading message
             this.loading = false;
