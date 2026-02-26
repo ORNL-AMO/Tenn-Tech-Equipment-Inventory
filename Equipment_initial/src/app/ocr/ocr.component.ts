@@ -93,7 +93,7 @@ export class OCRComponent {
                 this.imageSrc = this.reader.result;
                 this.cd.detectChanges();
             };
-        // No file selected, set it to null
+            // No file selected, set it to null
         } else {
             this.selectedFile = null;
         }
@@ -113,78 +113,85 @@ export class OCRComponent {
         // Proceed with OCR extraction on the image, first using imageUtils to preprocess, then using Tesseract for OCR
         if (this.selectedFile) {
             try {
-            console.log("File being sent to prepareImage:", this.selectedFile);
-            console.log("Type:", typeof this.selectedFile);
-            console.log("Instanceof File:", this.selectedFile instanceof File);
-            const canvas = await this.imageUtils.prepareImage(this.selectedFile!);
-            this.result = await this.ocr.extractText(canvas);
-            this.cleanedText = new NormalizeTextPipe().transform(this.result);
-            // Populate developer fields so it's easy to see where to edit
-            this.CAT_NO = 'CAT_NO';
-            this.SPEC = 'SPEC';
-            this.HORSEPOWER = 'HP';
-            this.VOLTAGE = 'VOLTS';
-            this.AMPERAGE = 'AMPS';
-            this.RPM = 'RPM';
-            this.FRAME = 'FRAME';
-            this.HERTZ = 'HERTZ';
-            this.PH = 'PH';
-            this.SER_F = 'SER_F';
-            this.CODE = 'CODE';
-            this.DES = 'DES';
-            this.CLASS = 'CLASS';
-            this.NEMA_NOM_EFF = 'NEMA_NOM_EFF';
-            this.P_F = 'P_F';
-            this.RATING = 'RATING';
-            this.CC = 'CC';
-            this.USABLE_AT = 'USABLE_AT';
-            this.BEARINGS_DE = 'BEARINGS_DE';
-            this.BEARINGS_ODE = 'BEARINGS_ODE';
-            this.ENCL = 'ENCL';
-            this.SERIAL_NUMBER = 'SERIAL_NUMBER';
-            // OCR complete, no more loading message
-            this.loading = false;
-            console.log("Loading = " + this.loading);
-            this.cd.detectChanges();
-            return;
+                console.log("File being sent to prepareImage:", this.selectedFile);
+                console.log("Type:", typeof this.selectedFile);
+                console.log("Instanceof File:", this.selectedFile instanceof File);
+                const canvas = await this.imageUtils.prepareImage(this.selectedFile!);
+                this.result = await this.ocr.extractText(canvas);
+                this.description = new NormalizeTextPipe().transform(this.result);
+                // Populate developer fields so it's easy to see where to edit
+                this.CAT_NO = 'CAT_NO';
+                this.SPEC = 'SPEC';
+                this.HORSEPOWER = 'HP';
+                this.VOLTAGE = 'VOLTS';
+                this.AMPERAGE = 'AMPS';
+                this.RPM = 'RPM';
+                this.FRAME = 'FRAME';
+                this.HERTZ = 'HERTZ';
+                this.PH = 'PH';
+                this.SER_F = 'SER_F';
+                this.CODE = 'CODE';
+                this.DES = 'DES';
+                this.CLASS = 'CLASS';
+                this.NEMA_NOM_EFF = 'NEMA_NOM_EFF';
+                this.P_F = 'P_F';
+                this.RATING = 'RATING';
+                this.CC = 'CC';
+                this.USABLE_AT = 'USABLE_AT';
+                this.BEARINGS_DE = 'BEARINGS_DE';
+                this.BEARINGS_ODE = 'BEARINGS_ODE';
+                this.ENCL = 'ENCL';
+                this.SERIAL_NUMBER = 'SERIAL_NUMBER';
+                return;
+            }
+            catch (error) {
+                console.error('Error during OCR processing:', error);
+                alert('An error occurred during OCR processing. Please try again with a different image or check the console for more details.');
+            }
+            finally {
+                this.loading = false;
+                this.cd.detectChanges();
+            }
         }
         // Preprocess and do OCR on an image passed from another component, if it exists
         else if (this.imagePasser.currentFile) {
             try {
-            const canvas = await this.imageUtils.prepareImage(this.imagePasser.currentFile!);
-            this.result = await this.ocr.extractText(canvas);
-            this.cleanedText = new NormalizeTextPipe().transform(this.result);
+                const canvas = await this.imageUtils.prepareImage(this.imagePasser.currentFile!);
+                this.result = await this.ocr.extractText(canvas);
+                this.description = new NormalizeTextPipe().transform(this.result);
 
-            // Populate developer fields so it's easy to see where to edit
-            this.CAT_NO = 'CAT_NO';
-            this.SPEC = 'SPEC';
-            this.HORSEPOWER = 'HP';
-            this.VOLTAGE = 'VOLTS';
-            this.AMPERAGE = 'AMPS';
-            this.RPM = 'RPM';
-            this.FRAME = 'FRAME';
-            this.HERTZ = 'HERTZ';
-            this.PH = 'PH';
-            this.SER_F = 'SER_F';
-            this.CODE = 'CODE';
-            this.DES = 'DES';
-            this.CLASS = 'CLASS';
-            this.NEMA_NOM_EFF = 'NEMA_NOM_EFF';
-            this.P_F = 'P_F';
-            this.RATING = 'RATING';
-            this.CC = 'CC';
-            this.USABLE_AT = 'USABLE_AT';
-            this.BEARINGS_DE = 'BEARINGS_DE';
-            this.BEARINGS_ODE = 'BEARINGS_ODE';
-            this.ENCL = 'ENCL';
-            this.SERIAL_NUMBER = 'SERIAL_NUMBER';
-
-            // OCR complete, no more loading message
-            this.loading = false;
-            console.log("Loading = " + this.loading);
-            this.cd.detectChanges();
-            return;
+                // Populate developer fields so it's easy to see where to edit
+                this.CAT_NO = 'CAT_NO';
+                this.SPEC = 'SPEC';
+                this.HORSEPOWER = 'HP';
+                this.VOLTAGE = 'VOLTS';
+                this.AMPERAGE = 'AMPS';
+                this.RPM = 'RPM';
+                this.FRAME = 'FRAME';
+                this.HERTZ = 'HERTZ';
+                this.PH = 'PH';
+                this.SER_F = 'SER_F';
+                this.CODE = 'CODE';
+                this.DES = 'DES';
+                this.CLASS = 'CLASS';
+                this.NEMA_NOM_EFF = 'NEMA_NOM_EFF';
+                this.P_F = 'P_F';
+                this.RATING = 'RATING';
+                this.CC = 'CC';
+                this.USABLE_AT = 'USABLE_AT';
+                this.BEARINGS_DE = 'BEARINGS_DE';
+                this.BEARINGS_ODE = 'BEARINGS_ODE';
+                this.ENCL = 'ENCL';
+                this.SERIAL_NUMBER = 'SERIAL_NUMBER';
             }
-
+            catch (error) {
+                console.error('Error during OCR processing:', error);
+                alert('An error occurred during OCR processing. Please try again with a different image or check the console for more details.');
+            }
+            finally {
+                this.loading = false;
+                this.cd.detectChanges();
+            }
         }
     }
+}

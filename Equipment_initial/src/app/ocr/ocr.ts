@@ -8,8 +8,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class OCRService {
   constructor(private imagePasser: ImagePasser) { }
-    async extractText(image: HTMLCanvasElement | HTMLImageElement): Promise<string> {
+  async extractText(image: HTMLCanvasElement | HTMLImageElement): Promise<string> {
     const worker = await createWorker('eng');
+
+    let timeoutId: any;
 
     try {
       await worker.setParameters({
@@ -17,16 +19,25 @@ export class OCRService {
         preserve_interword_spaces: '1'
       });
 
+      const recognizePromise = worker.recognize(image);
+
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => {
+          reject(new Error("OCR Timeout after 15 seconds"));
+        }, 1500);
+      });
+
       const result = await Promise.race([
-        worker.recognize(image),
-        new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error("OCR Timeout after 15 seconds")), 15000)
-        )
+        recognizePromise,
+        timeoutPromise
       ]) as any;
 
+      clearTimeout(timeoutId);
+
       return result.data.text;
-    }
-    finally {
+
+    } finally {
+      clearTimeout(timeoutId);
       await worker.terminate();
     }
   }
