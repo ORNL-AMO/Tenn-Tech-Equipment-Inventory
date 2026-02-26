@@ -8,19 +8,26 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class OCRService {
   constructor(private imagePasser: ImagePasser) { }
-  async extractText(image: HTMLCanvasElement | HTMLImageElement): Promise<string> {
+    async extractText(image: HTMLCanvasElement | HTMLImageElement): Promise<string> {
     const worker = await createWorker('eng');
 
-    await worker.setParameters({
-      tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-/%() ',
-      preserve_interword_spaces: '1'
-    });
+    try {
+      await worker.setParameters({
+        tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-/%() ',
+        preserve_interword_spaces: '1'
+      });
 
-    const { data } = await worker.recognize(image);
-    console.log("worker recognized image");
-    await worker.terminate();
-    console.log("worker terminated");
+      const result = await Promise.race([
+        worker.recognize(image),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("OCR Timeout after 15 seconds")), 15000)
+        )
+      ]) as any;
 
-    return data.text;
+      return result.data.text;
+    }
+    finally {
+      await worker.terminate();
+    }
   }
 }

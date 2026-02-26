@@ -122,8 +122,22 @@ export class OCRComponent {
 
         // Proceed with OCR extraction on the image, first using imageUtils to preprocess, then using Tesseract for OCR
         if (this.selectedFile) {
-            const canvas = await this.imageUtils.prepareImage(this.selectedFile)
+            try {
+            console.log("File being sent to prepareImage:", this.selectedFile);
+            console.log("Type:", typeof this.selectedFile);
+            console.log("Instanceof File:", this.selectedFile instanceof File);
+            const canvas = await this.imageUtils.prepareImage(this.selectedFile!);
             this.result = await this.ocr.extractText(canvas);
+            }
+            catch (error)
+            {
+                console.error("Error during OCR processing:", error);
+                alert("An error occurred during OCR processing. Please try again with a different image or ensure the image is clear and well-lit.");
+            }
+            finally
+            {
+                this.loading = false;
+            }
             this.cleanedText = new NormalizeTextPipe().transform(this.result);
             // Populate developer fields so it's easy to see where to edit
             this.VARIABLE_LABEL_1 = '';
@@ -161,8 +175,19 @@ export class OCRComponent {
         }
         // Preprocess and do OCR on an image passed from another component, if it exists
         else if (this.imagePasser.currentFile) {
+            try {
             const canvas = await this.imageUtils.prepareImage(this.imagePasser.currentFile!);
             this.result = await this.ocr.extractText(canvas);
+            }
+            catch (error)
+            {
+                console.error("Error during OCR processing:", error);
+                alert("An error occurred during OCR processing. Please try again with a different image or ensure the image is clear and well-lit.");
+            }
+            finally
+            {
+                this.loading = false;
+            }
             this.cleanedText = new NormalizeTextPipe().transform(this.result);
 
             // Populate developer fields so it's easy to see where to edit
