@@ -16,148 +16,123 @@
 }
 
 <!-- Defer to prevent headings from showing up until result has information in it -->
-@defer (when result) {
+@if (result) {
 <h4>Raw Result</h4>
 <pre>{{ result }}</pre>
 <h4>Cleaned Text</h4>
-<textarea #cleaned [value]="cleanedText" (input)="cleanedText = cleaned.value" rows="6" style="width:100%"></textarea>
+<textarea #cleaned [value]="description" (input)="description = cleaned.value" rows="6" style="width:100%"></textarea>
 
-<!-- Developer fields: edit these placeholders or the component properties (VARIABLE_LABEL_*) -->
+<!-- Developer fields: edit these placeholders or the component properties -->
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
     <!-- 1 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var1 [value]="VARIABLE_LABEL_1" (input)="VARIABLE_LABEL_1 = var1.value" placeholder="VARIABLE_LABEL_1" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">CAT_NO</h5>
+        <textarea #catNo [value]="CAT_NO" (input)="CAT_NO = catNo.value" placeholder="CAT_NO" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 2 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var2 [value]="VARIABLE_LABEL_2" (input)="VARIABLE_LABEL_2 = var2.value" placeholder="VARIABLE_LABEL_2" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">SPEC</h5>
+        <textarea #spec [value]="SPEC" (input)="SPEC = spec.value" placeholder="SPEC" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 3 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var3 [value]="VARIABLE_LABEL_3" (input)="VARIABLE_LABEL_3 = var3.value" placeholder="VARIABLE_LABEL_3" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">HORSEPOWER</h5>
+        <textarea #horsepower [value]="HORSEPOWER" (input)="HORSEPOWER = horsepower.value" placeholder="HORSEPOWER" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 4 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var4 [value]="VARIABLE_LABEL_4" (input)="VARIABLE_LABEL_4 = var4.value" placeholder="VARIABLE_LABEL_4" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">VOLTAGE</h5>
+        <textarea #voltage [value]="VOLTAGE" (input)="VOLTAGE = voltage.value" placeholder="VOLTAGE" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 5 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var5 [value]="VARIABLE_LABEL_5" (input)="VARIABLE_LABEL_5 = var5.value" placeholder="VARIABLE_LABEL_5" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">AMPERAGE</h5>
+        <textarea #amperage [value]="AMPERAGE" (input)="AMPERAGE = amperage.value" placeholder="AMPERAGE" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 6 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var6 [value]="VARIABLE_LABEL_6" (input)="VARIABLE_LABEL_6 = var6.value" placeholder="VARIABLE_LABEL_6" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">RPM</h5>
+        <textarea #rpm [value]="RPM" (input)="RPM = rpm.value" placeholder="RPM" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 7 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var7 [value]="VARIABLE_LABEL_7" (input)="VARIABLE_LABEL_7 = var7.value" placeholder="VARIABLE_LABEL_7" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">FRAME</h5>
+        <textarea #frame [value]="FRAME" (input)="FRAME = frame.value" placeholder="FRAME" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 8 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var8 [value]="VARIABLE_LABEL_8" (input)="VARIABLE_LABEL_8 = var8.value" placeholder="VARIABLE_LABEL_8" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">HERTZ</h5>
+        <textarea #hertz [value]="HERTZ" (input)="HERTZ = hertz.value" placeholder="HERTZ" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 9 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var9 [value]="VARIABLE_LABEL_9" (input)="VARIABLE_LABEL_9 = var9.value" placeholder="VARIABLE_LABEL_9" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">PH</h5>
+        <textarea #ph [value]="PH" (input)="PH = ph.value" placeholder="PH" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 10 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var10 [value]="VARIABLE_LABEL_10" (input)="VARIABLE_LABEL_10 = var10.value" placeholder="VARIABLE_LABEL_10" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">SER_F</h5>
+        <textarea #serF [value]="SER_F" (input)="SER_F = serF.value" placeholder="SER_F" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 11 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var11 [value]="VARIABLE_LABEL_11" (input)="VARIABLE_LABEL_11 = var11.value" placeholder="VARIABLE_LABEL_11" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">CODE</h5>
+        <textarea #code [value]="CODE" (input)="CODE = code.value" placeholder="CODE" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 12 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var12 [value]="VARIABLE_LABEL_12" (input)="VARIABLE_LABEL_12 = var12.value" placeholder="VARIABLE_LABEL_12" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">DES</h5>
+        <textarea #des [value]="DES" (input)="DES = des.value" placeholder="DES" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 13 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var13 [value]="VARIABLE_LABEL_13" (input)="VARIABLE_LABEL_13 = var13.value" placeholder="VARIABLE_LABEL_13" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">CLASS</h5>
+        <textarea #cls [value]="CLASS" (input)="CLASS = cls.value" placeholder="CLASS" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 14 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var14 [value]="VARIABLE_LABEL_14" (input)="VARIABLE_LABEL_14 = var14.value" placeholder="VARIABLE_LABEL_14" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">NEMA_NOM_EFF</h5>
+        <textarea #nemaNomEff [value]="NEMA_NOM_EFF" (input)="NEMA_NOM_EFF = nemaNomEff.value" placeholder="NEMA_NOM_EFF" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 15 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var15 [value]="VARIABLE_LABEL_15" (input)="VARIABLE_LABEL_15 = var15.value" placeholder="VARIABLE_LABEL_15" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">P_F</h5>
+        <textarea #pF [value]="P_F" (input)="P_F = pF.value" placeholder="P_F" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 16 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var16 [value]="VARIABLE_LABEL_16" (input)="VARIABLE_LABEL_16 = var16.value" placeholder="VARIABLE_LABEL_16" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">RATING</h5>
+        <textarea #rating [value]="RATING" (input)="RATING = rating.value" placeholder="RATING" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 17 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var17 [value]="VARIABLE_LABEL_17" (input)="VARIABLE_LABEL_17 = var17.value" placeholder="VARIABLE_LABEL_17" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">CC</h5>
+        <textarea #cc [value]="CC" (input)="CC = cc.value" placeholder="CC" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 18 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var18 [value]="VARIABLE_LABEL_18" (input)="VARIABLE_LABEL_18 = var18.value" placeholder="VARIABLE_LABEL_18" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">USABLE_AT</h5>
+        <textarea #usableAt [value]="USABLE_AT" (input)="USABLE_AT = usableAt.value" placeholder="USABLE_AT" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 19 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var19 [value]="VARIABLE_LABEL_19" (input)="VARIABLE_LABEL_19 = var19.value" placeholder="VARIABLE_LABEL_19" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">BEARINGS_DE</h5>
+        <textarea #bearingsDe [value]="BEARINGS_DE" (input)="BEARINGS_DE = bearingsDe.value" placeholder="BEARINGS_DE" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 20 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var20 [value]="VARIABLE_LABEL_20" (input)="VARIABLE_LABEL_20 = var20.value" placeholder="VARIABLE_LABEL_20" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">BEARINGS_ODE</h5>
+        <textarea #bearingsOde [value]="BEARINGS_ODE" (input)="BEARINGS_ODE = bearingsOde.value" placeholder="BEARINGS_ODE" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 21 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var21 [value]="VARIABLE_LABEL_21" (input)="VARIABLE_LABEL_21 = var21.value" placeholder="VARIABLE_LABEL_21" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">ENCL</h5>
+        <textarea #encl [value]="ENCL" (input)="ENCL = encl.value" placeholder="ENCL" rows="1" style="width:100%"></textarea>
     </div>
     <!-- 22 -->
     <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var22 [value]="VARIABLE_LABEL_22" (input)="VARIABLE_LABEL_22 = var22.value" placeholder="VARIABLE_LABEL_22" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 23 -->
-    <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var23 [value]="VARIABLE_LABEL_23" (input)="VARIABLE_LABEL_23 = var23.value" placeholder="VARIABLE_LABEL_23" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 24 -->
-    <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var24 [value]="VARIABLE_LABEL_24" (input)="VARIABLE_LABEL_24 = var24.value" placeholder="VARIABLE_LABEL_24" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 25 -->
-    <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var25 [value]="VARIABLE_LABEL_25" (input)="VARIABLE_LABEL_25 = var25.value" placeholder="VARIABLE_LABEL_25" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 26 -->
-    <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var26 [value]="VARIABLE_LABEL_26" (input)="VARIABLE_LABEL_26 = var26.value" placeholder="VARIABLE_LABEL_26" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 27 -->
-    <div>
-        <h5 style="margin:4px 0">EXAMPLE_NAME</h5>
-        <textarea #var27 [value]="VARIABLE_LABEL_27" (input)="VARIABLE_LABEL_27 = var27.value" placeholder="VARIABLE_LABEL_27" rows="1" style="width:100%"></textarea>
+        <h5 style="margin:4px 0">SERIAL_NUMBER</h5>
+        <textarea #serialNumber [value]="SERIAL_NUMBER" (input)="SERIAL_NUMBER = serialNumber.value" placeholder="SERIAL_NUMBER" rows="1" style="width:100%"></textarea>
     </div>
 </div>
 }
