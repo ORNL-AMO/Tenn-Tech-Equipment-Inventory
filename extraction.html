@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> <title>ORNL Smart Scanner | Batch Processor</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --ornl-green: #007d34;
+            --sidebar-width: 280px;
+            --header-height: 60px;
+        }
+        body { background-color: #f4f6f8; height: 100vh; overflow: hidden; }
+        
+        .app-container { display: flex; height: 100vh; position: relative; }
+
+        /* --- SIDEBAR (RESPONSIVE) --- */
+        .sidebar { 
+            width: var(--sidebar-width); 
+            background: #2c3e50; 
+            color: white; 
+            display: flex; 
+            flex-direction: column;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        /* --- WORKSPACE --- */
+        .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        
+        .toolbar { 
+            background: white; 
+            padding: 5px 15px; 
+            border-bottom: 1px solid #dee2e6; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            height: var(--header-height); 
+            flex-shrink: 0;
+        }
+
+        .editor-stage { 
+            flex: 1; 
+            background: #e9ecef; 
+            padding: 20px; 
+            display: flex; 
+            gap: 20px; 
+            overflow: hidden; 
+        }
+
+        .image-area { 
+            flex: 2; 
+            background: #333; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            position: relative; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            display: flex; /* Center empty state */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .results-area { 
+            flex: 1; 
+            background: white; 
+            border-radius: 8px; 
+            border: 1px solid #dee2e6; 
+            display: flex; 
+            flex-direction: column; 
+            min-width: 300px; 
+        }
+
+        .results-header { padding: 10px 15px; border-bottom: 1px solid #f0f0f0; background: #fafafa; font-weight: 600; font-size: 0.9rem; }
+        .extracted-text { width: 100%; height: 100%; border: none; resize: none; font-family: 'Courier New', monospace; font-size: 0.9rem; outline: none; padding: 15px; }
+        
+        /* Overlays */
+        .loading-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.9); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .cropper-container { width: 100% !important; height: 100% !important; }
+
+        /* Batch Items */
+        .batch-list { flex: 1; overflow-y: auto; padding: 10px; }
+        .batch-item { background: #34495e; border-radius: 6px; padding: 8px; margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .batch-item:hover { background: #3e5871; }
+        .batch-item.active { border-color: var(--ornl-green); background: #2c3e50; border: 2px solid var(--ornl-green); }
+        .batch-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; background: #000; }
+        .batch-info { flex: 1; overflow: hidden; }
+        .batch-name { font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Mobile Overlay Backdrop */
+        .sidebar-backdrop {
+            display: none;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); z-index: 999;
+        }
+
+        /* --- MOBILE OPTIMIZATIONS (Max-width 768px) --- */
+        @media (max-width: 768px) {
+            /* 1. Sidebar becomes a drawer */
+            .sidebar {
+                position: fixed;
+                height: 100%;
+                left: 0; top: 0;
+                transform: translateX(-100%); /* Hide off-screen */
+                box-shadow: 4px 0 10px rgba(0,0,0,0.3);
+            }
+            .sidebar.open { transform: translateX(0); } /* Slide in */
+            .sidebar-backdrop.show { display: block; }
+
+            /* 2. Workspace Layout */
+            .toolbar { 
+                padding: 5px 10px; 
+                height: auto; 
+                flex-wrap: wrap; /* Allow buttons to wrap if needed */
+                gap: 5px;
+            }
+            #toolbar-title { 
+                font-size: 0.9rem; 
+                max-width: 120px; 
+                white-space: nowrap; 
+                overflow: hidden; 
+                text-overflow: ellipsis; 
+            }
+
+            .editor-stage {
+                flex-direction: column; /* Stack vertically */
+                padding: 10px;
+                gap: 10px;
+            }
+
+            .image-area {
+                flex: none; /* Turn off flex growth logic */
+                height: 50vh; /* Image takes top 50% of screen */
+                width: 100%;
+            }
+
+            .results-area {
+                flex: 1; /* Text area takes whatever space is left */
+                min-width: 0; /* Allow shrinking */
+            }
+
+            /* Hide text on buttons to save space */
+            .btn-text-desktop { display: none; }
+        }
+
+        /* Desktop specific */
+        @media (min-width: 769px) {
+            .btn-menu-mobile { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <div class="sidebar-backdrop" id="backdrop" onclick="toggleSidebar()"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header d-flex justify-content-between align-items-center">
+            <span class="fw-bold">ORNL Scanner</span>
+            <button class="btn btn-sm btn-outline-light d-md-none" onclick="toggleSidebar()"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="p-3">
+            <button class="btn btn-success w-100 mb-2" onclick="triggerUpload()">
+                <i class="bi bi-plus-circle"></i> <span class="btn-text-desktop">Add Images</span>
+            </button>
+            <input type="file" id="file-input" accept="image/*" multiple hidden>
+        </div>
+        <div class="batch-list" id="batch-list"></div>
+        <div class="p-3 border-top border-secondary">
+             <button class="btn btn-outline-light btn-sm w-100" onclick="exportAll()">
+                <i class="bi bi-download"></i> Export
+            </button>
+        </div>
+    </aside>
+
+    <main class="workspace">
+        <header class="toolbar">
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-outline-secondary btn-menu-mobile" onclick="toggleSidebar()">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div id="toolbar-title" class="fw-bold text-secondary">No Selection</div>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <div class="btn-group">
+                    <button class="btn btn-outline-secondary" onclick="rotate(-90)"><i class="bi bi-arrow-counterclockwise"></i></button>
+                    <button class="btn btn-outline-secondary" onclick="rotate(90)"><i class="bi bi-arrow-clockwise"></i></button>
+                </div>
+                
+                <button class="btn btn-secondary" onclick="runSingleExtraction()">
+                    <i class="bi bi-magic"></i> <span class="btn-text-desktop">Extract</span>
+                </button>
+                
+                <button class="btn btn-primary" onclick="runBatchExtraction()">
+                    <i class="bi bi-layers-half"></i> <span class="btn-text-desktop">Batch</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="editor-stage">
+            
+            <div class="image-area" id="image-container">
+                <div class="loading-overlay d-none" id="loader">
+                    <div class="spinner-border text-success mb-2" role="status"></div>
+                    <span id="loader-msg">Processing...</span>
+                </div>
+                <img id="active-image" src="" alt="Active" style="display:none; max-width: 100%;">
+                
+                <div id="empty-state" class="text-center text-white-50">
+                    <i class="bi bi-images display-1"></i>
+                    <p class="mt-2 small">Select Image</p>
+                </div>
+            </div>
+
+            <div class="results-area" id="results-container">
+                <div class="results-header d-flex justify-content-between align-items-center">
+                    <span>Result</span>
+                    <button class="btn btn-link btn-sm p-0 text-decoration-none" onclick="copyText()"><i class="bi bi-clipboard"></i> Copy</button>
+                </div>
+                <textarea class="extracted-text" id="text-output" placeholder="..."></textarea>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // --- UI HELPER: SIDEBAR TOGGLE ---
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+        document.getElementById('backdrop').classList.toggle('show');
+    }
+
+    // [KEEP PREVIOUS JAVASCRIPT LOGIC HERE] 
+    // Paste the exact same logic from the previous response below.
+    // The only change needed is ensuring the 'selectImage' function handles the empty state correctly on mobile.
+    
+    let appState = { images: [], activeId: null, cropper: null };
+
+    async function triggerUpload() {
+        // Close sidebar on mobile when upload starts
+        if(window.innerWidth < 768) toggleSidebar(); 
+
+        const result = await Swal.fire({
+            title: 'Add Document',
+            showCancelButton: true,
+            showDenyButton: true,
+            confirmButtonText: '📁 Files',
+            denyButtonText: '📷 Camera',
+            confirmButtonColor: '#2c3e50',
+            denyButtonColor: '#007d34'
+        });
+
+        if (result.isConfirmed) document.getElementById('file-input').click();
+        else if (result.isDenied) startWebcam();
+    }
+
+    document.getElementById('file-input').addEventListener('change', async (e) => handleFiles(e.target.files));
+
+    // --- UPDATED FILE HANDLER ---
+    async function handleFiles(files) {
+        if(files.length === 0) return;
+        
+        // --- CONFIGURATION ---
+        const MAX_MB = 10;
+        const MAX_BYTES = MAX_MB * 1024 * 1024;
+        const VALID_TYPES = ['image/jpeg', 'image/png'];
+
+        // --- TRACKING ---
+        let errorLog = ""; // The "+= ordeal" string builder
+        let validCount = 0; // Track how many actually succeed
+
+        for (const file of files) {
+            
+            // CHECK 1: FILE SIZE
+            if (file.size > MAX_BYTES) {
+                const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+                errorLog += `<li class="mb-1">
+                                <strong>${file.name}</strong>: 
+                                <span class="text-danger">File too large (${sizeMB}MB / ${MAX_MB}MB max)</span>
+                             </li>`;
+                continue; // Skip the rest of the loop for this file
+            }
+
+            // CHECK 2: FILE TYPE
+            if (!VALID_TYPES.includes(file.type)) {
+                errorLog += `<li class="mb-1">
+                                <strong>${file.name}</strong>: 
+                                <span class="text-warning-emphasis">Invalid format (Must be JPG, PNG, or WEBP)</span>
+                             </li>`;
+                continue;
+            }
+
+            // CHECK 3: ATTEMPT PROCESSING
+            try {
+                const url = await compressImage(file);
+                addStateImage(file.name, url);
+                validCount++;
+            } catch (err) {
+                console.error(err);
+                errorLog += `<li class="mb-1">
+                                <strong>${file.name}</strong>: 
+                                <span class="text-danger">Corrupt or unreadable file data</span>
+                             </li>`;
+            }
+        }
+
+        // --- FINAL REPORTING ---
+        renderSidebar();
+
+        // If we had ANY errors, show the specific report
+        if (errorLog !== "") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Import Issues Detected',
+                html: `
+                    <div class="text-start">
+                        <p class="small text-muted">The following files could not be processed:</p>
+                        <ul class="small" style="padding-left: 20px;">
+                            ${errorLog} 
+                        </ul>
+                    </div>
+                `,
+                confirmButtonColor: '#2c3e50'
+            });
+        }
+
+        // --- AUTO-SELECT LOGIC ---
+        // If we successfully added at least one file, and nothing is currently selected, select the new one.
+        if (validCount > 0 && !appState.activeId) {
+            // We select the first image of the *new* batch we just added
+            // The new images are at the end of the array
+            const firstNewImageIndex = appState.images.length - validCount;
+            if(appState.images[firstNewImageIndex]) {
+                selectImage(appState.images[firstNewImageIndex].id);
+            }
+        }
+    }
+
+    function startWebcam() {
+        Swal.fire({
+            html: `<video id="webcam" autoplay playsinline style="width:100%; border-radius:8px;"></video>`,
+            confirmButtonText: 'Capture',
+            didOpen: async () => {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                document.getElementById('webcam').srcObject = stream;
+            },
+            preConfirm: () => {
+                const video = document.getElementById('webcam');
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+                video.srcObject.getTracks().forEach(t => t.stop());
+                return canvas.toDataURL('image/jpeg');
+            }
+        }).then(res => {
+            if(res.isConfirmed) {
+                addStateImage(`Scan ${new Date().toLocaleTimeString()}`, res.value);
+                renderSidebar();
+                selectImage(appState.images[appState.images.length-1].id);
+            }
+        });
+    }
+
+    function addStateImage(name, url) {
+        appState.images.push({ id: Date.now() + Math.random().toString(16), name: name, url: url, text: '', status: 'pending' });
+    }
+
+    function renderSidebar() {
+        const list = document.getElementById('batch-list');
+        list.innerHTML = '';
+        appState.images.forEach(img => {
+            let icon = img.status === 'done' ? '<i class="bi bi-check-circle-fill text-success"></i>' : (img.status === 'processing' ? '<div class="spinner-border spinner-border-sm"></div>' : '<i class="bi bi-circle"></i>');
+            list.innerHTML += `
+                <div class="batch-item ${img.id === appState.activeId ? 'active' : ''}" onclick="selectImage('${img.id}')">
+                    <img src="${img.url}" class="batch-thumb">
+                    <div class="batch-info"><div class="batch-name">${img.name}</div></div>
+                    <div>${icon}</div>
+                </div>`;
+        });
+    }
+
+    function selectImage(id) {
+        // Auto-close sidebar on mobile selection
+        if(window.innerWidth < 768 && document.getElementById('sidebar').classList.contains('open')) {
+            toggleSidebar();
+        }
+
+        if(appState.activeId) {
+             const curr = appState.images.find(i => i.id === appState.activeId);
+             if(curr) curr.text = document.getElementById('text-output').value;
+        }
+
+        appState.activeId = id;
+        const img = appState.images.find(i => i.id === id);
+        
+        document.getElementById('empty-state').style.display = 'none';
+        document.getElementById('active-image').style.display = 'block';
+        document.getElementById('toolbar-title').innerText = img.name;
+        document.getElementById('text-output').value = img.text;
+
+        const imgEl = document.getElementById('active-image');
+        imgEl.src = img.url;
+
+        if (appState.cropper) appState.cropper.destroy();
+        appState.cropper = new Cropper(imgEl, { viewMode: 1, autoCropArea: 0.9 });
+        renderSidebar();
+    }
+
+    async function runSingleExtraction() {
+        if(!appState.activeId) return;
+        await processCurrentImage();
+    }
+
+    async function runBatchExtraction() {
+        if(appState.images.length === 0) return;
+        for (let i = 0; i < appState.images.length; i++) {
+            selectImage(appState.images[i].id);
+            await new Promise(r => setTimeout(r, 200));
+            await processCurrentImage();
+        }
+        Swal.fire({ icon: 'success', title: 'Done', timer: 1000, showConfirmButton: false });
+    }
+
+    async function processCurrentImage() {
+        const imgObj = appState.images.find(i => i.id === appState.activeId);
+        if(!imgObj) return;
+
+        imgObj.status = 'processing';
+        renderSidebar(); 
+        document.getElementById('loader').classList.remove('d-none');
+        document.getElementById('loader-msg').innerText = "Processing..."; // Ensure default text
+        
+        const TIMEOUT_MS = 1;
+        let attempts = 0;
+        const maxAttempts = 2;
+
+        while (attempts < maxAttempts) {
+            attempts++;
+            let worker = null;
+            try {
+                let canvas = appState.cropper.getCroppedCanvas();
+                canvas = optimizeCanvas(canvas);
+                
+                worker = await Tesseract.createWorker("eng");
+
+                // THE RACE: Tesseract vs 12-second timer
+                const result = await Promise.race([
+                    worker.recognize(canvas),
+                    new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error("Timeout")), TIMEOUT_MS)
+                    )
+                ]);
+
+                // SUCCESS PATH
+                await worker.terminate();
+                imgObj.text = result.data.text.trim();
+                imgObj.status = 'done';
+                document.getElementById('text-output').value = imgObj.text;
+                break; // Exit the loop
+
+            } catch (e) {
+                // FAILURE PATH
+                if (worker) await worker.terminate();
+                console.error(`Attempt ${attempts} failed:`, e.message);
+
+                if (attempts < maxAttempts) {
+                    // Update UI and wait half a second before trying again
+                    document.getElementById('loader-msg').innerText = `Retrying (Attempt ${attempts + 1})...`;
+                    await new Promise(r => setTimeout(r, 500)); 
+                } else {
+                    // Final failure after max attempts
+                    imgObj.status = 'error';
+                    
+                    let errorMsg = e.message === "Timeout"
+                        ? "Processing took too long. The image might be too blurry or complex." 
+                        : "The system encountered an error.";
+
+                    imgObj.text = `[ERROR: ${errorMsg}]`;
+                    document.getElementById('text-output').value = imgObj.text;
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Extraction Failed',
+                        text: errorMsg,
+                        confirmButtonColor: '#2c3e50'
+                    });
+                }
+            }
+        }
+
+        // CLEANUP
+        document.getElementById('loader').classList.add('d-none');
+        document.getElementById('loader-msg').innerText = "Processing..."; 
+        renderSidebar();
+    }
+
+    function optimizeCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        let total = 0;
+        for(let i=0; i<data.length; i+=40) total += (data[i]+data[i+1]+data[i+2])/3;
+        const avg = total / (data.length/40);
+        const doInvert = avg < 100;
+        for(let i=0; i<data.length; i+=4) {
+            let r=data[i], g=data[i+1], b=data[i+2];
+            if(doInvert) { r=255-r; g=255-g; b=255-b; }
+            let gray = 0.21*r + 0.72*g + 0.07*b;
+            gray = gray > 130 ? 255 : (gray < 70 ? 0 : gray); 
+            data[i] = data[i+1] = data[i+2] = gray;
+        }
+        ctx.putImageData(imageData, 0, 0);
+        return canvas;
+    }
+
+    function compressImage(file) {
+        return new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = new Image();
+                img.onload = () => {
+                    const cvs = document.createElement('canvas');
+                    const max = 1600;
+                    let w=img.width, h=img.height;
+                    if(w>h && w>max) { h*=max/w; w=max; }
+                    else if(h>max) { w*=max/h; h=max; }
+                    cvs.width=w; cvs.height=h;
+                    cvs.getContext('2d').drawImage(img,0,0,w,h);
+                    resolve(cvs.toDataURL('image/jpeg', 0.8));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function exportAll() {
+        let txt = "ORNL EXPORT\n===========\n\n";
+        appState.images.forEach((img, index) => {
+            txt += `#${index + 1}: ${img.name}\n---\n${img.text || "(Empty)"}\n\n`;
+        });
+        const blob = new Blob([txt], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `scan_${Date.now()}.txt`;
+        a.click();
+    }
+
+    function rotate(deg) { if(appState.cropper) appState.cropper.rotate(deg); }
+    function copyText() { navigator.clipboard.writeText(document.getElementById('text-output').value); }
+</script>
+</body>
+</html>

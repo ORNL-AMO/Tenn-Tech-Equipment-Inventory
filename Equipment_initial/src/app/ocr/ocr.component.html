@@ -1,13 +1,33 @@
+Camera <mat-slide-toggle [(ngModel)]="useFiles" [disabled]="loading"> Files</mat-slide-toggle>
 <label for="files">Select Image:</label>
 <input type="file" id="fileInput" placeholder="Upload Image Here" accept=".jpg, .jpeg, .png"
-    (change)="onFileSelected($event)" />
+    (change)="onFileSelected($event)" multiple />
 <button type="button" [disabled]="loading" (click)="onUpload()">Scan Image</button>
+<br>@if(loading){<mat-spinner></mat-spinner>}
+<!-- Dynamically load the file preview window only when files selected -->
+@if(filesInput.length > 0){
+<div class="image-grid">
+
+    <!-- File preview loop to display up to 10 files to prevent extremely long page -->
+    @for(file of filesInput.slice(0, 10); track file.name){
+    <div class="image-item">
+        <!-- Image Preview -->
+        <img [src]="file.content" alt="{{file.name}}" class="preview-img" />
+        <!-- Image File name with size -->
+        <div class="caption">{{ file.name }} ({{ file.size / 1024 | number:'1.0-2' }} KB)</div>
+    </div>
+    }
+    <!-- Notification if more than 10 images uploaded (so user isn't confused)-->
+    @if(filesInput.length > 10){
+    <h2 style="text-align: center">10 Image Preview Limit Reached</h2>
+    }
+</div>
+<!-- information of how many files where uploaded (so user isn't confused)-->
+<p>recieved {{filesInput.length}} files </p>
+}
 
 <br>
-<!-- Defer loading of preview image until there is an image to preview -->
-@defer (when imageSrc){
-<img [src]="imageSrc" style="max-inline-size: 100%;" />
-}
+
 <!-- toggled statement to let user know if the ocr service is processing their image -->
 @if(loading){
 <p>Extracting text...</p>
@@ -15,10 +35,12 @@
 <p>Upload an image to process</p>
 }
 
-<!-- Defer to prevent headings from showing up until result has information in it -->
-@defer (when result) {
-<h4>Raw Result</h4>
-<pre>{{ result }}</pre>
-<h4>Cleaned Text</h4>
-<p>{{ result | normalizeText }}</p>
+@if(inventory){
+    @for(result of inventory; track result.name){
+        <h4>Raw result for {{result.name}}</h4>
+        <pre> {{result.rawData}}</pre><br>
+        <h4>Cleaned Text for {{result.name}}</h4>
+        <p> {{result.cleanedData}} </p><br>
+        <hr>
+    }
 }
