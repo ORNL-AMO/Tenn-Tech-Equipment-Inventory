@@ -1,7 +1,3 @@
-:host {
-    --header-height: 60px;
-}
-
 /* header {
     display: inline-block;
     height: var(--header-height);
