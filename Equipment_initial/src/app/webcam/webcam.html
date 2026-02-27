@@ -1,29 +1,39 @@
-<button matButton="filled" type="button" [disabled]="webcamPermission" (click)="checkPermission()">Give Camera permission</button><br>
+<button matButton="filled" type="button" [disabled]="webcamPermission" (click)="checkPermission()">Give Camera
+    permission</button><br>
 @if(webcamPermission){
 <div>
-    <button type="button" (click)="chooseDevice()">{{showDevices? 'Choose A Device' : 'List Cameras'}}</button>
-    Current Selection: {{currentDevice}}
-    @if(showDevices){<div>
+    <!-- <button matButton="filled" type="button" (click)="chooseDevice()">{{showDevices? 'Choose A Device' : 'List
+        Cameras'}}</button>
+    Current Selection: {{currentDevice}} -->
+    <!-- @if(false){<div>
         <ul class="List">
             @for (device of mediaDevices; track device.deviceId){
             <li>
                 <button class="devices" type="button" (click)="selectDevice(device)">Select {{device.label}}</button>
                 <!-- use this second button for multi-cam support -->
-                 <!--<button class="devices" type="button" (click)="selectDevice(device.deviceId, device.label, videoElement)">Select {{device.label}}</button> -->
-            </li>
+                <!--<button class="devices" type="button" (click)="selectDevice(device.deviceId, device.label, videoElement)">Select {{device.label}}</button> -->
+            <!--</li>
             }
         </ul>
-    </div>}
+    </div>} -->
+    <mat-form-field>
+        <mat-label>Camera</mat-label>
+        <mat-select required [(value)]="selectedDevice" (selectionChange)="selectDevice($event.value)">
+            @for (device of mediaDevices; track device.deviceId){
+                <mat-option [value]="device" > {{ device.label }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
     <div>
-        @if(!camOn){ <button type="button" (click)="startCam()">Start Camera</button>}
-        @if(camOn){ <button type="button" (click)="stopCam()">Stop Camera</button>}
+        <button matButton="tonal" type="button" [disabled]="camOn" (click)="startCam()">Start Camera</button>
+        <button matButton="tonal" type="button" [disabled]="!camOn" (click)="stopCam()">Stop Camera</button>
     </div>
     <div>
         <div class="webcam">
             <video id="videoElement" #videoElement autoplay playsinline></video>
         </div>
         <div>
-            @if(camOn){<button type="button" (click)="capCam()">Capture</button>}
+            @if(camOn){<button matButton="filled" type="button" (click)="capCam()">Capture</button>}
         </div>
     </div>
     <div>

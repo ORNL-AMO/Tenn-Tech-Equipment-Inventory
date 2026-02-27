@@ -1,12 +1,15 @@
 import { Component, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ImagePasser } from '../image-passer';
 import { MatButtonModule } from '@angular/material/button';
-// import { NgOptimizedImage } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 
 @Component({
   selector: 'app-webcam',
-  imports: [MatButtonModule],
+  imports: [MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule],
   templateUrl: './webcam.html',
   styleUrl: './webcam.css',
 })
@@ -39,11 +42,9 @@ export class Webcam {
   constructor(private imagePasser: ImagePasser,
     private readonly cd: ChangeDetectorRef) { }
 
-  deviceId?: string;
-  currentDevice?: string;
-  showDevices: boolean = false;
   webcamPermission: boolean = false;
   camOn: boolean = false;
+  selectedDevice?: MediaDeviceInfo;
 
   mediaDevices: Array<MediaDeviceInfo> = []
   mediaStream!: MediaStream;
@@ -54,46 +55,17 @@ export class Webcam {
   public checkPermission() {
     this.withCatch(this.requestCameraPermissions());
     this.withCatch(this.setMediaDevices());
+    this.selectedDevice = this.mediaDevices[0];
     this.cd.detectChanges();
   }
 
-  //Callable enumeration of webcam devices into mediaDevices Array
-  public chooseDevice() {
-    this.withCatch(this.setMediaDevices());
-    this.showDevices = !this.showDevices;
-    this.cd.detectChanges();
-  }
-
-  //disable this function for multi-cam support
-  //Callable switch current active webcam (only works on firefox right now)
+  //Callable switch current active webcam
   public selectDevice(device: MediaDeviceInfo) {
-    this.deviceId = device.deviceId;
-    this.showDevices = false;
+    this.selectedDevice = device;
     if (this.camOn) { this.startCam(); }
-    console.log(this.deviceId);
-    this.currentDevice = device.label;
-    console.log(this.currentDevice);
+    console.log(this.selectedDevice, "Camera selected");
     this.cd.detectChanges();
   }
-  //enable this function for multi-cam support
-  //Callable Starts the stream of a new webcam to switch video input
-  // async startStream(deviceId: string, label: string, videoElement: HTMLVideoElement) {
-  //   if(this.mediaStream){this.closeStream()};
-  //   const constraints: MediaStreamConstraints = {
-  //     video: {
-  //       deviceId: { exact: deviceId }
-  //     },
-  //     audio: false
-  //   };
-
-  //   try {
-  //     const stream = await navigator.mediaDevices.getUserMedia(constraints);
-  //     videoElement.srcObject = stream;
-  //     this.camOn = true;
-  //     this.currentDevice = label;
-  //   } catch (error) { throw (error); }
-  //   this.cd.detectChanges();
-  // }
 
   //Callable start camera function
   public startCam() {
@@ -197,33 +169,33 @@ export class Webcam {
       console.log("Camera Permission request");
       const constraints = { video: true, audio: false };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      // let tracks: Array<MediaStreamTrack> = stream.getTracks();
-      // for (let i = 0; i < tracks.length; i++) {
-      //   const track = tracks[i];
-      //   track.stop();
-      // } //replaced by the line below (try this if other doesn't work)
       stream.getTracks().forEach(track => track.stop());
+      await this.setMediaDevices();
       console.log("Camera permission granted");
       this.webcamPermission = true;
       this.cd.detectChanges();
-      await this.setMediaDevices();
     } catch (err: any) {
       this.webcamPermission = false;
       throw (err);
     }
   }
 
-  //Puts all the viable video media devices into an array mediaDevices
+  // Puts all the viable video media devices into an array mediaDevices
+  // Call only once, or it resets the saved list of media devices
   private async setMediaDevices() {
     try {
       let allDevices = await navigator.mediaDevices.enumerateDevices();
-      this.mediaDevices = new Array();
-      for (let i = 0; i < allDevices.length; i++) {
-        let device = allDevices[i];
-        if (device.kind == 'videoinput') {
-          this.mediaDevices.push(device);
-        }
-      }
+      // this.mediaDevices = new Array();
+      // for (let i = 0; i < allDevices.length; i++) {
+      //   let device = allDevices[i];
+      //   if (device.kind == 'videoinput') {
+      //     this.mediaDevices.push(device);
+      //   }
+      // }
+      this.mediaDevices = [];
+      allDevices.forEach(device => { //only grab video inputs, no other types
+        if (device.kind == 'videoinput') {this.mediaDevices.push(device)}
+      });
       this.cd.detectChanges();
     }
     catch (err) {
@@ -234,9 +206,7 @@ export class Webcam {
   @ViewChild('videoElement', { static: false }) videoElement!: ElementRef;
   //Starts the video element
   private async startStreaming() {
-    if (this.mediaStream) {
-      this.closeStream(this.mediaStream);
-    }
+    if (this.mediaStream) {this.closeStream(this.mediaStream);}
     try {
       this.mediaStream = await this.getSelectedDeviceMediaStream();
       //put this into html page to show webcam
@@ -248,8 +218,6 @@ export class Webcam {
     }
     catch (err) {
       throw (err);
-      console.error("Camera start error", err);
-      alert("Cannot start camera\n" + err);
     }
   }
 
@@ -260,43 +228,23 @@ export class Webcam {
     console.log("Camera Closed");
   }
 
-  //Returns a MediaStream of the first device in mediaDevices
+  //Returns a MediaStream of the selected or first device in mediaDevices
   private async getSelectedDeviceMediaStream(): Promise<MediaStream> {
-    await this.setMediaDevices();
     let webcamDevice;
     if (this.mediaDevices.length > 0) {
-      if (this.deviceId) {
-        webcamDevice = this.mediaDevices.find(device => device.deviceId === this.deviceId);
+      if (this.selectedDevice) { //Choose selectedDevice
+        webcamDevice = this.mediaDevices.find(device => device === this.selectedDevice);
       } else {
-        if (this.mediaDevices.length > 1) {
-          //select back camera by default if available
-          let backDevice = this.mediaDevices.find(device => {
-            return device.label.toLowerCase().includes('back');
-          });
-          if (backDevice) {
-            webcamDevice = backDevice;
-            this.deviceId = webcamDevice.deviceId;
-          } else {
-            //select first cam
-            webcamDevice = this.mediaDevices[0];
-            this.deviceId = webcamDevice.deviceId;
-          }
-        } else {
-          //if only one camera available
-          webcamDevice = this.mediaDevices[0];
-          this.deviceId = webcamDevice.deviceId;
-        }
+        //if no device has been selected, choose first in list
+        webcamDevice = this.mediaDevices[0];
+        this.selectedDevice = webcamDevice;
       }
-    }
+    } else{throw new Error("No Devices Available");}
 
-    if (!webcamDevice) {
-      throw new Error('Webcam not found');
-    }
+    if (!webcamDevice) {throw new Error('Webcam not found');}
 
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        deviceId: webcamDevice.deviceId
-      }
+      video: {deviceId: { exact: webcamDevice.deviceId }}
     });
     this.cd.detectChanges();
     return stream;
