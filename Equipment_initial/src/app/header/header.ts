@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
+import { MatToolbarModule} from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-header',
-  imports: [NgOptimizedImage],
+  imports: [NgOptimizedImage, MatToolbarModule],
   templateUrl: './header.html',
   styleUrl: './header.css'
 })
