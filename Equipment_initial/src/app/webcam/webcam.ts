@@ -1,11 +1,12 @@
 import { Component, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ImagePasser } from '../image-passer';
+import { MatButtonModule } from '@angular/material/button';
 // import { NgOptimizedImage } from '@angular/common';
 
 
 @Component({
   selector: 'app-webcam',
-  imports: [],
+  imports: [MatButtonModule],
   templateUrl: './webcam.html',
   styleUrl: './webcam.css',
 })

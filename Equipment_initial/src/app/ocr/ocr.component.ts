@@ -7,6 +7,10 @@ import { ImagePasser } from "../image-passer";
 import { FormsModule } from "@angular/forms";
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+
 
 interface uploadedFiles {
     name: string;
@@ -26,7 +30,7 @@ interface motorData {
     selector: 'app-ocr',
     templateUrl: './ocr.component.html',
     styleUrl: './ocr.component.css',
-    imports: [DecimalPipe, MatSlideToggleModule, MatProgressSpinnerModule, FormsModule]
+    imports: [DecimalPipe, MatSlideToggleModule, MatProgressSpinnerModule, FormsModule, MatGridListModule, MatButtonModule, MatDividerModule]
 })
 export class OCRComponent {
     imageSrc: string | ArrayBuffer | null = null;

@@ -23,24 +23,19 @@ label {
     }
 }
 
-/* Grid containter */
-.image-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(250px, 1fr));
-    gap: 15px;
-    max-width: 50%;
+/* Grid Container */
+mat-grid-list {
+    max-width: 75%;
 }
 
 /* Image container */
-.image-item {
-    position: relative;
-    overflow: hidden;
+mat-grid-tile {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 /* Images */
-.image-item img {
+mat-grid-tile img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -64,11 +59,11 @@ label {
 }
 
 /* Hover effects */
-.image-item:hover img {
+mat-grid-tile:hover img {
     object-fit: contain;
 }
 
-.image-item:hover .caption {
+mat-grid-tile:hover .caption {
     opacity: 1;
     transform: translateY(0);
 }
