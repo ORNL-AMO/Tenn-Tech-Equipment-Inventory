@@ -11,7 +11,7 @@ label {
   margin-left: var(--content-padding);
 }
 
-.img {
+img {
   max-width: 100%;
   max-height: 100%;
 }
@@ -44,41 +44,30 @@ canvas {
 
 .example-trigger {
   color: #366b38;
-  cursor: pointer;
+  cursor: help;
   text-decoration: underline;
   font-size: 0.9rem;
 }
 
-.example-popover {
+mat-card {
   display: none;
+  flex-wrap: wrap;
+  width: max-content;
+  width: fill;
+  max-width: 60vw;
   position: absolute;
-  top: 1.4rem;
-  left: 0;
-  background: #fff;
-  border: 1px solid #ccc;
-  padding: 2px;
-  width: auto;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  align-content: center;
 }
 
-.example-wrap:hover .example-popover {
+.example-wrap:hover mat-card {
   display: block;
 }
 
 .example-img {
-  width: 30%;
+  max-width: 100%;
+  width: 33%;
   height: auto;
-  display: flex;
+  display: inline-flex;
   border: 1px solid #ddd;
-}
-
-.example-images {
-  display: flex;
-  gap: 2px;
-  flex-wrap: wrap;
-}
-
-.example-popover {
-  width: max-content;
-  max-width: 60vw;
 }
