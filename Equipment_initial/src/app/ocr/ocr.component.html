@@ -2,7 +2,7 @@ Camera <mat-slide-toggle [(ngModel)]="useFiles" [disabled]="loading" aria-label=
 <label for="files">Select Image:</label>
 <input type="file" id="fileInput" placeholder="Upload Image Here" accept=".jpg, .jpeg, .png"
     (change)="onFileSelected($event)" multiple />
-<button matButton="filled" type=button [disabled]="loading" (click)="onUpload()">Scan Image</button>
+<button matButton="filled" type=button [disabled]="loading" (click)="onUpload()">Scan {{useFiles ? "Files" : "Camera"}}</button>
 <br>@if(loading){<mat-spinner></mat-spinner>}
 <!-- Dynamically load the file preview window only when files selected -->
 @if(filesInput.length > 0){
