@@ -3,6 +3,7 @@ import { OCRService } from "./ocr";
 import { ImageUtils } from "./image-utils";
 import { NormalizeTextPipe } from "./normalize-text-pipe";
 import { ImagePasser } from "../image-passer";
+import { TextExtractorService } from "./text-extractor.service";
 
 @Component({
     selector: 'app-ocr',
@@ -42,7 +43,8 @@ export class OCRComponent {
 
     constructor(private ocr: OCRService,
         private readonly cd: ChangeDetectorRef,
-        private imagePasser: ImagePasser) { }
+        private imagePasser: ImagePasser,
+        private textExtractor: TextExtractorService) { }
 
     async onFileSelected(event: Event): Promise<void> {
         const input = event.target as HTMLInputElement;
@@ -71,7 +73,6 @@ export class OCRComponent {
         this.BEARINGS_ODE = '';
         this.ENCL = '';
         this.SERIAL_NUMBER = '';
-        this.imageSrc = null;
 
         // Check if a file was selected
         if (input.files && input.files.length > 0) {
@@ -115,29 +116,9 @@ export class OCRComponent {
             const canvas = await this.imageUtils.prepareImage(this.selectedFile)
             this.result = await this.ocr.extractText(canvas);
             this.description = new NormalizeTextPipe().transform(this.result);
-            // Populate developer fields so it's easy to see where to edit
-            this.CAT_NO = 'CAT_NO';
-            this.SPEC = 'SPEC';
-            this.HORSEPOWER = 'HP';
-            this.VOLTAGE = 'VOLTS';
-            this.AMPERAGE = 'AMPS';
-            this.RPM = 'RPM';
-            this.FRAME = 'FRAME';
-            this.HERTZ = 'HERTZ';
-            this.PH = 'PH';
-            this.SER_F = 'SER_F';
-            this.CODE = 'CODE';
-            this.DES = 'DES';
-            this.CLASS = 'CLASS';
-            this.NEMA_NOM_EFF = 'NEMA_NOM_EFF';
-            this.P_F = 'P_F';
-            this.RATING = 'RATING';
-            this.CC = 'CC';
-            this.USABLE_AT = 'USABLE_AT';
-            this.BEARINGS_DE = 'BEARINGS_DE';
-            this.BEARINGS_ODE = 'BEARINGS_ODE';
-            this.ENCL = 'ENCL';
-            this.SERIAL_NUMBER = 'SERIAL_NUMBER';
+            // Extract values from description and populate fields
+            const extractedValues = this.textExtractor.extractValues(this.description);
+            Object.assign(this, extractedValues);
             // OCR complete, no more loading message
             this.loading = false;
             console.log("Loading = " + this.loading);
@@ -150,29 +131,9 @@ export class OCRComponent {
             this.result = await this.ocr.extractText(canvas);
             this.description = new NormalizeTextPipe().transform(this.result);
 
-            // Populate developer fields so it's easy to see where to edit
-            this.CAT_NO = 'CAT_NO';
-            this.SPEC = 'SPEC';
-            this.HORSEPOWER = 'HP';
-            this.VOLTAGE = 'VOLTS';
-            this.AMPERAGE = 'AMPS';
-            this.RPM = 'RPM';
-            this.FRAME = 'FRAME';
-            this.HERTZ = 'HERTZ';
-            this.PH = 'PH';
-            this.SER_F = 'SER_F';
-            this.CODE = 'CODE';
-            this.DES = 'DES';
-            this.CLASS = 'CLASS';
-            this.NEMA_NOM_EFF = 'NEMA_NOM_EFF';
-            this.P_F = 'P_F';
-            this.RATING = 'RATING';
-            this.CC = 'CC';
-            this.USABLE_AT = 'USABLE_AT';
-            this.BEARINGS_DE = 'BEARINGS_DE';
-            this.BEARINGS_ODE = 'BEARINGS_ODE';
-            this.ENCL = 'ENCL';
-            this.SERIAL_NUMBER = 'SERIAL_NUMBER';
+            // Extract values from description and populate fields
+            const extractedValues = this.textExtractor.extractValues(this.description);
+            Object.assign(this, extractedValues);
 
             // OCR complete, no more loading message
             this.loading = false;
