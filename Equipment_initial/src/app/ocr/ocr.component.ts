@@ -98,6 +98,7 @@ export class OCRComponent {
     }
 
     async onUpload(): Promise<void> {
+        this.inventory = [];
         // No file selected, let the user know and stop
         if (!(this.filesInput.length > 0) && this.useFiles) {
             console.error('No File Selected');
