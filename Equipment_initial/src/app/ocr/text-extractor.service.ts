@@ -43,8 +43,8 @@ export class TextExtractorService {
         { signals: ['AMPERAGE', 'AMPS', 'AVPS'], field: 'AMPERAGE' },
         { signals: ['RPM', 'SPEED', 'REM.'], field: 'RPM' },
         { signals: ['FRAME'], field: 'FRAME' },
-        { signals: ['HERTZ', 'HZ', 'FREQUENCY'], field: 'HERTZ' },
-        { signals: ['PH', 'PHASE'], field: 'PH' },
+        { signals: ['HERTZ', 'HZ', 'FREQUENCY', 'UZ'], field: 'HERTZ' },
+        { signals: ['PH', 'PHASE', 'PU'], field: 'PH' },
         { signals: ['SER F', 'SER. F.', 'SER_F', 'SERVICE FACTOR'], field: 'SER_F' },
         { signals: ['CODE'], field: 'CODE' },
         { signals: ['DES', 'DESIGN'], field: 'DES' },
@@ -54,8 +54,8 @@ export class TextExtractorService {
         { signals: ['RATING'], field: 'RATING' },
         { signals: ['CC'], field: 'CC' },
         { signals: ['USABLE AT'], field: 'USABLE_AT' },
-        { signals: ['BEARINGS DE', 'BEARINGS_DE'], field: 'BEARINGS_DE' },
-        { signals: ['BEARINGS ODE', 'BEARINGS_ODE'], field: 'BEARINGS_ODE' },
+        { signals: ['BEARINGS DE', 'BEARINGS_DE', 'DE'], field: 'BEARINGS_DE' },
+        { signals: ['BEARINGS ODE', 'BEARINGS_ODE', 'ODE', 'OPEL'], field: 'BEARINGS_ODE' },
         { signals: ['ENCL', 'ENCLOSURE'], field: 'ENCL' },
         { signals: ['SERIAL NUMBER', 'SERIAL_NUMBER', 'SERIAL NO', 'S/N'], field: 'SERIAL_NUMBER' }
     ];

@@ -120,29 +120,30 @@ export class OCRComponent {
                 const canvas = await this.imageUtils.prepareImage(this.selectedFile!);
                 this.result = await this.ocr.extractText(canvas);
                 this.description = new NormalizeTextPipe().transform(this.result);
-                // Populate developer fields so it's easy to see where to edit
-                this.CAT_NO = 'CAT_NO';
-                this.SPEC = 'SPEC';
-                this.HORSEPOWER = 'HP';
-                this.VOLTAGE = 'VOLTS';
-                this.AMPERAGE = 'AMPS';
-                this.RPM = 'RPM';
-                this.FRAME = 'FRAME';
-                this.HERTZ = 'HERTZ';
-                this.PH = 'PH';
-                this.SER_F = 'SER_F';
-                this.CODE = 'CODE';
-                this.DES = 'DES';
-                this.CLASS = 'CLASS';
-                this.NEMA_NOM_EFF = 'NEMA_NOM_EFF';
-                this.P_F = 'P_F';
-                this.RATING = 'RATING';
-                this.CC = 'CC';
-                this.USABLE_AT = 'USABLE_AT';
-                this.BEARINGS_DE = 'BEARINGS_DE';
-                this.BEARINGS_ODE = 'BEARINGS_ODE';
-                this.ENCL = 'ENCL';
-                this.SERIAL_NUMBER = 'SERIAL_NUMBER';
+                // Populate developer fields so it's easy to see where to edit                
+                const extractedValues = this.textExtractor.extractValues(this.description);
+                this.CAT_NO = extractedValues.CAT_NO || '';
+                this.SPEC = extractedValues.SPEC || '';
+                this.HORSEPOWER = extractedValues.HORSEPOWER || '';
+                this.VOLTAGE = extractedValues.VOLTAGE || '';
+                this.AMPERAGE = extractedValues.AMPERAGE || '';
+                this.RPM = extractedValues.RPM || '';
+                this.FRAME = extractedValues.FRAME || '';
+                this.HERTZ = extractedValues.HERTZ || '';
+                this.PH = extractedValues.PH || '';
+                this.SER_F = extractedValues.SER_F || '';
+                this.CODE = extractedValues.CODE || '';
+                this.DES = extractedValues.DES || '';
+                this.CLASS = extractedValues.CLASS || '';
+                this.NEMA_NOM_EFF = extractedValues.NEMA_NOM_EFF || '';
+                this.P_F = extractedValues.P_F || '';
+                this.RATING = extractedValues.RATING || '';
+                this.CC = extractedValues.CC || '';
+                this.USABLE_AT = extractedValues.USABLE_AT || '';
+                this.BEARINGS_DE = extractedValues.BEARINGS_DE || '';
+                this.BEARINGS_ODE = extractedValues.BEARINGS_ODE || '';
+                this.ENCL = extractedValues.ENCL || '';
+                this.SERIAL_NUMBER = extractedValues.SERIAL_NUMBER || '';
                 return;
             }
             catch (error) {
@@ -155,35 +156,36 @@ export class OCRComponent {
             }
         }
         // Preprocess and do OCR on an image passed from another component, if it exists
-        else if (this.imagePasser.currentFile) {
+ else if (this.imagePasser.currentFile) {
             try {
                 const canvas = await this.imageUtils.prepareImage(this.imagePasser.currentFile!);
                 this.result = await this.ocr.extractText(canvas);
                 this.description = new NormalizeTextPipe().transform(this.result);
 
-                // Populate developer fields so it's easy to see where to edit
-                this.CAT_NO = 'CAT_NO';
-                this.SPEC = 'SPEC';
-                this.HORSEPOWER = 'HP';
-                this.VOLTAGE = 'VOLTS';
-                this.AMPERAGE = 'AMPS';
-                this.RPM = 'RPM';
-                this.FRAME = 'FRAME';
-                this.HERTZ = 'HERTZ';
-                this.PH = 'PH';
-                this.SER_F = 'SER_F';
-                this.CODE = 'CODE';
-                this.DES = 'DES';
-                this.CLASS = 'CLASS';
-                this.NEMA_NOM_EFF = 'NEMA_NOM_EFF';
-                this.P_F = 'P_F';
-                this.RATING = 'RATING';
-                this.CC = 'CC';
-                this.USABLE_AT = 'USABLE_AT';
-                this.BEARINGS_DE = 'BEARINGS_DE';
-                this.BEARINGS_ODE = 'BEARINGS_ODE';
-                this.ENCL = 'ENCL';
-                this.SERIAL_NUMBER = 'SERIAL_NUMBER';
+                // Extract values using the TextExtractorService
+                const extractedValues = this.textExtractor.extractValues(this.description);
+                this.CAT_NO = extractedValues.CAT_NO || '';
+                this.SPEC = extractedValues.SPEC || '';
+                this.HORSEPOWER = extractedValues.HORSEPOWER || '';
+                this.VOLTAGE = extractedValues.VOLTAGE || '';
+                this.AMPERAGE = extractedValues.AMPERAGE || '';
+                this.RPM = extractedValues.RPM || '';
+                this.FRAME = extractedValues.FRAME || '';
+                this.HERTZ = extractedValues.HERTZ || '';
+                this.PH = extractedValues.PH || '';
+                this.SER_F = extractedValues.SER_F || '';
+                this.CODE = extractedValues.CODE || '';
+                this.DES = extractedValues.DES || '';
+                this.CLASS = extractedValues.CLASS || '';
+                this.NEMA_NOM_EFF = extractedValues.NEMA_NOM_EFF || '';
+                this.P_F = extractedValues.P_F || '';
+                this.RATING = extractedValues.RATING || '';
+                this.CC = extractedValues.CC || '';
+                this.USABLE_AT = extractedValues.USABLE_AT || '';
+                this.BEARINGS_DE = extractedValues.BEARINGS_DE || '';
+                this.BEARINGS_ODE = extractedValues.BEARINGS_ODE || '';
+                this.ENCL = extractedValues.ENCL || '';
+                this.SERIAL_NUMBER = extractedValues.SERIAL_NUMBER || '';
             }
             catch (error) {
                 console.error('Error during OCR processing:', error);
