@@ -106,7 +106,7 @@
 </div>
 <div>
     <h5 style="margin:4px 0">ENCL</h5>
-    <textarea #encl [value]="ENCL" (input)="ENCL = encl.value" placeholder="ENCL" rows="1" style="width:100%"></textarea>
+    <textarea [(ngModel)]="item.ENCL" placeholder="ENCL" rows="1" style="width:100%"></textarea>
 </div>
 <div>
     <h5 style="margin:4px 0">SERIAL_NUMBER</h5>
