@@ -17,122 +17,103 @@
 
 <!-- Defer to prevent headings from showing up until result has information in it -->
 @if (result) {
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+    @for(item of inventory; track item.SERIAL_NUMBER){
 <h4>Raw Result</h4>
-<pre>{{ result }}</pre>
+<pre>{{ item.result }}</pre>
 <h4>Cleaned Text</h4>
-<textarea #cleaned [value]="description" (input)="description = cleaned.value" rows="6" style="width:100%"></textarea>
+<textarea [(ngModel)]="item.description" rows="6" style="width:100%"></textarea>
+
+<div>
+    <h5 sytle="margin:4px 0">CAT_NO</h5>
+    <textarea [(ngModel)]="item.CAT_NO" placeholder="CAT_NO" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">SPEC</h5>
+    <textarea [(ngModel)]="item.SPEC" placeholder="SPEC" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">HORSEPOWER</h5>
+    <textarea [(ngModel)]="item.HORSEPOWER" placeholder="HORSEPOWER" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">VOLTAGE</h5>
+    <textarea [(ngModel)]="item.VOLTAGE" placeholder="VOLTAGE" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">AMPERAGE</h5>
+    <textarea [(ngModel)]="item.AMPERAGE" placeholder="AMPERAGE" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">RPM</h5>
+    <textarea [(ngModel)]="item.RPM" placeholder="RPM" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">FRAME</h5>
+    <textarea [(ngModel)]="item.FRAME" placeholder="FRAME" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">HERTZ</h5>
+    <textarea [(ngModel)]="item.HERTZ" placeholder="HERTZ" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">PH</h5>
+    <textarea [(ngModel)]="item.PH" placeholder="PH" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">SER_F</h5>
+    <textarea [(ngModel)]="item.SER_F" placeholder="SER_F" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">CODE</h5>
+    <textarea [(ngModel)]="item.CODE" placeholder="CODE" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">DES</h5>
+    <textarea [(ngModel)]="item.DES" placeholder="DES" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">CLASS</h5>
+    <textarea [(ngModel)]="item.CLASS" placeholder="CLASS" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">NEMA_NOM_EFF</h5>
+    <textarea [(ngModel)]="item.NEMA_NOM_EFF" placeholder="NEMA_NOM_EFF" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">P_F</h5>
+    <textarea [(ngModel)]="item.P_F" placeholder="P_F" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">RATING</h5>
+    <textarea [(ngModel)]="item.RATING" placeholder="RATING" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">CC</h5>
+    <textarea [(ngModel)]="item.RATING" placeholder="CC" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">USABLE_AT</h5>
+    <textarea [(ngModel)]="item.USABLE_AT" placeholder="USABLE_AT" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">BEARINGS_DE</h5>
+    <textarea [(ngModel)]="item.BEARINGS_DE" placeholder="BEARINGS_DE" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">BEARINGS_ODE</h5>
+    <textarea [(ngModel)]="item.BEARINGS_ODE" placeholder="BEARINGS_ODE" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">ENCL</h5>
+    <textarea #encl [value]="ENCL" (input)="ENCL = encl.value" placeholder="ENCL" rows="1" style="width:100%"></textarea>
+</div>
+<div>
+    <h5 style="margin:4px 0">SERIAL_NUMBER</h5>
+    <textarea [(ngModel)]="item.SERIAL_NUMBER" placeholder="SERIAL_NUMBER" rows="1" style="width:100%"></textarea>
+</div>
+}
 
 <!-- Developer fields: edit these placeholders or the component properties -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-    <!-- 1 -->
-    <div>
-        <h5 style="margin:4px 0">CAT_NO</h5>
-        <textarea #catNo [value]="CAT_NO" (input)="CAT_NO = catNo.value" placeholder="CAT_NO" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 2 -->
-    <div>
-        <h5 style="margin:4px 0">SPEC</h5>
-        <textarea #spec [value]="SPEC" (input)="SPEC = spec.value" placeholder="SPEC" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 3 -->
-    <div>
-        <h5 style="margin:4px 0">HORSEPOWER</h5>
-        <textarea #horsepower [value]="HORSEPOWER" (input)="HORSEPOWER = horsepower.value" placeholder="HORSEPOWER" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 4 -->
-    <div>
-        <h5 style="margin:4px 0">VOLTAGE</h5>
-        <textarea #voltage [value]="VOLTAGE" (input)="VOLTAGE = voltage.value" placeholder="VOLTAGE" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 5 -->
-    <div>
-        <h5 style="margin:4px 0">AMPERAGE</h5>
-        <textarea #amperage [value]="AMPERAGE" (input)="AMPERAGE = amperage.value" placeholder="AMPERAGE" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 6 -->
-    <div>
-        <h5 style="margin:4px 0">RPM</h5>
-        <textarea #rpm [value]="RPM" (input)="RPM = rpm.value" placeholder="RPM" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 7 -->
-    <div>
-        <h5 style="margin:4px 0">FRAME</h5>
-        <textarea #frame [value]="FRAME" (input)="FRAME = frame.value" placeholder="FRAME" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 8 -->
-    <div>
-        <h5 style="margin:4px 0">HERTZ</h5>
-        <textarea #hertz [value]="HERTZ" (input)="HERTZ = hertz.value" placeholder="HERTZ" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 9 -->
-    <div>
-        <h5 style="margin:4px 0">PH</h5>
-        <textarea #ph [value]="PH" (input)="PH = ph.value" placeholder="PH" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 10 -->
-    <div>
-        <h5 style="margin:4px 0">SER_F</h5>
-        <textarea #serF [value]="SER_F" (input)="SER_F = serF.value" placeholder="SER_F" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 11 -->
-    <div>
-        <h5 style="margin:4px 0">CODE</h5>
-        <textarea #code [value]="CODE" (input)="CODE = code.value" placeholder="CODE" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 12 -->
-    <div>
-        <h5 style="margin:4px 0">DES</h5>
-        <textarea #des [value]="DES" (input)="DES = des.value" placeholder="DES" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 13 -->
-    <div>
-        <h5 style="margin:4px 0">CLASS</h5>
-        <textarea #cls [value]="CLASS" (input)="CLASS = cls.value" placeholder="CLASS" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 14 -->
-    <div>
-        <h5 style="margin:4px 0">NEMA_NOM_EFF</h5>
-        <textarea #nemaNomEff [value]="NEMA_NOM_EFF" (input)="NEMA_NOM_EFF = nemaNomEff.value" placeholder="NEMA_NOM_EFF" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 15 -->
-    <div>
-        <h5 style="margin:4px 0">P_F</h5>
-        <textarea #pF [value]="P_F" (input)="P_F = pF.value" placeholder="P_F" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 16 -->
-    <div>
-        <h5 style="margin:4px 0">RATING</h5>
-        <textarea #rating [value]="RATING" (input)="RATING = rating.value" placeholder="RATING" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 17 -->
-    <div>
-        <h5 style="margin:4px 0">CC</h5>
-        <textarea #cc [value]="CC" (input)="CC = cc.value" placeholder="CC" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 18 -->
-    <div>
-        <h5 style="margin:4px 0">USABLE_AT</h5>
-        <textarea #usableAt [value]="USABLE_AT" (input)="USABLE_AT = usableAt.value" placeholder="USABLE_AT" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 19 -->
-    <div>
-        <h5 style="margin:4px 0">BEARINGS_DE</h5>
-        <textarea #bearingsDe [value]="BEARINGS_DE" (input)="BEARINGS_DE = bearingsDe.value" placeholder="BEARINGS_DE" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 20 -->
-    <div>
-        <h5 style="margin:4px 0">BEARINGS_ODE</h5>
-        <textarea #bearingsOde [value]="BEARINGS_ODE" (input)="BEARINGS_ODE = bearingsOde.value" placeholder="BEARINGS_ODE" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 21 -->
-    <div>
-        <h5 style="margin:4px 0">ENCL</h5>
-        <textarea #encl [value]="ENCL" (input)="ENCL = encl.value" placeholder="ENCL" rows="1" style="width:100%"></textarea>
-    </div>
-    <!-- 22 -->
-    <div>
-        <h5 style="margin:4px 0">SERIAL_NUMBER</h5>
-        <textarea #serialNumber [value]="SERIAL_NUMBER" (input)="SERIAL_NUMBER = serialNumber.value" placeholder="SERIAL_NUMBER" rows="1" style="width:100%"></textarea>
-    </div>
 </div>
 }

@@ -68,7 +68,7 @@ export class TextExtractorService {
      * @param description The cleaned OCR text to extract values from
      * @returns Object containing extracted values for each field
      */
-    extractValues(description: string): Partial<ExtractedValues> {
+    extractValues(description: string): Promise<ExtractedValues> {
         const extractedValues: any = {};
         const textUpper = description.toUpperCase();
 
