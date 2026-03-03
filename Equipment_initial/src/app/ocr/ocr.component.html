@@ -1,4 +1,5 @@
-Camera <mat-slide-toggle [(ngModel)]="useFiles" [disabled]="loading" aria-label="usesFilesQuery"> Files</mat-slide-toggle>
+Camera <mat-slide-toggle [(ngModel)]="useFiles" [disabled]="loading" aria-label="usesFilesQuery">
+    Files</mat-slide-toggle>
 <label for="files">Select Image:</label>
 <input type="file" id="fileInput" placeholder="Upload Image Here" accept=".jpg, .jpeg, .png"
     (change)="onFileSelected($event)" multiple />
@@ -35,12 +36,110 @@ Camera <mat-slide-toggle [(ngModel)]="useFiles" [disabled]="loading" aria-label=
 <p>Upload an image to process</p>
 }
 
-@if(inventory){
-@for(result of inventory; track result.name){
-<h4>Raw result for {{result.name}}</h4>
-<pre> {{result.rawData}}</pre><br>
-<h4>Cleaned Text for {{result.name}}</h4>
-<p> {{result.cleanedData}} </p><br>
-<mat-divider></mat-divider>
+<!-- Defer to prevent headings from showing up until result has information in it -->
+@if (inventory) {
+@for(item of inventory; track item.SERIAL_NUMBER){
+<h2>Result for {{item.name}}</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+    <div>
+        <h4>Raw Result</h4>
+        <pre>{{ item.result }}</pre>
+    </div>
+    <div>
+        <h4>Cleaned Text</h4>
+        <textarea [(ngModel)]="item.description" rows="6" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 sytle="margin:4px 0">CAT_NO</h5>
+        <textarea [(ngModel)]="item.CAT_NO" placeholder="CAT_NO" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">SPEC</h5>
+        <textarea [(ngModel)]="item.SPEC" placeholder="SPEC" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">HORSEPOWER</h5>
+        <textarea [(ngModel)]="item.HORSEPOWER" placeholder="HORSEPOWER" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">VOLTAGE</h5>
+        <textarea [(ngModel)]="item.VOLTAGE" placeholder="VOLTAGE" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">AMPERAGE</h5>
+        <textarea [(ngModel)]="item.AMPERAGE" placeholder="AMPERAGE" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">RPM</h5>
+        <textarea [(ngModel)]="item.RPM" placeholder="RPM" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">FRAME</h5>
+        <textarea [(ngModel)]="item.FRAME" placeholder="FRAME" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">HERTZ</h5>
+        <textarea [(ngModel)]="item.HERTZ" placeholder="HERTZ" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">PH</h5>
+        <textarea [(ngModel)]="item.PH" placeholder="PH" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">SER_F</h5>
+        <textarea [(ngModel)]="item.SER_F" placeholder="SER_F" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">CODE</h5>
+        <textarea [(ngModel)]="item.CODE" placeholder="CODE" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">DES</h5>
+        <textarea [(ngModel)]="item.DES" placeholder="DES" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">CLASS</h5>
+        <textarea [(ngModel)]="item.CLASS" placeholder="CLASS" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">NEMA_NOM_EFF</h5>
+        <textarea [(ngModel)]="item.NEMA_NOM_EFF" placeholder="NEMA_NOM_EFF" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">P_F</h5>
+        <textarea [(ngModel)]="item.P_F" placeholder="P_F" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">RATING</h5>
+        <textarea [(ngModel)]="item.RATING" placeholder="RATING" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">CC</h5>
+        <textarea [(ngModel)]="item.RATING" placeholder="CC" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">USABLE_AT</h5>
+        <textarea [(ngModel)]="item.USABLE_AT" placeholder="USABLE_AT" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">BEARINGS_DE</h5>
+        <textarea [(ngModel)]="item.BEARINGS_DE" placeholder="BEARINGS_DE" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">BEARINGS_ODE</h5>
+        <textarea [(ngModel)]="item.BEARINGS_ODE" placeholder="BEARINGS_ODE" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">ENCL</h5>
+        <textarea [(ngModel)]="item.ENCL" placeholder="ENCL" rows="1" style="width:100%"></textarea>
+    </div>
+    <div>
+        <h5 style="margin:4px 0">SERIAL_NUMBER</h5>
+        <textarea [(ngModel)]="item.SERIAL_NUMBER" placeholder="SERIAL_NUMBER" rows="1" style="width:100%"></textarea>
+    </div>
+</div>
+<mat-divider style="margin: 10px"></mat-divider>
 }
+
+<!-- Developer fields: edit these placeholders or the component properties -->
 }
