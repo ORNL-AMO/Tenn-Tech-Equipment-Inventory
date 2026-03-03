@@ -239,5 +239,9 @@ export class OCRComponent {
             } catch (error) {
                 throw (error);
             }
+            finally{
+                this.loading = false;
+                this.cd.detectChanges();
+            }
         }
     }}
