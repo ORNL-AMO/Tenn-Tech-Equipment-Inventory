@@ -11,6 +11,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { TextExtractorService } from "./text-extractor.service";
+import { MatInputModule } from "@angular/material/input";
 
 
 interface uploadedFiles {
@@ -53,8 +54,7 @@ interface motorData {
     selector: 'app-ocr',
     templateUrl: './ocr.component.html',
     styleUrl: './ocr.component.css',
-    imports: [FormsModule],
-    imports: [DecimalPipe, MatSlideToggleModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule]
+    imports: [DecimalPipe, MatSlideToggleModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule]
 })
 export class OCRComponent {
     inventory: motorData[] = [];
@@ -74,8 +74,6 @@ export class OCRComponent {
         const input = event.target as HTMLInputElement;
         // Clear the image preview and extraction results
         this.inventory = [];
-        this.result = '';
-        this.description = '';
         this.filesInput = []; //Clear previous files
         this.inventory = []; //Clear previous inventory
 
@@ -152,6 +150,7 @@ export class OCRComponent {
                 // Populate developer fields so it's easy to see where to edit                
                 const extractedValues = await this.textExtractor.extractValues(description);
                 this.inventory.push({
+                    name: "Camera input",
                     result: result,
                     description: description,
                     CAT_NO: extractedValues.CAT_NO,
@@ -185,7 +184,6 @@ export class OCRComponent {
             }
             finally {
                 this.loading = false;
-                this.cd.detectChanges();
                 this.cd.detectChanges();
             }
         } else if (this.useFiles) {
@@ -241,4 +239,4 @@ export class OCRComponent {
                 throw (error);
             }
         }
-    }
+    }}
