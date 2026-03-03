@@ -11,16 +11,34 @@ export class OCRService {
   async extractText(image: HTMLCanvasElement | HTMLImageElement): Promise<string> {
     const worker = await createWorker('eng');
 
-    await worker.setParameters({
-      tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-/%() ',
-      preserve_interword_spaces: '1'
-    });
+    let timeoutId: any;
 
-    const { data } = await worker.recognize(image);
-    console.log("worker recognized image");
-    await worker.terminate();
-    console.log("worker terminated");
+    try {
+      await worker.setParameters({
+        tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-/%() ',
+        preserve_interword_spaces: '1'
+      });
 
-    return data.text;
+      const recognizePromise = worker.recognize(image);
+
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => {
+          reject(new Error("OCR Timeout after 15 seconds"));
+        }, 1500);
+      });
+
+      const result = await Promise.race([
+        recognizePromise,
+        timeoutPromise
+      ]) as any;
+
+      clearTimeout(timeoutId);
+
+      return result.data.text;
+
+    } finally {
+      clearTimeout(timeoutId);
+      await worker.terminate();
+    }
   }
 }
