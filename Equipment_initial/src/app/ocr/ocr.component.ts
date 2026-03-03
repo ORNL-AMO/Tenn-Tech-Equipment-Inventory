@@ -73,7 +73,6 @@ export class OCRComponent {
     async onFileSelected(event: Event): Promise<void> {
         const input = event.target as HTMLInputElement;
         // Clear the image preview and extraction results
-        this.inventory = [];
         this.filesInput = []; //Clear previous files
         this.inventory = []; //Clear previous inventory
 
