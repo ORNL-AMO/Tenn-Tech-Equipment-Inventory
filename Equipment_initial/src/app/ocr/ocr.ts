@@ -24,7 +24,7 @@ export class OCRService {
       const timeoutPromise = new Promise<never>((_, reject) => {
         timeoutId = setTimeout(() => {
           reject(new Error("OCR Timeout after 15 seconds"));
-        }, 1500);
+        }, 15000);
       });
 
       const result = await Promise.race([

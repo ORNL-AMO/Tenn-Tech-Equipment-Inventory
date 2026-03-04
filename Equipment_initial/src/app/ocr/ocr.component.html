@@ -38,7 +38,7 @@ Camera <mat-slide-toggle [(ngModel)]="useFiles" [disabled]="loading" aria-label=
 
 <!-- Defer to prevent headings from showing up until result has information in it -->
 @if (inventory) {
-@for(item of inventory; track item.SERIAL_NUMBER){
+@for(item of inventory; track item.name){
 <h2>Result for {{item.name}}</h2>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
     <div>
@@ -46,7 +46,7 @@ Camera <mat-slide-toggle [(ngModel)]="useFiles" [disabled]="loading" aria-label=
         <pre>{{ item.result }}</pre>
     </div>
     <div>
-        <h4>Cleaned Text</h4>
+        <h4>Description</h4>
         <textarea [(ngModel)]="item.description" rows="6" style="width:100%"></textarea>
     </div>
     <div>

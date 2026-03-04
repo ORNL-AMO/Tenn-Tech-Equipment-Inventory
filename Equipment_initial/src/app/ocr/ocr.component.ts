@@ -73,7 +73,6 @@ export class OCRComponent {
     async onFileSelected(event: Event): Promise<void> {
         const input = event.target as HTMLInputElement;
         // Clear the image preview and extraction results
-        this.inventory = [];
         this.filesInput = []; //Clear previous files
         this.inventory = []; //Clear previous inventory
 
@@ -120,6 +119,7 @@ export class OCRComponent {
     }
 
     async onUpload(): Promise<void> {
+        this.inventory = [];
         // No file selected, let the user know and stop
         if (!(this.filesInput.length > 0) && this.useFiles) {
             console.error('No File Selected');
@@ -237,6 +237,10 @@ export class OCRComponent {
                 return;
             } catch (error) {
                 throw (error);
+            }
+            finally{
+                this.loading = false;
+                this.cd.detectChanges();
             }
         }
     }}
