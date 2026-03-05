@@ -1,7 +1,11 @@
 <mat-button-toggle-group [(ngModel)]="inputType" name="inputType">
-    <mat-button-toggle value="Camera"><mat-icon>photo_camera</mat-icon> Camera</mat-button-toggle>
+    <mat-button-toggle value="Camera">
+        <mat-icon>photo_camera</mat-icon> Camera
+    </mat-button-toggle>
     <mat-button-toggle disabled value="Both">Both</mat-button-toggle>
-    <mat-button-toggle value="Files"><mat-icon>upload_file</mat-icon> Files</mat-button-toggle>
+    <mat-button-toggle value="Files">
+        <mat-icon>upload_file</mat-icon> Files
+    </mat-button-toggle>
 </mat-button-toggle-group>
 
 <label for="files">Select Image:</label>
@@ -42,10 +46,14 @@
 }
 
 <!-- Defer to prevent headings from showing up until result has information in it -->
-@if (inventory) {
+@if (inventory.length>0) {
 <br>
 <div class="example-form">
-    @for(item of inventory; track item.name){
+    @if (inventory.length>1){
+    <mat-paginator class="mat-bg-primary-container" [pageSizeOptions]="[1,5,10]" [length]="inventory.length"
+        (page)="switchPage($event)"></mat-paginator>}
+    <br>
+    @for(item of inventory.slice(currentPage, pageOver); track item.name){
 
     <h2>Result for {{item.name}}</h2>
     <br>
@@ -217,5 +225,4 @@
     <mat-divider style="margin: 10px"></mat-divider>
     }
 </div>
-<!-- Developer fields: edit these placeholders or the component properties -->
 }

@@ -14,7 +14,8 @@ import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-
+import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 interface uploadedFiles {
@@ -57,9 +58,11 @@ interface motorData {
     selector: 'app-ocr',
     templateUrl: './ocr.component.html',
     styleUrl: './ocr.component.css',
-    imports: [DecimalPipe, MatButtonToggleModule, MatIconModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule, MatInputModule, MatFormFieldModule]
+    imports: [DecimalPipe, MatButtonToggleModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule, MatInputModule, MatFormFieldModule]
 })
 export class OCRComponent {
+    pageOver: number = 1;
+    currentPage: number = 0;
     inputType: String = 'Camera';
     inventory: motorData[] = [];
     imageSrc: string | ArrayBuffer | null = null;
@@ -67,11 +70,19 @@ export class OCRComponent {
     loading: boolean = false;
     private imageUtils = inject(ImageUtils);
     allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+    private _snackBar = inject(MatSnackBar)
 
     constructor(private ocr: OCRService,
         private readonly cd: ChangeDetectorRef,
         private imagePasser: ImagePasser,
         private textExtractor: TextExtractorService) { }
+
+
+    switchPage(e: PageEvent) {
+        this.currentPage = e.pageIndex * e.pageSize;
+        this.pageOver = this.currentPage + e.pageSize;
+        this.cd.detectChanges();
+    }
 
     async onFileSelected(event: Event): Promise<void> {
         const input = event.target as HTMLInputElement;
@@ -125,19 +136,19 @@ export class OCRComponent {
     async onUpload(): Promise<void> {
         this.inventory = [];
         // No file selected, let the user know and stop
-        if (!(this.filesInput.length > 0) && this.inputType=="Files") {
+        if (!(this.filesInput.length > 0) && this.inputType == "Files") {
             console.error('No File Selected');
             alert("Please select a file to process")
             return;
-        } else if (!this.imagePasser.currentFile && this.inputType=="Camera") {
+        } else if (!this.imagePasser.currentFile && this.inputType == "Camera") {
             console.error('No capture available');
             alert("No Image captured from camera");
             return;
         }
         this.loading = true;
-        if (this.inputType=="Both"){
+        if (this.inputType == "Both") {
             //add ability to do both here!!!
-        } else if (this.inputType=="Camera") { //use camera
+        } else if (this.inputType == "Camera") { //use camera
             if (!this.imagePasser.currentFile) {
                 this.loading = false;
                 return;
@@ -192,9 +203,10 @@ export class OCRComponent {
                 this.loading = false;
                 this.cd.detectChanges();
             }
-        } else if (this.inputType=="Files") {
+        } else if (this.inputType == "Files") {
             try {
                 for (let i = 0; i < this.filesInput.length; i++) {
+                    this.cd.detectChanges();
 
                     const file = this.filesInput[i];
 
@@ -235,12 +247,11 @@ export class OCRComponent {
                             SERIAL_NUMBER: extractedValues.SERIAL_NUMBER
                         });
 
-                        this.cd.detectChanges();
-
                     } catch (err) {
                         console.warn(`Skipping ${file.name}`, err);
                         alert(`Error processing file ${file.name}. Skipping file.`);
                     }
+                    this.cd.detectChanges();
                 }
 
             } catch (error) {
@@ -248,6 +259,7 @@ export class OCRComponent {
             } finally {
                 this.loading = false;
                 this.cd.detectChanges();
+                this._snackBar.open("All Files Processed", "Ok");
             }
         }
     }
