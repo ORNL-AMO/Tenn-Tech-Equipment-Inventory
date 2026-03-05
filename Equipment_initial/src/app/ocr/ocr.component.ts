@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectorRef } from "@angular/core";
+import { Component, inject, ChangeDetectorRef, input } from "@angular/core";
 import { DecimalPipe } from "@angular/common"
 import { OCRService } from "./ocr";
 import { ImageUtils } from "./image-utils";
@@ -88,6 +88,7 @@ export class OCRComponent {
                     const fileSizeMB = file.size / (1024 * 1024);
                     if (fileSizeMB > maxSizeMB) {
                         console.log("${file.name} is too big of a file. Skipping file.");
+                        alert(file.name + " is too big of a file. Skipping file.");
                     }
                     else if (!this.allowedTypes.includes(file.type)) {
                         alert(file.name + "is an invalid file type. Skipping file");
@@ -188,59 +189,61 @@ export class OCRComponent {
             }
         } else if (this.useFiles) {
             try {
-                const promiseCanvas = this.filesInput.map(inFile => this.imageUtils.prepareImage(inFile.fullFile));
-                const canvas = await Promise.all(promiseCanvas);
+                for (let i = 0; i < this.filesInput.length; i++) {
 
-                const promises = canvas.map(cnvs => this.ocr.extractText(cnvs));
-                const result = await Promise.all(promises);
+                    const file = this.filesInput[i];
 
-                const promiseClean = result.map(rd => new NormalizeTextPipe().transform(rd));
-                const description = await Promise.all(promiseClean);
+                    try {
+                        const canvas = await this.imageUtils.prepareImage(file.fullFile);
 
-                // Extract values using the TextExtractorService
-                const promiseExtract = description.map(desc => this.textExtractor.extractValues(desc));
-                const extractedValues = await Promise.all(promiseExtract);
+                        const text = await this.ocr.extractText(canvas);
 
-                extractedValues.forEach((motor, index) => {
-                    this.inventory.push({
-                        name: this.filesInput[index].name,
-                        result: result[index],
-                        description: description[index],
-                        CAT_NO: motor.CAT_NO,
-                        SPEC: motor.SPEC,
-                        HORSEPOWER: motor.HORSEPOWER,
-                        VOLTAGE: motor.VOLTAGE,
-                        AMPERAGE: motor.AMPERAGE,
-                        RPM: motor.RPM,
-                        FRAME: motor.FRAME,
-                        HERTZ: motor.HERTZ,
-                        PH: motor.PH,
-                        SER_F: motor.SER_F,
-                        CODE: motor.CODE,
-                        DES: motor.DES,
-                        CLASS: motor.CLASS,
-                        NEMA_NOM_EFF: motor.NEMA_NOM_EFF,
-                        P_F: motor.P_F,
-                        RATING: motor.RATING,
-                        CC: motor.CC,
-                        USABLE_AT: motor.USABLE_AT,
-                        BEARINGS_DE: motor.BEARINGS_DE,
-                        BEARINGS_ODE: motor.BEARINGS_ODE,
-                        ENCL: motor.ENCL,
-                        SERIAL_NUMBER: motor.SERIAL_NUMBER
-                    })
-                })
+                        const description = new NormalizeTextPipe().transform(text);
 
-                this.loading = false;
-                console.log("Loading = " + this.loading);
-                this.cd.detectChanges();
-                return;
+                        const extractedValues = await this.textExtractor.extractValues(description);
+
+                        this.inventory.push({
+                            name: file.name,
+                            result: text,
+                            description,
+                            CAT_NO: extractedValues.CAT_NO,
+                            SPEC: extractedValues.SPEC,
+                            HORSEPOWER: extractedValues.HORSEPOWER,
+                            VOLTAGE: extractedValues.VOLTAGE,
+                            AMPERAGE: extractedValues.AMPERAGE,
+                            RPM: extractedValues.RPM,
+                            FRAME: extractedValues.FRAME,
+                            HERTZ: extractedValues.HERTZ,
+                            PH: extractedValues.PH,
+                            SER_F: extractedValues.SER_F,
+                            CODE: extractedValues.CODE,
+                            DES: extractedValues.DES,
+                            CLASS: extractedValues.CLASS,
+                            NEMA_NOM_EFF: extractedValues.NEMA_NOM_EFF,
+                            P_F: extractedValues.P_F,
+                            RATING: extractedValues.RATING,
+                            CC: extractedValues.CC,
+                            USABLE_AT: extractedValues.USABLE_AT,
+                            BEARINGS_DE: extractedValues.BEARINGS_DE,
+                            BEARINGS_ODE: extractedValues.BEARINGS_ODE,
+                            ENCL: extractedValues.ENCL,
+                            SERIAL_NUMBER: extractedValues.SERIAL_NUMBER
+                        });
+
+                        this.cd.detectChanges();
+
+                    } catch (err) {
+                        console.warn(`Skipping ${file.name}`, err);
+                        alert(`Error processing file ${file.name}. Skipping file.`);
+                    }
+                }
+
             } catch (error) {
-                throw (error);
-            }
-            finally{
+                console.error('Unexpected batch error:', error);
+            } finally {
                 this.loading = false;
                 this.cd.detectChanges();
             }
         }
-    }}
+    }
+}
