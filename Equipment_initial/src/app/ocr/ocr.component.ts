@@ -5,13 +5,16 @@ import { ImageUtils } from "./image-utils";
 import { NormalizeTextPipe } from "./normalize-text-pipe";
 import { ImagePasser } from "../image-passer";
 import { FormsModule } from "@angular/forms";
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { TextExtractorService } from "./text-extractor.service";
 import { MatInputModule } from "@angular/material/input";
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+
 
 
 interface uploadedFiles {
@@ -54,16 +57,16 @@ interface motorData {
     selector: 'app-ocr',
     templateUrl: './ocr.component.html',
     styleUrl: './ocr.component.css',
-    imports: [DecimalPipe, MatSlideToggleModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule]
+    imports: [DecimalPipe, MatButtonToggleModule, MatIconModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule, MatInputModule, MatFormFieldModule]
 })
 export class OCRComponent {
+    inputType: String = 'Camera';
     inventory: motorData[] = [];
     imageSrc: string | ArrayBuffer | null = null;
     filesInput: uploadedFiles[] = [];
     loading: boolean = false;
     private imageUtils = inject(ImageUtils);
     allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-    useFiles = false; //Default state
 
     constructor(private ocr: OCRService,
         private readonly cd: ChangeDetectorRef,
@@ -122,17 +125,19 @@ export class OCRComponent {
     async onUpload(): Promise<void> {
         this.inventory = [];
         // No file selected, let the user know and stop
-        if (!(this.filesInput.length > 0) && this.useFiles) {
+        if (!(this.filesInput.length > 0) && this.inputType=="Files") {
             console.error('No File Selected');
             alert("Please select a file to process")
             return;
-        } else if (!this.imagePasser.currentFile && !this.useFiles) {
+        } else if (!this.imagePasser.currentFile && this.inputType=="Camera") {
             console.error('No capture available');
             alert("No Image captured from camera");
             return;
         }
         this.loading = true;
-        if (!this.useFiles) { //use camera
+        if (this.inputType=="Both"){
+            //add ability to do both here!!!
+        } else if (this.inputType=="Camera") { //use camera
             if (!this.imagePasser.currentFile) {
                 this.loading = false;
                 return;
@@ -187,7 +192,7 @@ export class OCRComponent {
                 this.loading = false;
                 this.cd.detectChanges();
             }
-        } else if (this.useFiles) {
+        } else if (this.inputType=="Files") {
             try {
                 for (let i = 0; i < this.filesInput.length; i++) {
 

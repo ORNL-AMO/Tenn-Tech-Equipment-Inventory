@@ -1,9 +1,13 @@
-Camera <mat-slide-toggle [(ngModel)]="useFiles" [disabled]="loading" aria-label="usesFilesQuery">
-    Files</mat-slide-toggle>
+<mat-button-toggle-group [(ngModel)]="inputType" name="inputType">
+    <mat-button-toggle value="Camera"><mat-icon>photo_camera</mat-icon> Camera</mat-button-toggle>
+    <mat-button-toggle disabled value="Both">Both</mat-button-toggle>
+    <mat-button-toggle value="Files"><mat-icon>upload_file</mat-icon> Files</mat-button-toggle>
+</mat-button-toggle-group>
+
 <label for="files">Select Image:</label>
 <input type="file" id="fileInput" placeholder="Upload Image Here" accept=".jpg, .jpeg, .png"
     (change)="onFileSelected($event)" multiple />
-<button matButton="filled" type=button [disabled]="loading" (click)="onUpload()">Scan {{useFiles ? "Files" : "Camera"}}</button>
+<button matButton="filled" type=button [disabled]="loading" (click)="onUpload()">Scan {{ inputType }}</button>
 <br>@if(loading){<mat-spinner></mat-spinner>}
 <!-- Dynamically load the file preview window only when files selected -->
 @if(filesInput.length > 0){
@@ -30,6 +34,7 @@ Camera <mat-slide-toggle [(ngModel)]="useFiles" [disabled]="loading" aria-label=
 <br>
 
 <!-- toggled statement to let user know if the ocr service is processing their image -->
+<mat-divider style="margin: 10px"></mat-divider>
 @if(loading){
 <p>Extracting text...</p>
 } @else {
@@ -38,108 +43,179 @@ Camera <mat-slide-toggle [(ngModel)]="useFiles" [disabled]="loading" aria-label=
 
 <!-- Defer to prevent headings from showing up until result has information in it -->
 @if (inventory) {
-@for(item of inventory; track item.name){
-<h2>Result for {{item.name}}</h2>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-    <div>
-        <h4>Raw Result</h4>
-        <pre>{{ item.result }}</pre>
-    </div>
-    <div>
-        <h4>Description</h4>
-        <textarea [(ngModel)]="item.description" rows="6" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 sytle="margin:4px 0">CAT_NO</h5>
-        <textarea [(ngModel)]="item.CAT_NO" placeholder="CAT_NO" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">SPEC</h5>
-        <textarea [(ngModel)]="item.SPEC" placeholder="SPEC" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">HORSEPOWER</h5>
-        <textarea [(ngModel)]="item.HORSEPOWER" placeholder="HORSEPOWER" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">VOLTAGE</h5>
-        <textarea [(ngModel)]="item.VOLTAGE" placeholder="VOLTAGE" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">AMPERAGE</h5>
-        <textarea [(ngModel)]="item.AMPERAGE" placeholder="AMPERAGE" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">RPM</h5>
-        <textarea [(ngModel)]="item.RPM" placeholder="RPM" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">FRAME</h5>
-        <textarea [(ngModel)]="item.FRAME" placeholder="FRAME" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">HERTZ</h5>
-        <textarea [(ngModel)]="item.HERTZ" placeholder="HERTZ" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">PH</h5>
-        <textarea [(ngModel)]="item.PH" placeholder="PH" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">SER_F</h5>
-        <textarea [(ngModel)]="item.SER_F" placeholder="SER_F" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">CODE</h5>
-        <textarea [(ngModel)]="item.CODE" placeholder="CODE" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">DES</h5>
-        <textarea [(ngModel)]="item.DES" placeholder="DES" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">CLASS</h5>
-        <textarea [(ngModel)]="item.CLASS" placeholder="CLASS" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">NEMA_NOM_EFF</h5>
-        <textarea [(ngModel)]="item.NEMA_NOM_EFF" placeholder="NEMA_NOM_EFF" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">P_F</h5>
-        <textarea [(ngModel)]="item.P_F" placeholder="P_F" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">RATING</h5>
-        <textarea [(ngModel)]="item.RATING" placeholder="RATING" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">CC</h5>
-        <textarea [(ngModel)]="item.RATING" placeholder="CC" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">USABLE_AT</h5>
-        <textarea [(ngModel)]="item.USABLE_AT" placeholder="USABLE_AT" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">BEARINGS_DE</h5>
-        <textarea [(ngModel)]="item.BEARINGS_DE" placeholder="BEARINGS_DE" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">BEARINGS_ODE</h5>
-        <textarea [(ngModel)]="item.BEARINGS_ODE" placeholder="BEARINGS_ODE" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">ENCL</h5>
-        <textarea [(ngModel)]="item.ENCL" placeholder="ENCL" rows="1" style="width:100%"></textarea>
-    </div>
-    <div>
-        <h5 style="margin:4px 0">SERIAL_NUMBER</h5>
-        <textarea [(ngModel)]="item.SERIAL_NUMBER" placeholder="SERIAL_NUMBER" rows="1" style="width:100%"></textarea>
-    </div>
-</div>
-<mat-divider style="margin: 10px"></mat-divider>
-}
+<br>
+<div class="example-form">
+    @for(item of inventory; track item.name){
 
+    <h2>Result for {{item.name}}</h2>
+    <br>
+    <mat-form-field appearance="outline">
+        <mat-label>Raw Result</mat-label>
+        <textarea matInput cdkTextareaAutosize readonly>{{ item.result }}</textarea>
+    </mat-form-field>
+    <br>
+    <mat-form-field appearance="outline" style="width:100%;">
+        <mat-label>Description</mat-label>
+        <textarea matInput cdkTextareaAutosize [(ngModel)]="item.description" rows="6" style="width: 100%;"></textarea>
+    </mat-form-field>
+    <table>
+        <tr>
+            <td>
+                <mat-form-field class="tertiary">
+                    <mat-label>CAT_NO</mat-label>
+                    <textarea class="mat-text-error" cdkTextareaAutosize matInput [(ngModel)]="item.CAT_NO"></textarea>
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field>
+                    <mat-label>SPEC</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.SPEC"></textarea>
+                </mat-form-field>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <mat-form-field>
+                    <mat-label>HORSEPOWER</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.HORSEPOWER"></textarea>
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field>
+                    <mat-label>VOLTAGE</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.VOLTAGE"></textarea>
+                </mat-form-field>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <mat-form-field>
+                    <mat-label>AMPERAGE</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.AMPERAGE"></textarea>
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field>
+                    <mat-label>RPM</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.RPM"></textarea>
+                </mat-form-field>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <mat-form-field>
+                    <mat-label>FRAME</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.FRAME"></textarea>
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field>
+                    <mat-label>HERTZ</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.HERTZ"></textarea>
+                </mat-form-field>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <mat-form-field>
+                    <mat-label>PH</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.PH"></textarea>
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field>
+                    <mat-label>SER_F</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.SER_F"></textarea>
+                </mat-form-field>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <mat-form-field>
+                    <mat-label>CODE</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.CODE"></textarea>
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field>
+                    <mat-label>DES</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.DES"></textarea>
+                </mat-form-field>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <mat-form-field>
+                    <mat-label>CLASS</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.CLASS"></textarea>
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field>
+                    <mat-label>NEMA_NOM_EFF</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.NEMA_NOM_EFF"></textarea>
+                </mat-form-field>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <mat-form-field>
+                    <mat-label>P_F</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.P_F"></textarea>
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field>
+                    <mat-label>RATING</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.RATING"></textarea>
+                </mat-form-field>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <mat-form-field>
+                    <mat-label>CC</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.RATING"></textarea>
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field>
+                    <mat-label>USABLE_AT</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.USABLE_AT"></textarea>
+                </mat-form-field>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <mat-form-field>
+                    <mat-label>BEARINGS_DE</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.BEARINGS_DE"></textarea>
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field>
+                    <mat-label>BEARINGS_ODE</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.BEARINGS_ODE"></textarea>
+                </mat-form-field>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <mat-form-field>
+                    <mat-label>ENCL</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.ENCL"></textarea>
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field>
+                    <mat-label>SERIAL_NUMBER</mat-label>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="item.SERIAL_NUMBER"></textarea>
+                </mat-form-field>
+            </td>
+        </tr>
+    </table>
+    <mat-divider style="margin: 10px"></mat-divider>
+    }
+</div>
 <!-- Developer fields: edit these placeholders or the component properties -->
 }
