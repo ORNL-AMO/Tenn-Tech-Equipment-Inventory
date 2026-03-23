@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> <title>ORNL Smart Scanner | Batch Processor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+    <title>ORNL Smart Scanner | Batch Processor</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -18,13 +19,13 @@
         
         .app-container { display: flex; height: 100vh; position: relative; }
 
-        /* --- SIDEBAR (RESPONSIVE) --- */
+        /* --- SIDEBAR --- */
         .sidebar { 
             width: var(--sidebar-width); 
             background: #2c3e50; 
             color: white; 
             display: flex; 
-            flex-direction: column; 
+            flex-direction: column;
             z-index: 1000;
             transition: transform 0.3s ease;
         }
@@ -59,7 +60,7 @@
             overflow: hidden; 
             position: relative; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
-            display: flex; /* Center empty state */
+            display: flex; 
             align-items: center;
             justify-content: center;
         }
@@ -90,6 +91,11 @@
         .batch-info { flex: 1; overflow: hidden; }
         .batch-name { font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+        /* Custom styling for the fine-tune slider */
+        .form-range::-webkit-slider-thumb { background: var(--ornl-green); }
+        .form-range::-moz-range-thumb { background: var(--ornl-green); }
+        .form-range::-ms-thumb { background: var(--ornl-green); }
+
         /* Mobile Overlay Backdrop */
         .sidebar-backdrop {
             display: none;
@@ -99,22 +105,20 @@
 
         /* --- MOBILE OPTIMIZATIONS (Max-width 768px) --- */
         @media (max-width: 768px) {
-            /* 1. Sidebar becomes a drawer */
             .sidebar {
                 position: fixed;
                 height: 100%;
                 left: 0; top: 0;
-                transform: translateX(-100%); /* Hide off-screen */
+                transform: translateX(-100%); 
                 box-shadow: 4px 0 10px rgba(0,0,0,0.3);
             }
-            .sidebar.open { transform: translateX(0); } /* Slide in */
+            .sidebar.open { transform: translateX(0); }
             .sidebar-backdrop.show { display: block; }
 
-            /* 2. Workspace Layout */
             .toolbar { 
                 padding: 5px 10px; 
                 height: auto; 
-                flex-wrap: wrap; /* Allow buttons to wrap if needed */
+                flex-wrap: wrap; 
                 gap: 5px;
             }
             #toolbar-title { 
@@ -126,27 +130,25 @@
             }
 
             .editor-stage {
-                flex-direction: column; /* Stack vertically */
+                flex-direction: column; 
                 padding: 10px;
                 gap: 10px;
             }
 
             .image-area {
-                flex: none; /* Turn off flex growth logic */
-                height: 50vh; /* Image takes top 50% of screen */
+                flex: none; 
+                height: 50vh; 
                 width: 100%;
             }
 
             .results-area {
-                flex: 1; /* Text area takes whatever space is left */
-                min-width: 0; /* Allow shrinking */
+                flex: 1; 
+                min-width: 0; 
             }
 
-            /* Hide text on buttons to save space */
             .btn-text-desktop { display: none; }
         }
 
-        /* Desktop specific */
         @media (min-width: 769px) {
             .btn-menu-mobile { display: none; }
         }
@@ -183,19 +185,46 @@
                 <button class="btn btn-outline-secondary btn-menu-mobile" onclick="toggleSidebar()">
                     <i class="bi bi-list"></i>
                 </button>
-                <div id="toolbar-title" class="fw-bold text-secondary">No Selection</div>
+                <div id="toolbar-title" class="fw-bold text-secondary me-2">No Selection</div>
+                
+                <button class="btn btn-outline-secondary btn-sm" onclick="showHelp()">
+                    <i class="bi bi-question-circle"></i> Help
+                </button>
             </div>
             
-            <div class="d-flex gap-2">
-                <div class="btn-group">
-                    <button class="btn btn-outline-secondary" onclick="rotate(-90)"><i class="bi bi-arrow-counterclockwise"></i></button>
-                    <button class="btn btn-outline-secondary" onclick="rotate(90)"><i class="bi bi-arrow-clockwise"></i></button>
-                </div>
+            <div class="d-flex align-items-center gap-3">
                 
+                <div class="d-flex flex-column align-items-center gap-1" style="min-width: 220px;">
+                    <div class="d-flex align-items-center gap-0 w-100">
+                        <button class="btn btn-outline-secondary btn-sm" onclick="handleHardRotate(-90)" style="flex: 1;">90°</button>
+                        <button class="btn btn-secondary btn-sm" onclick="adjustAngle(-1)" style="width: 25%;"><i class="bi bi-dash"></i></button>
+                        <input type="number" id="angle-input" class="form-control form-control-sm text-center" 
+                               value="0" min="0" max="360" style="width: 60px; border-radius: 0;" onchange="manualRotate(this.value)">
+                        <button class="btn btn-secondary btn-sm" onclick="adjustAngle(1)" style="width: 25%;"><i class="bi bi-plus"></i></button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="handleHardRotate(90)" style="flex: 1;">-90°</button>
+                    </div>
+                    <div class="w-100">
+                        <input type="range" class="form-range" id="fine-rotate" min="0" max="360" step="0.5" value="0" oninput="syncRotate(this.value)">
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-1 border-start border-end px-2 mx-1">
+                    <button class="btn btn-outline-secondary btn-sm" id="btn-zoom-lock" onclick="toggleZoomLock()" title="Sync Crop Box Zoom">
+                        <i class="bi bi-unlock"></i>
+                    </button>
+                    <button class="btn btn-secondary btn-sm" id="btn-zoom-out" onclick="handleZoom(-0.1)">
+                        <i class="bi bi-zoom-out"></i>
+                    </button>
+                    <input type="number" id="zoom-input" class="form-control form-control-sm text-center" 
+                        value="100" min="10" max="1000" style="width: 65px; border-radius: 0;" onchange="manualZoom(this.value)">
+                    <button class="btn btn-secondary btn-sm" id="btn-zoom-in" onclick="handleZoom(0.1)">
+                        <i class="bi bi-zoom-in"></i>
+                    </button>
+                </div>
+
                 <button class="btn btn-secondary" onclick="runSingleExtraction()">
                     <i class="bi bi-magic"></i> <span class="btn-text-desktop">Extract</span>
                 </button>
-                
                 <button class="btn btn-primary" onclick="runBatchExtraction()">
                     <i class="bi bi-layers-half"></i> <span class="btn-text-desktop">Batch</span>
                 </button>
@@ -233,20 +262,14 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    // --- UI HELPER: SIDEBAR TOGGLE ---
     function toggleSidebar() {
         document.getElementById('sidebar').classList.toggle('open');
         document.getElementById('backdrop').classList.toggle('show');
     }
 
-    // [KEEP PREVIOUS JAVASCRIPT LOGIC HERE] 
-    // Paste the exact same logic from the previous response below.
-    // The only change needed is ensuring the 'selectImage' function handles the empty state correctly on mobile.
-    
-    let appState = { images: [], activeId: null, cropper: null };
+    let appState = { images: [], activeId: null, cropper: null, zoomLocked: false };
 
     async function triggerUpload() {
-        // Close sidebar on mobile when upload starts
         if(window.innerWidth < 768) toggleSidebar(); 
 
         const result = await Swal.fire({
@@ -267,13 +290,50 @@
 
     async function handleFiles(files) {
         if(files.length === 0) return;
+        
+        const MAX_MB = 10;
+        const MAX_BYTES = MAX_MB * 1024 * 1024;
+        const VALID_TYPES = ['image/jpeg', 'image/png'];
+
+        let errorLog = "";
+        let validCount = 0;
+
         for (const file of files) {
-            const url = await compressImage(file);
-            addStateImage(file.name, url);
+            if (file.size > MAX_BYTES) {
+                const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+                errorLog += `<li class="mb-1"><strong>${file.name}</strong>: <span class="text-danger">File too large (${sizeMB}MB / ${MAX_MB}MB max)</span></li>`;
+                continue;
+            }
+            if (!VALID_TYPES.includes(file.type)) {
+                errorLog += `<li class="mb-1"><strong>${file.name}</strong>: <span class="text-warning-emphasis">Invalid format (Must be JPG, PNG, or WEBP)</span></li>`;
+                continue;
+            }
+            try {
+                const url = await compressImage(file);
+                addStateImage(file.name, url);
+                validCount++;
+            } catch (err) {
+                console.error(err);
+                errorLog += `<li class="mb-1"><strong>${file.name}</strong>: <span class="text-danger">Corrupt or unreadable file data</span></li>`;
+            }
         }
+
         renderSidebar();
-        if (!appState.activeId && appState.images.length > 0) {
-            selectImage(appState.images[appState.images.length - files.length].id);
+
+        if (errorLog !== "") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Import Issues Detected',
+                html: `<div class="text-start"><p class="small text-muted">The following files could not be processed:</p><ul class="small" style="padding-left: 20px;">${errorLog}</ul></div>`,
+                confirmButtonColor: '#2c3e50'
+            });
+        }
+
+        if (validCount > 0 && !appState.activeId) {
+            const firstNewImageIndex = appState.images.length - validCount;
+            if(appState.images[firstNewImageIndex]) {
+                selectImage(appState.images[firstNewImageIndex].id);
+            }
         }
     }
 
@@ -310,7 +370,13 @@
         const list = document.getElementById('batch-list');
         list.innerHTML = '';
         appState.images.forEach(img => {
-            let icon = img.status === 'done' ? '<i class="bi bi-check-circle-fill text-success"></i>' : (img.status === 'processing' ? '<div class="spinner-border spinner-border-sm"></div>' : '<i class="bi bi-circle"></i>');
+            let icon = '';
+            if (img.status === 'done') icon = '<i class="bi bi-check-circle-fill text-success"></i>';
+            else if (img.status === 'processing') icon = '<div class="spinner-border spinner-border-sm text-light"></div>';
+            else if (img.status === 'warning') icon = '<i class="bi bi-exclamation-triangle-fill text-warning"></i>';
+            else if (img.status === 'error') icon = '<i class="bi bi-x-circle-fill text-danger"></i>';
+            else icon = '<i class="bi bi-circle"></i>';
+            
             list.innerHTML += `
                 <div class="batch-item ${img.id === appState.activeId ? 'active' : ''}" onclick="selectImage('${img.id}')">
                     <img src="${img.url}" class="batch-thumb">
@@ -321,7 +387,6 @@
     }
 
     function selectImage(id) {
-        // Auto-close sidebar on mobile selection
         if(window.innerWidth < 768 && document.getElementById('sidebar').classList.contains('open')) {
             toggleSidebar();
         }
@@ -333,17 +398,55 @@
 
         appState.activeId = id;
         const img = appState.images.find(i => i.id === id);
+        if (!img) return;
         
         document.getElementById('empty-state').style.display = 'none';
-        document.getElementById('active-image').style.display = 'block';
+        
+        const imgEl = document.getElementById('active-image');
+        imgEl.style.display = 'block';
         document.getElementById('toolbar-title').innerText = img.name;
         document.getElementById('text-output').value = img.text;
 
-        const imgEl = document.getElementById('active-image');
-        imgEl.src = img.url;
+        if (appState.cropper) {
+            appState.cropper.destroy();
+            appState.cropper = null;
+        }
 
-        if (appState.cropper) appState.cropper.destroy();
-        appState.cropper = new Cropper(imgEl, { viewMode: 1, autoCropArea: 0.9 });
+        imgEl.onload = () => {
+            appState.cropper = new Cropper(imgEl, { 
+                viewMode: 0, 
+                autoCropArea: 0.9,
+                responsive: true,
+                zoom(event) {
+                    if (event.detail.ratio < 0.1 || event.detail.ratio > 10.0) {
+                        event.preventDefault(); 
+                        return;
+                    }
+                    if (appState.zoomLocked) {
+                        const savedData = this.cropper.getData();
+                        setTimeout(() => {
+                            this.cropper.setData(savedData);
+                        }, 0); 
+                    }
+                    updateZoomUI(event.detail.ratio);
+                },
+                ready() {
+                    const canvasData = this.cropper.getCanvasData();
+                    const imageData = this.cropper.getImageData();
+                    const initialRatio = canvasData.width / imageData.naturalWidth;
+                    updateZoomUI(initialRatio);
+                }
+            });
+
+            const slider = document.getElementById('fine-rotate');
+            const input = document.getElementById('angle-input');
+            if (slider && input) {
+                slider.value = 0;
+                input.value = 0;
+            }
+        };
+
+        imgEl.src = img.url;
         renderSidebar();
     }
 
@@ -369,21 +472,130 @@
         imgObj.status = 'processing';
         renderSidebar(); 
         document.getElementById('loader').classList.remove('d-none');
+        document.getElementById('loader-msg').innerText = "Processing..."; 
         
-        try {
-            let canvas = appState.cropper.getCroppedCanvas();
-            canvas = optimizeCanvas(canvas);
-            
-            const worker = await Tesseract.createWorker("eng");
-            const { data: { text } } = await worker.recognize(canvas);
-            await worker.terminate();
+        const TIMEOUT_MS = 12000;
+        let attempts = 0;
+        const maxAttempts = 2;
 
-            imgObj.text = text.trim();
-            imgObj.status = 'done';
-            document.getElementById('text-output').value = imgObj.text;
-        } catch (e) { console.error(e); imgObj.status = 'error'; }
+        while (attempts < maxAttempts) {
+            attempts++;
+            let worker = null;
+            try {
+                let canvas = appState.cropper.getCroppedCanvas();
+                canvas = optimizeCanvas(canvas);
+                
+                worker = await Tesseract.createWorker("eng");
+
+                const result = await Promise.race([
+                    worker.recognize(canvas),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), TIMEOUT_MS))
+                ]);
+
+                const { text, confidence } = result.data; 
+                const trimmedText = text.trim();
+
+                // Count actual letters and numbers
+                const alphaNumCount = (trimmedText.match(/[a-zA-Z0-9]/g) || []).length;
+                // Calculate what percentage of the string uses the alphabet and numeric data
+                const alphaNumRatio = trimmedText.length > 0 ? (alphaNumCount / trimmedText.length) : 0;
+                
+                // If a string is mostly symbols and spaces, it is a hallucinated background texture
+                const isConfidentGarbage = trimmedText.length > 5 && alphaNumRatio < 0.5;
+
+                // Trigger if too short, low confidence, OR if it's confident garbage
+                if (trimmedText.length < 3 || confidence < 30 || isConfidentGarbage) {
+                    const err = new Error("GibberishDetected");
+                    err.salvagedText = trimmedText;
+                    throw err;
+                }
+
+                await worker.terminate();
+                imgObj.text = trimmedText;
+                imgObj.status = 'done';
+                document.getElementById('text-output').value = imgObj.text;
+                break; 
+
+            } catch (e) {
+                if (worker) await worker.terminate();
+                console.error(`Attempt ${attempts} failed:`, e.message);
+
+                const isRecoverable = e.message !== "GibberishDetected";
+
+                if (attempts < maxAttempts && isRecoverable) {
+                    document.getElementById('loader-msg').innerText = `Retrying (Attempt ${attempts + 1})...`;
+                    await new Promise(r => setTimeout(r, 500)); 
+                } else {
+                    
+                    if (e.message === "Timeout") {
+                        imgObj.status = 'error';
+                        imgObj.text = `[ERROR: Processing ${imgObj.name} took too long. The image might be too blurry or complex.]`;
+                        document.getElementById('text-output').value = imgObj.text;
+                        
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Extraction Failed',
+                            text: 'Processing took too long. The image might be too blurry or complex.',
+                            confirmButtonColor: '#2c3e50'
+                        });
+                        
+                    } else if (e.message === "GibberishDetected") {
+                        // Hide the loader so it isn't spinning behind the popup
+                        document.getElementById('loader').classList.add('d-none');
+                        
+                        // Format a preview of the text (cap it at 150 characters for the modal)
+                        const preview = e.salvagedText.length > 150 ? e.salvagedText.substring(0, 150) + '...' : e.salvagedText;
+                        
+                        // Prompt the user for a decision
+                        const choice = await Swal.fire({
+                            icon: 'warning',
+                            title: 'Low Confidence Read',
+                            html: `
+                                <div class="text-start">
+                                    <p class="mb-2">We struggled to read this image: ${imgObj.name}. Here is a preview of what it salvaged:</p>
+                                    <pre class="bg-light p-2 border rounded text-muted" style="font-size: 0.8rem; white-space: pre-wrap; max-height: 150px; overflow-y: auto;">${preview}</pre>
+                                    <p class="mb-0 mt-2 fw-bold">Do you want to keep this partial text?</p>
+                                </div>
+                            `,
+                            showCancelButton: true,
+                            confirmButtonText: 'Keep it',
+                            cancelButtonText: 'Discard',
+                            confirmButtonColor: '#007d34',
+                            cancelButtonColor: '#dc3545',
+                            reverseButtons: true
+                        });
+
+                        // Apply their choice
+                        if (choice.isConfirmed) {
+                            imgObj.status = 'warning';
+                            imgObj.text = `[PARTIAL/LOW CONFIDENCE READ]\n---------------------------\n${e.salvagedText}`;
+                        } else {
+                            imgObj.status = 'error';
+                            imgObj.text = "[ERROR: Text discarded by user due to low quality]";
+                        }
+                        
+                        document.getElementById('text-output').value = imgObj.text;
+                        
+                    } else {
+                        // Generic fallback error
+                        imgObj.status = 'error';
+                        imgObj.text = `[ERROR: The system encountered an error.]`;
+                        document.getElementById('text-output').value = imgObj.text;
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Extraction Failed',
+                            text: 'The system encountered an error.',
+                            confirmButtonColor: '#2c3e50'
+                        });
+                    }
+                    
+                    break;
+                }
+            }
+        }
 
         document.getElementById('loader').classList.add('d-none');
+        document.getElementById('loader-msg').innerText = "Processing..."; 
         renderSidebar();
     }
 
@@ -427,6 +639,75 @@
         });
     }
 
+    function normalizeAngle(angle) {
+        let a = parseFloat(angle);
+        if (isNaN(a)) return 0; 
+        return ((a % 360) + 360) % 360; 
+    }
+
+    function syncRotate(value) {
+        if (!appState.cropper) return; 
+        const angle = normalizeAngle(value);
+        const displayAngle = parseFloat(angle.toFixed(1));
+        document.getElementById('angle-input').value = displayAngle;
+        document.getElementById('fine-rotate').value = displayAngle;
+        appState.cropper.rotateTo(displayAngle);
+    }
+
+    function adjustAngle(delta) {
+        const current = parseFloat(document.getElementById('angle-input').value) || 0;
+        syncRotate(current + delta);
+    }
+
+    function manualRotate(value) {
+        syncRotate(value);
+    }
+
+    function handleHardRotate(deg) { 
+        if(appState.cropper) {
+            const current = parseFloat(document.getElementById('angle-input').value) || 0;
+            syncRotate(current + deg);
+        } 
+    }
+
+    function toggleZoomLock() {
+        appState.zoomLocked = !appState.zoomLocked;
+        const btn = document.getElementById('btn-zoom-lock');
+        if (appState.zoomLocked) {
+            btn.innerHTML = '<i class="bi bi-lock-fill"></i>';
+            btn.classList.replace('btn-outline-secondary', 'btn-secondary');
+        } else {
+            btn.innerHTML = '<i class="bi bi-unlock"></i>';
+            btn.classList.replace('btn-secondary', 'btn-outline-secondary');
+        }
+    }
+
+    function manualZoom(percentValue) {
+        if (!appState.cropper) return;
+        let val = parseFloat(percentValue);
+        if (isNaN(val)) val = 100;
+        if (val < 10) val = 10;
+        if (val > 1000) val = 1000;
+        appState.cropper.zoomTo(val / 100);
+    }
+
+    function handleZoom(ratioDelta) {
+        if (appState.cropper) {
+            appState.cropper.zoom(ratioDelta);
+        }
+    }
+
+    function updateZoomUI(ratio) {
+        const percent = Math.round(ratio * 100);
+        const input = document.getElementById('zoom-input');
+        const btnOut = document.getElementById('btn-zoom-out');
+        const btnIn = document.getElementById('btn-zoom-in');
+        
+        if(input) input.value = percent;
+        if(btnOut) btnOut.disabled = percent <= 10;
+        if(btnIn) btnIn.disabled = percent >= 1000;
+    }
+
     function exportAll() {
         let txt = "ORNL EXPORT\n===========\n\n";
         appState.images.forEach((img, index) => {
@@ -439,8 +720,35 @@
         a.click();
     }
 
-    function rotate(deg) { if(appState.cropper) appState.cropper.rotate(deg); }
     function copyText() { navigator.clipboard.writeText(document.getElementById('text-output').value); }
+
+    function showHelp() {
+        Swal.fire({
+            title: 'Scanner Quick Guide',
+            html: `
+                <div class="text-start" style="font-size: 0.9rem; line-height: 1.6;">
+                    <p class="mb-3">
+                        <strong>1. Upload</strong> documents using the sidebar.<br>
+                        <strong>2. Crop & Align</strong> the box tightly around the target text.<br>
+                        <strong>3. Extract</strong> to read the text using the AI engine.
+                    </p>
+                    <hr>
+                    <h6 class="fw-bold mb-3 text-secondary">Tool Legend</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="bi bi-arrow-counterclockwise bg-light border rounded p-1"></i> <i class="bi bi-arrow-clockwise bg-light border rounded p-1"></i> <strong>Hard Rotate:</strong> Turn the image exactly 90°.</li>
+                        <li class="mb-2"><i class="bi bi-dash bg-light border rounded p-1"></i> <i class="bi bi-plus bg-light border rounded p-1"></i> <strong>Step Rotate:</strong> Nudge the image by 1° (or type/slide).</li>
+                        <li class="mb-2"><i class="bi bi-unlock bg-light border rounded p-1"></i> <strong>Zoom Lock:</strong> When locked (<i class="bi bi-lock-fill"></i>), the crop box scales <em>with</em> the canvas.</li>
+                        <li class="mb-2"><i class="bi bi-zoom-out bg-light border rounded p-1"></i> <i class="bi bi-zoom-in bg-light border rounded p-1"></i> <strong>Zoom:</strong> Magnify the canvas (10% to 1000%).</li>
+                        <li class="mb-2"><i class="bi bi-magic bg-secondary text-white rounded p-1"></i> <strong>Extract:</strong> Run OCR on the currently selected image.</li>
+                        <li><i class="bi bi-layers-half bg-primary text-white rounded p-1"></i> <strong>Batch:</strong> Run OCR on <em>all</em> uploaded images sequentially.</li>
+                    </ul>
+                </div>
+            `,
+            confirmButtonColor: '#007d34',
+            confirmButtonText: 'Got it',
+            width: '500px'
+        });
+    }
 </script>
 </body>
 </html>
