@@ -16,7 +16,9 @@ html {
   @include mat.theme((
     color: (
       primary: my-theme.$primary-palette,
+      secondary: my-theme.$secondary-palette,
       tertiary: my-theme.$tertiary-palette,
+      error: my-theme.$error-palette,
     ),
     typography: Roboto,
     density: 0,
