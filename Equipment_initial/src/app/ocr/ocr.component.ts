@@ -6,6 +6,7 @@ import { NormalizeTextPipe } from "./normalize-text-pipe";
 import { ImagePasser } from "../image-passer";
 import { FormsModule } from "@angular/forms";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -58,7 +59,7 @@ interface motorData {
     selector: 'app-ocr',
     templateUrl: './ocr.component.html',
     styleUrl: './ocr.component.css',
-    imports: [DecimalPipe, MatButtonToggleModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule, MatInputModule, MatFormFieldModule]
+    imports: [MatProgressBarModule, DecimalPipe, MatButtonToggleModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule, MatInputModule, MatFormFieldModule]
 })
 export class OCRComponent {
     pageOver: number = 1;
@@ -68,6 +69,7 @@ export class OCRComponent {
     imageSrc: string | ArrayBuffer | null = null;
     filesInput: uploadedFiles[] = [];
     loading: boolean = false;
+    extractionProgress = 0;
     private imageUtils = inject(ImageUtils);
     allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
     private _snackBar = inject(MatSnackBar)
@@ -251,7 +253,8 @@ export class OCRComponent {
                         console.warn(`Skipping ${file.name}`, err);
                         alert(`Error processing file ${file.name}. Skipping file.`);
                     }
-                    this.cd.detectChanges();
+                    this.extractionProgress = ((i+1)/this.filesInput.length)*100;
+                    this.cd.detectChanges();                    
                 }
 
             } catch (error) {
