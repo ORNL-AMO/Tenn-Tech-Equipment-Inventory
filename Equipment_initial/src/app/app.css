@@ -30,6 +30,7 @@ main {
     min-height: 100%;
     box-sizing: inherit;
     position: relative;
+    left: 10px;
 }
 
 .content {

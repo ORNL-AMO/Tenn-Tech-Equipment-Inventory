@@ -21,7 +21,7 @@
     @for(file of filesInput.slice(0, 10); track file.name){
     <mat-grid-tile>
         <!-- Image Preview -->
-        <img [src]="file.content" alt="{{file.name}}" class="preview-img" />
+        <img [src]="file.content" [alt]="file.name" class="preview-img" />
         <!-- Image File name with size -->
         <div class="caption">{{ file.name }} ({{ file.size / 1024 | number:'1.0-2' }} KB)</div>
     </mat-grid-tile>
@@ -41,6 +41,7 @@
 <mat-divider style="margin: 10px"></mat-divider>
 @if(loading){
 <p>Extracting text...</p>
+<mat-progress-bar mode="buffer" [value]="extractionProgress"></mat-progress-bar>
 } @else {
 <p>Upload an image to process</p>
 }
