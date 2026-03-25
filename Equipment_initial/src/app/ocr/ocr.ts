@@ -60,7 +60,7 @@ export class OCRService {
       return result.data.text;
 
     } catch (err: any) {
-      if (err.messge === "GibberishDetected") {
+      if (err.message === "GibberishDetected") {
         alert("OCR failed but salvaged text is available and will be placed into Description");
         return salvagedText;
       } else {
