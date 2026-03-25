@@ -164,7 +164,7 @@ export class OCRComponent {
                 console.log("Type:", typeof this.imagePasser.currentFile!);
                 console.log("Instanceof File:", this.imagePasser.currentFile! instanceof File);
                 const canvas = await this.imageUtils.prepareImage(this.imagePasser.currentFile!);
-                const result = await this.ocr.extractText(canvas);
+                const result = await this.ocr.extractText(canvas, "Camera Input");
                 const description = new NormalizeTextPipe().transform(result);
                 // Populate developer fields so it's easy to see where to edit                
                 const extractedValues = await this.textExtractor.extractValues(description);
@@ -215,7 +215,7 @@ export class OCRComponent {
                     try {
                         const canvas = await this.imageUtils.prepareImage(file.fullFile);
 
-                        const text = await this.ocr.extractText(canvas);
+                        const text = await this.ocr.extractText(canvas, file.name);
 
                         const description = new NormalizeTextPipe().transform(text);
 
@@ -249,7 +249,7 @@ export class OCRComponent {
                             SERIAL_NUMBER: extractedValues.SERIAL_NUMBER
                         });
 
-                    } catch (err) {
+                    } catch (err: any) {
                         console.warn(`Skipping ${file.name}`, err);
                         alert(`Error processing file ${file.name}. Skipping file.`);
                     }
