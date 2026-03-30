@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { HistoryService } from '../history/history.service';
 
 
 interface uploadedFiles {
@@ -29,30 +30,30 @@ interface uploadedFiles {
 
 interface motorData {
     name: string;
-    result: String,
-    description: String,
-    CAT_NO: String,
-    SPEC: String,
-    HORSEPOWER: String,
-    VOLTAGE: String,
-    AMPERAGE: String,
-    RPM: String,
-    FRAME: String,
-    HERTZ: String,
-    PH: String,
-    SER_F: String,
-    CODE: String,
-    DES: String,
-    CLASS: String,
-    NEMA_NOM_EFF: String,
-    P_F: String,
-    RATING: String,
-    CC: String,
-    USABLE_AT: String,
-    BEARINGS_DE: String,
-    BEARINGS_ODE: String,
-    ENCL: String,
-    SERIAL_NUMBER: String
+    result: string;
+    description: string;
+    CAT_NO: string;
+    SPEC: string;
+    HORSEPOWER: string;
+    VOLTAGE: string;
+    AMPERAGE: string;
+    RPM: string;
+    FRAME: string;
+    HERTZ: string;
+    PH: string;
+    SER_F: string;
+    CODE: string;
+    DES: string;
+    CLASS: string;
+    NEMA_NOM_EFF: string;
+    P_F: string;
+    RATING: string;
+    CC: string;
+    USABLE_AT: string;
+    BEARINGS_DE: string;
+    BEARINGS_ODE: string;
+    ENCL: string;
+    SERIAL_NUMBER: string;
 }
 
 @Component({
@@ -77,13 +78,19 @@ export class OCRComponent {
     constructor(private ocr: OCRService,
         private readonly cd: ChangeDetectorRef,
         private imagePasser: ImagePasser,
-        private textExtractor: TextExtractorService) { }
+        private textExtractor: TextExtractorService,
+        private historyService: HistoryService) { }
 
 
     switchPage(e: PageEvent) {
         this.currentPage = e.pageIndex * e.pageSize;
         this.pageOver = this.currentPage + e.pageSize;
         this.cd.detectChanges();
+    }
+
+    saveItem(item: motorData): void {
+        this.historyService.saveItem(item as any);
+        this._snackBar.open(`Saved "${item.name}" to history`, "Ok");
     }
 
     async onFileSelected(event: Event): Promise<void> {

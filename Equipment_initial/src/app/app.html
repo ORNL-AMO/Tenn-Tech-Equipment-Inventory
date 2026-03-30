@@ -3,15 +3,23 @@
   <section class="content">
     <p>This is an in development app!</p>
   </section>
-  <section class="content">
-    <app-upload-image />
-  </section>
-  <section>
-    <app-webcam />
-  </section>
-  <section>
-    <app-history />
-  </section>
+  
+  <mat-tab-group>
+    <mat-tab label="Scanner">
+      <section class="tab-content">
+        <app-upload-image />
+      </section>
+      <section class="tab-content">
+        <app-webcam />
+      </section>
+    </mat-tab>
+    
+    <mat-tab label="History">
+      <section class="tab-content">
+        <app-history />
+      </section>
+    </mat-tab>
+  </mat-tab-group>
 </main>
 
 <router-outlet />
