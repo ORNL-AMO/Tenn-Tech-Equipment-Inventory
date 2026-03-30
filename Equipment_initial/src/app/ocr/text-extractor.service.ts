@@ -54,6 +54,7 @@ export class TextExtractorService {
         { signals: ['RATING'], field: 'RATING' },
         { signals: ['CC'], field: 'CC' },
         { signals: ['USABLE AT'], field: 'USABLE_AT' },
+        // OPEL, PU, UZ, 
         { signals: ['BEARINGS DE', 'BEARINGS_DE', 'DE'], field: 'BEARINGS_DE' },
         { signals: ['BEARINGS ODE', 'BEARINGS_ODE', 'ODE', 'OPEL'], field: 'BEARINGS_ODE' },
         { signals: ['ENCL', 'ENCLOSURE'], field: 'ENCL' },
@@ -68,7 +69,7 @@ export class TextExtractorService {
      * @param description The cleaned OCR text to extract values from
      * @returns Object containing extracted values for each field
      */
-    extractValues(description: string): Promise<ExtractedValues> {
+    extractValues(description: string): Partial<ExtractedValues> {
         const extractedValues: any = {};
         const textUpper = description.toUpperCase();
 

@@ -20,17 +20,39 @@ h1 {
         "Segoe UI Symbol";
 }
 
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.25rem;
+    }
+}
+
 p {
     margin: var(--content-padding);
     color: var(--gray-700);
 }
 
 main {
-    width: auto;
+    width: calc(100% - 20px);
     min-height: 100%;
     box-sizing: inherit;
     position: relative;
     left: 10px;
+    right: 10px;
+    overflow-x: hidden;
+}
+
+@media (max-width: 480px) {
+    main {
+        width: 100%;
+        left: 0;
+        right: 0;
+    }
 }
 
 .content {
@@ -46,4 +68,10 @@ main {
 
 .content p {
     margin-top: 1.5rem;
+}
+
+.tab-content {
+    padding: 15px 0;
+    width: auto;
+    margin-bottom: 1rem;
 }

@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { HistoryService } from '../history/history.service';
 
 
 interface uploadedFiles {
@@ -29,30 +30,30 @@ interface uploadedFiles {
 
 interface motorData {
     name: string;
-    result: String,
-    description: String,
-    CAT_NO: String,
-    SPEC: String,
-    HORSEPOWER: String,
-    VOLTAGE: String,
-    AMPERAGE: String,
-    RPM: String,
-    FRAME: String,
-    HERTZ: String,
-    PH: String,
-    SER_F: String,
-    CODE: String,
-    DES: String,
-    CLASS: String,
-    NEMA_NOM_EFF: String,
-    P_F: String,
-    RATING: String,
-    CC: String,
-    USABLE_AT: String,
-    BEARINGS_DE: String,
-    BEARINGS_ODE: String,
-    ENCL: String,
-    SERIAL_NUMBER: String
+    result: string;
+    description: string;
+    CAT_NO: string | undefined;
+    SPEC: string | undefined;
+    HORSEPOWER: string | undefined;
+    VOLTAGE: string | undefined;
+    AMPERAGE: string | undefined;
+    RPM: string | undefined;
+    FRAME: string | undefined;
+    HERTZ: string | undefined;
+    PH: string | undefined;
+    SER_F: string | undefined;
+    CODE: string | undefined;
+    DES: string | undefined;
+    CLASS: string | undefined;
+    NEMA_NOM_EFF: string | undefined;
+    P_F: string | undefined;
+    RATING: string | undefined;
+    CC: string | undefined;
+    USABLE_AT: string | undefined;
+    BEARINGS_DE: string | undefined;
+    BEARINGS_ODE: string | undefined;
+    ENCL: string | undefined;
+    SERIAL_NUMBER: string | undefined;
 }
 
 @Component({
@@ -77,13 +78,19 @@ export class OCRComponent {
     constructor(private ocr: OCRService,
         private readonly cd: ChangeDetectorRef,
         private imagePasser: ImagePasser,
-        private textExtractor: TextExtractorService) { }
+        private textExtractor: TextExtractorService,
+        private historyService: HistoryService) { }
 
 
     switchPage(e: PageEvent) {
         this.currentPage = e.pageIndex * e.pageSize;
         this.pageOver = this.currentPage + e.pageSize;
         this.cd.detectChanges();
+    }
+
+    saveItem(item: motorData): void {
+        this.historyService.saveItem(item as any);
+        this._snackBar.open(`Saved "${item.name}" to history`, "Ok", { duration: 10000 });
     }
 
     async onFileSelected(event: Event): Promise<void> {
@@ -253,8 +260,8 @@ export class OCRComponent {
                         console.warn(`Skipping ${file.name}`, err);
                         alert(`Error processing file ${file.name}. Skipping file.`);
                     }
-                    this.extractionProgress = ((i+1)/this.filesInput.length)*100;
-                    this.cd.detectChanges();                    
+                    this.extractionProgress = ((i + 1) / this.filesInput.length) * 100;
+                    this.cd.detectChanges();
                 }
 
             } catch (error) {
@@ -262,7 +269,7 @@ export class OCRComponent {
             } finally {
                 this.loading = false;
                 this.cd.detectChanges();
-                this._snackBar.open("All Files Processed", "Ok");
+                this._snackBar.open("All Files Processed", "Ok", { duration: 10000 });
             }
         }
     }
