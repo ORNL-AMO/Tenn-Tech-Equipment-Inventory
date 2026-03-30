@@ -68,12 +68,11 @@ export class OCRService {
           icon: 'warning',
           title: 'Low Confidence Read',
           html: `
-                                <div class="text-start">
-                                    <p class="mb-2">We struggled to read this image: ${name}. Here is a preview of what it salvaged:</p>
-                                    <pre class="bg-light p-2 border rounded text-muted" style="font-size: 0.8rem; white-space: pre-wrap; max-height: 150px; overflow-y: auto;">${preview}</pre>
-                                    <p class="mb-0 mt-2 fw-bold">Do you want to keep this partial text?</p>
-                                </div>
-                            `,
+            <div class="text-start">
+              <p class="mb-2">We struggled to read this image: ${name}. Make sure the photo is clear, well lit, and upright. Here is a preview of what it salvaged:</p>
+              <pre class="bg-light p-2 border rounded text-muted" style="font-size: 0.8rem; white-space: pre-wrap; max-height: 150px; overflow-y: auto;">${preview}</pre>
+              <p class="mb-0 mt-2 fw-bold">Do you want to keep this partial text?</p>
+            </div>`,
           showCancelButton: true,
           confirmButtonText: 'Keep it',
           cancelButtonText: 'Discard',
@@ -85,7 +84,7 @@ export class OCRService {
         // Apply their choice
         if (choice.isConfirmed) {
           return salvagedText;
-        } else if (choice.isDenied){
+        } else if (choice.isDenied) {
           Swal.fire({
             icon: 'error',
             title: 'OCR Failed',
