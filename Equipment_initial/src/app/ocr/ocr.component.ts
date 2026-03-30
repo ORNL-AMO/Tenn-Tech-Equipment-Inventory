@@ -90,7 +90,7 @@ export class OCRComponent {
 
     saveItem(item: motorData): void {
         this.historyService.saveItem(item as any);
-        this._snackBar.open(`Saved "${item.name}" to history`, "Ok");
+        this._snackBar.open(`Saved "${item.name}" to history`, "Ok", { duration: 10000 });
     }
 
     async onFileSelected(event: Event): Promise<void> {
@@ -260,8 +260,8 @@ export class OCRComponent {
                         console.warn(`Skipping ${file.name}`, err);
                         alert(`Error processing file ${file.name}. Skipping file.`);
                     }
-                    this.extractionProgress = ((i+1)/this.filesInput.length)*100;
-                    this.cd.detectChanges();                    
+                    this.extractionProgress = ((i + 1) / this.filesInput.length) * 100;
+                    this.cd.detectChanges();
                 }
 
             } catch (error) {
@@ -269,7 +269,7 @@ export class OCRComponent {
             } finally {
                 this.loading = false;
                 this.cd.detectChanges();
-                this._snackBar.open("All Files Processed", "Ok");
+                this._snackBar.open("All Files Processed", "Ok", { duration: 10000 });
             }
         }
     }
