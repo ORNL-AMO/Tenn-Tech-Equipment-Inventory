@@ -38,26 +38,23 @@
 
           <!-- Card Content (Expanded View) -->
           <div class="card-content">
-            <!-- Basic Info -->
-            <h3>Equipment Details</h3>
-            <div class="details-grid">
-              <div class="detail-item">
-                <strong>Equipment Name:</strong>
-                <p>{{ item.name }}</p>
+            <div class="details-specs-wrapper">
+              <div class="details-grid">
+                <div class="detail-item">
+                  <strong>Equipment Name:</strong>
+                  <p>{{ item.name }}</p>
+                </div>
+                <div class="detail-item">
+                  <strong>Description:</strong>
+                  <p>{{ item.description }}</p>
+                </div>
+                <div class="detail-item">
+                  <strong>Raw OCR Result:</strong>
+                  <p class="raw-result">{{ item.result }}</p>
+                </div>
               </div>
-              <div class="detail-item">
-                <strong>Description:</strong>
-                <p>{{ item.description }}</p>
-              </div>
-              <div class="detail-item">
-                <strong>Raw OCR Result:</strong>
-                <p class="raw-result">{{ item.result }}</p>
-              </div>
-            </div>
 
-            <!-- Specifications Grid -->
-            <h3>Specifications</h3>
-            <div class="specs-grid">
+              <div class="specs-grid">
               <div class="spec-item">
                 <strong>CAT_NO</strong>
                 <p>{{ item.CAT_NO || ' ' }}</p>
@@ -147,6 +144,7 @@
                 <p>{{ item.SERIAL_NUMBER || ' ' }}</p>
               </div>
             </div>
+          </div>
 
             <mat-divider style="margin: 20px 0;"></mat-divider>
 
