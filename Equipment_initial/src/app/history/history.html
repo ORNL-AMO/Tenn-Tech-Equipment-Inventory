@@ -27,10 +27,18 @@
         <mat-expansion-panel #panel>
           <!-- Card Header (Collapsed View) -->
           <mat-expansion-panel-header>
-            <!-- *ngIf is apparently going to be deprecated, so we might need to come back later and fix this if they update Angular and remove it.-->
-            <ng-container>
-              <img src="{{ item.image }}" alt="Thumbnail" class="header-thumbnail" (click)="togglePanel(panel, $event)" />
-            </ng-container>
+            <div class="header-meta">
+              <img src="{{ item.image }}" alt="Thumbnail" class="header-thumbnail" />
+              <span class="header-timestamp">{{ item.savedAt || 'Unknown time' }}</span>
+            </div>
+            <div class="header-actions">
+              <button mat-mini-fab color="primary" aria-label="Download this entry" (click)="exportItem(item, 'json'); $event.stopPropagation();">
+                <mat-icon>download</mat-icon> Download as
+              </button>
+              <button mat-mini-fab color="warn" aria-label="Delete entry" (click)="deleteItem(item); $event.stopPropagation();">
+                <mat-icon>delete</mat-icon> Delete
+              </button>
+            </div>
           </mat-expansion-panel-header>
 
           <!-- Card Content (Expanded View) -->
@@ -149,21 +157,6 @@
           </div>
 
             <mat-divider style="margin: 20px 0;"></mat-divider>
-
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-              <button mat-raised-button color="primary" [matMenuTriggerFor]="menu">
-                <mat-icon>download</mat-icon> Download this Entry
-              </button>
-              <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="exportItem(item, 'json')">
-                  <mat-icon>description</mat-icon> as .json
-                </button>
-              </mat-menu>
-              <button mat-raised-button color="warn" (click)="deleteItem(idx)">
-                <mat-icon>delete</mat-icon> Delete
-              </button>
-            </div>
           </div>
         </mat-expansion-panel>
       }

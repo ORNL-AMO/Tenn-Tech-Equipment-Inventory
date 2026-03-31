@@ -93,6 +93,34 @@ p {
   cursor: pointer;
 }
 
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.header-timestamp {
+  font-size: 12px;
+  color: var(--gray-700);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.header-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.header-actions button {
+  min-width: 36px;
+  height: 36px;
+  padding: 0;
+}
+
 .header-placeholder {
   width: 42px;
   height: 42px;

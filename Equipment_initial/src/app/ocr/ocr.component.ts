@@ -31,10 +31,12 @@ interface uploadedFiles {
 }
 
 interface motorData {
+    id?: string;
     name: string;
     result: string;
     description: string;
     image?: string;
+    savedAt?: string;
     CAT_NO: string | undefined;
     SPEC: string | undefined;
     HORSEPOWER: string | undefined;
@@ -118,7 +120,7 @@ export class OCRComponent {
         });
 
         this.historyService.saveItem(filteredItem as any);
-        this._snackBar.open(`Saved "${item.name}" to history`, "Ok", { duration: 10000 });
+        this._snackBar.open(`Saved "${item.name}" to history`, "Ok", { duration: 5000 });
     }
 
     async onFileSelected(event: Event): Promise<void> {
@@ -205,10 +207,12 @@ export class OCRComponent {
                 const extractedValues = await this.textExtractor.extractValues(description);
                 // Populate developer fields so it's easy to see where to edit                
                 const motor: motorData = {
+                    id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
                     name: "Camera input",
                     result: result,
                     description: description,
                     image: imageData,
+                    savedAt: new Date().toLocaleString(),
                     CAT_NO: extractedValues.CAT_NO,
                     SPEC: extractedValues.SPEC,
                     HORSEPOWER: extractedValues.HORSEPOWER,
@@ -261,10 +265,12 @@ export class OCRComponent {
                         const extractedValues = await this.textExtractor.extractValues(description);
 
                         const motor: motorData = {
+                            id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
                             name: file.name,
                             result: text,
                             description,
                             image: typeof file.content === 'string' ? file.content : undefined,
+                            savedAt: new Date().toLocaleString(),
                             CAT_NO: extractedValues.CAT_NO,
                             SPEC: extractedValues.SPEC,
                             HORSEPOWER: extractedValues.HORSEPOWER,
@@ -304,7 +310,7 @@ export class OCRComponent {
             } finally {
                 this.loading = false;
                 this.cd.detectChanges();
-                this._snackBar.open("All Files Processed", "Ok", { duration: 10000 });
+                this._snackBar.open("All Files Processed", "Ok", { duration: 5000 });
             }
         }
     }

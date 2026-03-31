@@ -58,15 +58,15 @@ export class History implements OnInit {
     return [...matchedItems].reverse();
   }
 
-  deleteItem(index: number): void {
-    this.historyService.removeItem(index);
-    this.snackBar.open('Item removed from history', 'Ok');
+  deleteItem(item: MotorData): void {
+    this.historyService.removeItem(item);
+    this.snackBar.open('Item removed from history', 'Ok', { duration: 5000 });
   }
 
   clearAll(): void {
     if (confirm('Are you sure you want to clear all history?')) {
       this.historyService.clearHistory();
-      this.snackBar.open('History cleared', 'Ok');
+      this.snackBar.open('History cleared', 'Ok', { duration: 5000 });
     }
   }
 
@@ -80,7 +80,7 @@ export class History implements OnInit {
       link.download = `${item.name}_equipment.json`;
       link.click();
       URL.revokeObjectURL(url);
-      this.snackBar.open('Item exported', 'Ok');
+      this.snackBar.open('Item exported', 'Ok', { duration: 5000 });
     }
   }
 }
