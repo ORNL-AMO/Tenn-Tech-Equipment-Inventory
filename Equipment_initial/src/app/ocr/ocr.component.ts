@@ -200,9 +200,9 @@ export class OCRComponent {
                 const canvas = await this.imageUtils.prepareImage(this.imagePasser.currentFile!);
                 const result = await this.ocr.extractText(canvas, "Camera Input");
                 const description = new NormalizeTextPipe().transform(result);
-                // Populate developer fields so it's easy to see where to edit                
                 const extractedValues = await this.textExtractor.extractValues(description);
-                this.inventory.push({
+                // Populate developer fields so it's easy to see where to edit                
+                const motor: motorData = {
                     name: "Camera input",
                     result: result,
                     description: description,
@@ -228,7 +228,9 @@ export class OCRComponent {
                     BEARINGS_ODE: extractedValues.BEARINGS_ODE,
                     ENCL: extractedValues.ENCL,
                     SERIAL_NUMBER: extractedValues.SERIAL_NUMBER
-                })
+                };
+                this.inventory.push(motor);
+                this.saveItem(motor);
                 return;
             }
             catch (error) {
@@ -255,7 +257,7 @@ export class OCRComponent {
 
                         const extractedValues = await this.textExtractor.extractValues(description);
 
-                        this.inventory.push({
+                        const motor: motorData = {
                             name: file.name,
                             result: text,
                             description,
@@ -281,7 +283,9 @@ export class OCRComponent {
                             BEARINGS_ODE: extractedValues.BEARINGS_ODE,
                             ENCL: extractedValues.ENCL,
                             SERIAL_NUMBER: extractedValues.SERIAL_NUMBER
-                        });
+                        };
+                        this.inventory.push(motor);
+                        this.saveItem(motor);
 
                     } catch (err: any) {
                         console.warn(`Skipping ${file.name}`, err);

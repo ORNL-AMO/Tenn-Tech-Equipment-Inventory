@@ -302,8 +302,8 @@
                 <mat-checkbox [checked]="isFieldSelected('SERIAL_NUMBER')" (change)="toggleField('SERIAL_NUMBER')">SERIAL_NUMBER</mat-checkbox>
             </div>
         </mat-menu>
-        <button mat-raised-button color="primary" (click)="saveItem(item)">
-            <mat-icon>save</mat-icon> Save this Item
+        <button mat-raised-button color="primary" disabled>
+            <mat-icon>save</mat-icon> Save this Item (disabled)
         </button>
     </div>
     <mat-divider style="margin: 10px"></mat-divider>
