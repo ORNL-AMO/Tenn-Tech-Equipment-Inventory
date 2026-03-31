@@ -83,6 +83,27 @@ p {
   overflow: hidden;
 }
 
+.header-thumbnail {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.12);
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.header-placeholder {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px dashed rgba(0,0,0,0.25);
+  color: rgba(0,0,0,0.45);
+  font-size: 12px;
+}
 .cat-no-badge {
   background-color: rgba(160, 201, 70, 0.1);
   color: #526d1f;

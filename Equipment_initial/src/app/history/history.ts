@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { MatExpansionModule, MatExpansionPanel } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -40,14 +40,22 @@ export class History implements OnInit {
     this.selectedImage = null;
   }
 
+  togglePanel(panel: MatExpansionPanel, event: MouseEvent): void {
+    event.stopPropagation();
+    panel.toggle();
+  }
+
   get filteredItems(): MotorData[] {
-    if (!this.searchTerm) return this.savedItems;
     const term = this.searchTerm.toLowerCase();
-    return this.savedItems.filter(item =>
-      item.name.toString().toLowerCase().includes(term) ||
-      item.CAT_NO.toString().toLowerCase().includes(term) ||
-      item.description.toString().toLowerCase().includes(term)
-    );
+    const matchedItems = this.searchTerm
+      ? this.savedItems.filter(item =>
+          item.name.toString().toLowerCase().includes(term) ||
+          item.CAT_NO.toString().toLowerCase().includes(term) ||
+          item.description.toString().toLowerCase().includes(term)
+        )
+      : this.savedItems;
+
+    return [...matchedItems].reverse();
   }
 
   deleteItem(index: number): void {

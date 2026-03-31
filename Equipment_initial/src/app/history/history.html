@@ -24,16 +24,15 @@
     <!-- Expandable Cards -->
     <mat-accordion class="cards-container">
       @for (item of filteredItems; track item.name + $index; let idx = $index) {
-        <mat-expansion-panel>
+        <mat-expansion-panel #panel>
           <!-- Card Header (Collapsed View) -->
           <mat-expansion-panel-header>
-            <mat-panel-title class="summary-title">
-              {{ item.name }}
-            </mat-panel-title>
-            <mat-panel-description class="summary-description">
-              <span class="cat-no-badge">{{ item.CAT_NO || 'N/A' }}</span>
-              <span class="description-preview">{{ (item.description | slice:0:50) }}...</span>
-            </mat-panel-description>
+            <ng-container *ngIf="item.image">
+              <img src="{{ item.image }}" alt="Thumbnail" class="header-thumbnail" (click)="togglePanel(panel, $event)" />
+            </ng-container>
+            <ng-container *ngIf="!item.image">
+              <span class="header-placeholder">No Image</span>
+            </ng-container>
           </mat-expansion-panel-header>
 
           <!-- Card Content (Expanded View) -->
