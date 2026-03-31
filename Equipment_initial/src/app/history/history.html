@@ -27,11 +27,9 @@
         <mat-expansion-panel #panel>
           <!-- Card Header (Collapsed View) -->
           <mat-expansion-panel-header>
-            <ng-container *ngIf="item.image">
+            <!-- *ngIf is apparently going to be deprecated, so we might need to come back later and fix this if they update Angular and remove it.-->
+            <ng-container>
               <img src="{{ item.image }}" alt="Thumbnail" class="header-thumbnail" (click)="togglePanel(panel, $event)" />
-            </ng-container>
-            <ng-container *ngIf="!item.image">
-              <span class="header-placeholder">No Image</span>
             </ng-container>
           </mat-expansion-panel-header>
 
