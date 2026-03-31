@@ -23,6 +23,54 @@ mat-form-field {
     padding: 0 var(--content-padding);
 }
 
+.item-layout {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) minmax(280px, 2fr);
+    gap: 14px;
+    align-items: start;
+}
+
+.item-left {
+    display: grid;
+    gap: 8px;
+}
+
+.field-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.grid-item mat-form-field {
+    width: 100%;
+}
+
+@media (max-width: 1024px) {
+    .field-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .item-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .field-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .field-grid {
+        grid-template-columns: 1fr;
+    }
+
+    input[type="file"] {
+        width: 100%;
+    }
+}
+
 @media (max-width: 480px) {
     .example-form {
         max-width: 100%;
@@ -49,7 +97,7 @@ tr {
 
 td {
     flex: 1 1 calc(0% - 8px);
-    min-width: 200px;
+    min-width: 140px;
 }
 
 @media (max-width: 768px) {
@@ -116,6 +164,30 @@ mat-grid-tile img {
 mat-grid-tile:hover .caption {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Compact text areas to save screen real estate */
+.compact-field {
+    margin-bottom: 8px;
+}
+
+.compact-textarea,
+mat-form-field textarea.mat-input-element {
+    white-space: pre-wrap;
+    word-break: break-word;
+    min-height: 2.25rem;
+    max-height: 140px;
+    padding: 0.45rem 0.55rem;
+    overflow: auto;
+    resize: vertical;
+}
+
+mat-form-field textarea.mat-input-element {
+    font-size: 0.92rem;
+}
+
+mat-form-field {
+    margin-bottom: 6px;
 }
 
 /* Save Controls Section */
