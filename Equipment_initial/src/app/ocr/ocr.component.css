@@ -117,3 +117,20 @@ mat-grid-tile:hover .caption {
     opacity: 1;
     transform: translateY(0);
 }
+
+/* Save Controls Section */
+.save-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.field-selection-menu {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.field-checkbox {
+    padding: 8px 16px;
+}

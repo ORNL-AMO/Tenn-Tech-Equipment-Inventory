@@ -18,6 +18,8 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HistoryService } from '../history/history.service';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 interface uploadedFiles {
@@ -60,7 +62,7 @@ interface motorData {
     selector: 'app-ocr',
     templateUrl: './ocr.component.html',
     styleUrl: './ocr.component.css',
-    imports: [MatProgressBarModule, DecimalPipe, MatButtonToggleModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule, MatInputModule, MatFormFieldModule]
+    imports: [MatProgressBarModule, DecimalPipe, MatButtonToggleModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule, MatInputModule, MatFormFieldModule, MatCheckboxModule, MatMenuModule]
 })
 export class OCRComponent {
     pageOver: number = 1;
@@ -74,6 +76,16 @@ export class OCRComponent {
     private imageUtils = inject(ImageUtils);
     allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
     private _snackBar = inject(MatSnackBar)
+
+    // Field selection for save filtering
+    selectedFields: Set<string> = new Set([
+        'name', 'result', 'description',
+        'CAT_NO', 'SPEC', 'HORSEPOWER', 'VOLTAGE', 'AMPERAGE', 'RPM', 
+        'FRAME', 'HERTZ', 'PH', 'SER_F', 'CODE', 'DES', 'CLASS', 
+        'NEMA_NOM_EFF', 'P_F', 'RATING', 'CC', 'USABLE_AT', 
+        'BEARINGS_DE', 'BEARINGS_ODE', 'ENCL', 'SERIAL_NUMBER'
+    ]);
+    allFieldsSelected: boolean = true;
 
     constructor(private ocr: OCRService,
         private readonly cd: ChangeDetectorRef,
@@ -89,7 +101,22 @@ export class OCRComponent {
     }
 
     saveItem(item: motorData): void {
-        this.historyService.saveItem(item as any);
+        // Filter out unselected fields by setting them to undefined
+        const filteredItem = { ...item };
+        const fieldsToCheck = [
+            'CAT_NO', 'SPEC', 'HORSEPOWER', 'VOLTAGE', 'AMPERAGE', 'RPM', 
+            'FRAME', 'HERTZ', 'PH', 'SER_F', 'CODE', 'DES', 'CLASS', 
+            'NEMA_NOM_EFF', 'P_F', 'RATING', 'CC', 'USABLE_AT', 
+            'BEARINGS_DE', 'BEARINGS_ODE', 'ENCL', 'SERIAL_NUMBER'
+        ];
+
+        fieldsToCheck.forEach(field => {
+            if (!this.selectedFields.has(field)) {
+                (filteredItem as any)[field] = undefined;
+            }
+        });
+
+        this.historyService.saveItem(filteredItem as any);
         this._snackBar.open(`Saved "${item.name}" to history`, "Ok", { duration: 10000 });
     }
 
@@ -272,5 +299,43 @@ export class OCRComponent {
                 this._snackBar.open("All Files Processed", "Ok", { duration: 10000 });
             }
         }
+    }
+
+    toggleField(fieldName: string): void {
+        if (this.selectedFields.has(fieldName)) {
+            this.selectedFields.delete(fieldName);
+        } else {
+            this.selectedFields.add(fieldName);
+        }
+        this.updateAllFieldsSelected();
+    }
+
+    toggleAllFields(): void {
+        if (this.allFieldsSelected) {
+            this.selectedFields.clear();
+        } else {
+            const allFields = [
+                'CAT_NO', 'SPEC', 'HORSEPOWER', 'VOLTAGE', 'AMPERAGE', 'RPM', 
+                'FRAME', 'HERTZ', 'PH', 'SER_F', 'CODE', 'DES', 'CLASS', 
+                'NEMA_NOM_EFF', 'P_F', 'RATING', 'CC', 'USABLE_AT', 
+                'BEARINGS_DE', 'BEARINGS_ODE', 'ENCL', 'SERIAL_NUMBER'
+            ];
+            allFields.forEach(field => this.selectedFields.add(field));
+        }
+        this.allFieldsSelected = !this.allFieldsSelected;
+    }
+
+    updateAllFieldsSelected(): void {
+        const allFields = [
+            'CAT_NO', 'SPEC', 'HORSEPOWER', 'VOLTAGE', 'AMPERAGE', 'RPM', 
+            'FRAME', 'HERTZ', 'PH', 'SER_F', 'CODE', 'DES', 'CLASS', 
+            'NEMA_NOM_EFF', 'P_F', 'RATING', 'CC', 'USABLE_AT', 
+            'BEARINGS_DE', 'BEARINGS_ODE', 'ENCL', 'SERIAL_NUMBER'
+        ];
+        this.allFieldsSelected = allFields.every(field => this.selectedFields.has(field));
+    }
+
+    isFieldSelected(fieldName: string): boolean {
+        return this.selectedFields.has(fieldName);
     }
 }

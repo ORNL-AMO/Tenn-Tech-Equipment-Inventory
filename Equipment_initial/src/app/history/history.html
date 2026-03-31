@@ -60,91 +60,91 @@
             <div class="specs-grid">
               <div class="spec-item">
                 <strong>CAT_NO</strong>
-                <p>{{ item.CAT_NO || '—' }}</p>
+                <p>{{ item.CAT_NO || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>SPEC</strong>
-                <p>{{ item.SPEC || '—' }}</p>
+                <p>{{ item.SPEC || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>HORSEPOWER</strong>
-                <p>{{ item.HORSEPOWER || '—' }}</p>
+                <p>{{ item.HORSEPOWER || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>VOLTAGE</strong>
-                <p>{{ item.VOLTAGE || '—' }}</p>
+                <p>{{ item.VOLTAGE || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>AMPERAGE</strong>
-                <p>{{ item.AMPERAGE || '—' }}</p>
+                <p>{{ item.AMPERAGE || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>RPM</strong>
-                <p>{{ item.RPM || '—' }}</p>
+                <p>{{ item.RPM || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>FRAME</strong>
-                <p>{{ item.FRAME || '—' }}</p>
+                <p>{{ item.FRAME || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>HERTZ</strong>
-                <p>{{ item.HERTZ || '—' }}</p>
+                <p>{{ item.HERTZ || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>PH</strong>
-                <p>{{ item.PH || '—' }}</p>
+                <p>{{ item.PH || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>SER_F</strong>
-                <p>{{ item.SER_F || '—' }}</p>
+                <p>{{ item.SER_F || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>CODE</strong>
-                <p>{{ item.CODE || '—' }}</p>
+                <p>{{ item.CODE || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>DES</strong>
-                <p>{{ item.DES || '—' }}</p>
+                <p>{{ item.DES || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>CLASS</strong>
-                <p>{{ item.CLASS || '—' }}</p>
+                <p>{{ item.CLASS || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>NEMA_NOM_EFF</strong>
-                <p>{{ item.NEMA_NOM_EFF || '—' }}</p>
+                <p>{{ item.NEMA_NOM_EFF || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>P_F</strong>
-                <p>{{ item.P_F || '—' }}</p>
+                <p>{{ item.P_F || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>RATING</strong>
-                <p>{{ item.RATING || '—' }}</p>
+                <p>{{ item.RATING || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>CC</strong>
-                <p>{{ item.CC || '—' }}</p>
+                <p>{{ item.CC || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>USABLE_AT</strong>
-                <p>{{ item.USABLE_AT || '—' }}</p>
+                <p>{{ item.USABLE_AT || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>BEARINGS_DE</strong>
-                <p>{{ item.BEARINGS_DE || '—' }}</p>
+                <p>{{ item.BEARINGS_DE || ' ' }}</p>
               </div>
               <div class="spec-item">
-                <strong>BEARINGS_ODE</strong>
-                <p>{{ item.BEARINGS_ODE || '—' }}</p>
+                <strong>BEARINGS_ODE</strong>   
+                <p>{{ item.BEARINGS_ODE || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>ENCL</strong>
-                <p>{{ item.ENCL || '—' }}</p>
+                <p>{{ item.ENCL || ' ' }}</p>
               </div>
               <div class="spec-item">
                 <strong>SERIAL_NUMBER</strong>
-                <p>{{ item.SERIAL_NUMBER || '—' }}</p>
+                <p>{{ item.SERIAL_NUMBER || ' ' }}</p>
               </div>
             </div>
 
@@ -152,9 +152,14 @@
 
             <!-- Action Buttons -->
             <div class="action-buttons">
-              <button mat-raised-button color="primary" (click)="exportItem(item)">
-                <mat-icon>download</mat-icon> Export as JSON
+              <button mat-raised-button color="primary" [matMenuTriggerFor]="menu">
+                <mat-icon>download</mat-icon> Download this Entry
               </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="exportItem(item, 'json')">
+                  <mat-icon>description</mat-icon> as .json
+                </button>
+              </mat-menu>
               <button mat-raised-button color="warn" (click)="deleteItem(idx)">
                 <mat-icon>delete</mat-icon> Delete
               </button>
@@ -167,9 +172,7 @@
     <!-- Empty State -->
     <div class="empty-state">
       <mat-icon class="empty-icon">history</mat-icon>
-      <h2>No Equipment Saved Yet</h2>
-      <p>Equipment items you save from the OCR scanner will appear here.</p>
-      <p>Go to the OCR tab and click "Save this Item" to get started!</p>
+      <h2>Nothing Yet</h2>
     </div>
   }
 </div>

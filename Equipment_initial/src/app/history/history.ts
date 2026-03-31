@@ -8,12 +8,13 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-history',
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatExpansionModule, MatDividerModule, MatFormFieldModule, MatInputModule, FormsModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatExpansionModule, MatDividerModule, MatFormFieldModule, MatInputModule, MatMenuModule, FormsModule],
   templateUrl: './history.html',
   styleUrl: './history.css',
 })
@@ -52,15 +53,17 @@ export class History implements OnInit {
     }
   }
 
-  exportItem(item: MotorData): void {
-    const dataStr = JSON.stringify(item, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${item.name}_equipment.json`;
-    link.click();
-    URL.revokeObjectURL(url);
-    this.snackBar.open('Item exported', 'Ok');
+  exportItem(item: MotorData, format: string): void {
+    if (format === 'json') {
+      const dataStr = JSON.stringify(item, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${item.name}_equipment.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+      this.snackBar.open('Item exported', 'Ok');
+    }
   }
 }

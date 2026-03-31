@@ -224,9 +224,88 @@
         </tr>
     </table>
     <br>
-    <button mat-raised-button color="primary" (click)="saveItem(item)">
-        <mat-icon>save</mat-icon> Save this Item
-    </button>
+    <div class="save-controls">
+        <button mat-raised-button color="accent" [matMenuTriggerFor]="fieldMenu">
+            <mat-icon>filter_list</mat-icon> Select Fields to Save
+        </button>
+        <mat-menu #fieldMenu="matMenu" class="field-selection-menu">
+            <div mat-menu-item (click)="$event.stopPropagation()">
+                <mat-checkbox [checked]="allFieldsSelected" (change)="toggleAllFields()">
+                    <strong>Select All</strong>
+                </mat-checkbox>
+            </div>
+            <mat-divider></mat-divider>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('CAT_NO')" (change)="toggleField('CAT_NO')">CAT_NO</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('SPEC')" (change)="toggleField('SPEC')">SPEC</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('HORSEPOWER')" (change)="toggleField('HORSEPOWER')">HORSEPOWER</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('VOLTAGE')" (change)="toggleField('VOLTAGE')">VOLTAGE</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('AMPERAGE')" (change)="toggleField('AMPERAGE')">AMPERAGE</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('RPM')" (change)="toggleField('RPM')">RPM</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('FRAME')" (change)="toggleField('FRAME')">FRAME</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('HERTZ')" (change)="toggleField('HERTZ')">HERTZ</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('PH')" (change)="toggleField('PH')">PH</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('SER_F')" (change)="toggleField('SER_F')">SER_F</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('CODE')" (change)="toggleField('CODE')">CODE</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('DES')" (change)="toggleField('DES')">DES</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('CLASS')" (change)="toggleField('CLASS')">CLASS</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('NEMA_NOM_EFF')" (change)="toggleField('NEMA_NOM_EFF')">NEMA_NOM_EFF</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('P_F')" (change)="toggleField('P_F')">P_F</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('RATING')" (change)="toggleField('RATING')">RATING</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('CC')" (change)="toggleField('CC')">CC</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('USABLE_AT')" (change)="toggleField('USABLE_AT')">USABLE_AT</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('BEARINGS_DE')" (change)="toggleField('BEARINGS_DE')">BEARINGS_DE</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('BEARINGS_ODE')" (change)="toggleField('BEARINGS_ODE')">BEARINGS_ODE</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('ENCL')" (change)="toggleField('ENCL')">ENCL</mat-checkbox>
+            </div>
+            <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
+                <mat-checkbox [checked]="isFieldSelected('SERIAL_NUMBER')" (change)="toggleField('SERIAL_NUMBER')">SERIAL_NUMBER</mat-checkbox>
+            </div>
+        </mat-menu>
+        <button mat-raised-button color="primary" (click)="saveItem(item)">
+            <mat-icon>save</mat-icon> Save this Item
+        </button>
+    </div>
     <mat-divider style="margin: 10px"></mat-divider>
     }
 </div>
