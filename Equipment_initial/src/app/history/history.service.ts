@@ -5,6 +5,7 @@ export interface MotorData {
     name: string;
     result: string;
     description: string;
+    image?: string;
     CAT_NO: string;
     SPEC: string;
     HORSEPOWER: string;

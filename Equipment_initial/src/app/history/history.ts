@@ -24,11 +24,20 @@ export class History implements OnInit {
   
   savedItems: MotorData[] = [];
   searchTerm: string = '';
+  selectedImage: string | null = null;
 
   ngOnInit(): void {
     this.historyService.savedItems$.subscribe(items => {
       this.savedItems = items;
     });
+  }
+
+  openImage(imageUrl: string): void {
+    this.selectedImage = imageUrl;
+  }
+
+  closeImage(): void {
+    this.selectedImage = null;
   }
 
   get filteredItems(): MotorData[] {

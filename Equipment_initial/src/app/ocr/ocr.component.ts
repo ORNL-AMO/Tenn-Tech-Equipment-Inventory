@@ -34,6 +34,7 @@ interface motorData {
     name: string;
     result: string;
     description: string;
+    image?: string;
     CAT_NO: string | undefined;
     SPEC: string | undefined;
     HORSEPOWER: string | undefined;
@@ -198,6 +199,7 @@ export class OCRComponent {
                 console.log("Type:", typeof this.imagePasser.currentFile!);
                 console.log("Instanceof File:", this.imagePasser.currentFile! instanceof File);
                 const canvas = await this.imageUtils.prepareImage(this.imagePasser.currentFile!);
+                const imageData = canvas.toDataURL('image/png');
                 const result = await this.ocr.extractText(canvas, "Camera Input");
                 const description = new NormalizeTextPipe().transform(result);
                 const extractedValues = await this.textExtractor.extractValues(description);
@@ -206,6 +208,7 @@ export class OCRComponent {
                     name: "Camera input",
                     result: result,
                     description: description,
+                    image: imageData,
                     CAT_NO: extractedValues.CAT_NO,
                     SPEC: extractedValues.SPEC,
                     HORSEPOWER: extractedValues.HORSEPOWER,
@@ -261,6 +264,7 @@ export class OCRComponent {
                             name: file.name,
                             result: text,
                             description,
+                            image: typeof file.content === 'string' ? file.content : undefined,
                             CAT_NO: extractedValues.CAT_NO,
                             SPEC: extractedValues.SPEC,
                             HORSEPOWER: extractedValues.HORSEPOWER,

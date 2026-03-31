@@ -38,6 +38,11 @@
 
           <!-- Card Content (Expanded View) -->
           <div class="card-content">
+            @if(item.image){
+            <div class="history-image-wrapper">
+              <img src="{{ item.image }}" alt="Source image" class="history-thumb" (click)="openImage(item.image)" />
+            </div>
+            }
             <div class="details-specs-wrapper">
               <div class="details-grid">
                 <div class="detail-item">
@@ -166,6 +171,16 @@
         </mat-expansion-panel>
       }
     </mat-accordion>
+
+    @if(selectedImage){
+    <div class="image-modal-backdrop" (click)="closeImage()">
+      <div class="image-modal-content" (click)="$event.stopPropagation()">
+        <button class="image-modal-close" (click)="closeImage()" aria-label="Close image">✕</button>
+        <img src="{{ selectedImage }}" alt="Full screen photo" class="image-modal-img" />
+      </div>
+    </div>
+    }
+
   } @else {
     <!-- Empty State -->
     <div class="empty-state">
