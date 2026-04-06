@@ -2,9 +2,12 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 export interface MotorData {
+    id?: string;
     name: string;
     result: string;
     description: string;
+    image?: string;
+    savedAt?: string;
     CAT_NO: string;
     SPEC: string;
     HORSEPOWER: string;
@@ -65,9 +68,20 @@ export class HistoryService {
         localStorage.removeItem('savedItems');
     }
 
-    removeItem(index: number): void {
+    removeItem(itemOrIndex: MotorData | number): void {
         const current = this.savedItems.value;
-        const updated = current.filter((_, i) => i !== index);
+        let updated: MotorData[];
+
+        if (typeof itemOrIndex === 'number') {
+            updated = current.filter((_, i) => i !== itemOrIndex);
+        } else {
+            if (itemOrIndex.id) {
+                updated = current.filter(saved => saved.id !== itemOrIndex.id);
+            } else {
+                updated = current.filter(saved => saved !== itemOrIndex);
+            }
+        }
+
         this.savedItems.next(updated);
         localStorage.setItem('savedItems', JSON.stringify(updated));
     }

@@ -4,16 +4,17 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { MatExpansionModule, MatExpansionPanel } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-history',
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatExpansionModule, MatDividerModule, MatFormFieldModule, MatInputModule, FormsModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatExpansionModule, MatDividerModule, MatFormFieldModule, MatInputModule, MatMenuModule, FormsModule],
   templateUrl: './history.html',
   styleUrl: './history.css',
 })
@@ -23,6 +24,7 @@ export class History implements OnInit {
   
   savedItems: MotorData[] = [];
   searchTerm: string = '';
+  selectedImage: string | null = null;
 
   ngOnInit(): void {
     this.historyService.savedItems$.subscribe(items => {
@@ -30,37 +32,55 @@ export class History implements OnInit {
     });
   }
 
-  get filteredItems(): MotorData[] {
-    if (!this.searchTerm) return this.savedItems;
-    const term = this.searchTerm.toLowerCase();
-    return this.savedItems.filter(item =>
-      item.name.toString().toLowerCase().includes(term) ||
-      item.CAT_NO.toString().toLowerCase().includes(term) ||
-      item.description.toString().toLowerCase().includes(term)
-    );
+  openImage(imageUrl: string): void {
+    this.selectedImage = imageUrl;
   }
 
-  deleteItem(index: number): void {
-    this.historyService.removeItem(index);
-    this.snackBar.open('Item removed from history', 'Ok');
+  closeImage(): void {
+    this.selectedImage = null;
+  }
+
+  togglePanel(panel: MatExpansionPanel, event: MouseEvent): void {
+    event.stopPropagation();
+    panel.toggle();
+  }
+
+  get filteredItems(): MotorData[] {
+    const term = this.searchTerm.toLowerCase();
+    const matchedItems = this.searchTerm
+      ? this.savedItems.filter(item =>
+          item.name.toString().toLowerCase().includes(term) ||
+          item.CAT_NO.toString().toLowerCase().includes(term) ||
+          item.description.toString().toLowerCase().includes(term)
+        )
+      : this.savedItems;
+
+    return [...matchedItems].reverse();
+  }
+
+  deleteItem(item: MotorData): void {
+    this.historyService.removeItem(item);
+    this.snackBar.open('Item removed from history', 'Ok', { duration: 5000 });
   }
 
   clearAll(): void {
     if (confirm('Are you sure you want to clear all history?')) {
       this.historyService.clearHistory();
-      this.snackBar.open('History cleared', 'Ok');
+      this.snackBar.open('History cleared', 'Ok', { duration: 5000 });
     }
   }
 
-  exportItem(item: MotorData): void {
-    const dataStr = JSON.stringify(item, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${item.name}_equipment.json`;
-    link.click();
-    URL.revokeObjectURL(url);
-    this.snackBar.open('Item exported', 'Ok');
+  exportItem(item: MotorData, format: string): void {
+    if (format === 'json') {
+      const dataStr = JSON.stringify(item, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${item.name}_equipment.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+      this.snackBar.open('Item exported', 'Ok', { duration: 5000 });
+    }
   }
 }
