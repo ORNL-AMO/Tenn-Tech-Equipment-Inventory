@@ -33,3 +33,10 @@ To run the Angular web app navigate to the [Equipment_initial](Equipment_initial
 npm install
 npm start
 ```
+
+### Running with network access
+
+To run the Angular web app such that you can open it on a phone or other devices, navigate to the [Equipment_initial](Equipment_initial/) directory then run
+```Bash
+npm run start:ip
+```
