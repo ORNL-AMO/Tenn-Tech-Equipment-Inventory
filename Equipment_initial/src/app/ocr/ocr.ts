@@ -1,14 +1,15 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { createWorker } from 'tesseract.js';
 import { ImagePasser } from '../image-passer';
-import Swal from 'sweetalert2';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { reduceEachTrailingCommentRange } from 'typescript';
+import { MatDialog } from '@angular/material/dialog';
+import { OcrWarningDialog, OcrErrorDialog, OcrGenericErrorDialog } from './ocr.error.dialog';
 
 @Injectable({
   providedIn: 'root',
 })
+
 export class OCRService {
+  private dialog = inject(MatDialog);
   constructor(private imagePasser: ImagePasser) { }
   async extractText(image: HTMLCanvasElement | HTMLImageElement, name: string): Promise<string> {
 
@@ -62,52 +63,47 @@ export class OCRService {
 
     } catch (err: any) {
       if (err.message === "GibberishDetected") {
-        const preview = salvagedText.length > 150 ? salvagedText.substring(0, 150) + '...' : salvagedText;
-        const choice = await Swal.fire({
-          // Format a preview of the text (cap it at 150 characters for the modal)
-          icon: 'warning',
-          title: 'Low Confidence Read',
-          html: `
-            <div class="text-start">
-              <p class="mb-2">We struggled to read this image: ${name}. Make sure the photo is clear, well lit, and upright. Here is a preview of what it salvaged:</p>
-              <pre class="bg-light p-2 border rounded text-muted" style="font-size: 0.8rem; white-space: pre-wrap; max-height: 150px; overflow-y: auto;">${preview}</pre>
-              <p class="mb-0 mt-2 fw-bold">Do you want to keep this partial text?</p>
-            </div>`,
-          showCancelButton: true,
-          confirmButtonText: 'Keep it',
-          cancelButtonText: 'Discard',
-          confirmButtonColor: '#007d34',
-          cancelButtonColor: '#dc3545',
-          reverseButtons: true
+        const preview =
+          salvagedText.length > 150
+            ? salvagedText.substring(0, 150) + '...'
+            : salvagedText;
+
+        const dialogRef = this.dialog.open(OcrWarningDialog, {
+          data: {
+            name,
+            preview
+          }
         });
 
-        // Apply their choice
-        if (choice.isConfirmed) {
+        const result = await dialogRef.afterClosed().toPromise();
+
+        // Handle result (same logic as SweetAlert)
+        if (result === 'keep') {
           return salvagedText;
-        } else if (choice.isDenied) {
-          Swal.fire({
-            icon: 'error',
-            title: 'OCR Failed',
-            text: 'OCR failed with no salvageable text'
-          });
+        } else if (result === 'discard') {
+          this.dialog.open(OcrErrorDialog);
         } else {
           throw new Error("OCR failed and salvageable text was discarded by user");
         }
       }
       else if (err.message === "OCR Timeout") {
-        Swal.fire({
-          icon: 'error',
-          title: 'OCR Timeout',
-          text: 'OCR took too long and was stopped. No salvageable text was found.'
+        this.dialog.open(OcrGenericErrorDialog, {
+          data: {
+            title: 'OCR Timeout',
+            message: 'OCR took too long and was stopped. No salvageable text was found.'
+          }
         });
+
         throw new Error("OCR failed due to timeout with no salvageable text");
       }
       else {
-        Swal.fire({
-          icon: 'error',
-          title: 'OCR Error',
-          text: 'An unexpected error occurred during OCR processing.'
+        this.dialog.open(OcrGenericErrorDialog, {
+          data: {
+            title: 'OCR Error',
+            message: 'An unexpected error occurred during OCR processing.'
+          }
         });
+
         throw new Error("Unexpected OCR error: " + err.message);
       }
     } finally {
