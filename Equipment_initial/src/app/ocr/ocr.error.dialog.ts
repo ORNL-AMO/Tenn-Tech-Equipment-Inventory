@@ -3,17 +3,17 @@ import { ChangeDetectionStrategy, Component, inject, model, signal } from '@angu
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle,
+    MAT_DIALOG_DATA,
+    MatDialog,
+    MatDialogActions,
+    MatDialogClose,
+    MatDialogContent,
+    MatDialogRef,
+    MatDialogTitle,
 } from '@angular/material/dialog';
 @Component({
-  selector: 'ocr-warning-dialog',
-  template: `
+    selector: 'ocr-warning-dialog',
+    template: `
     <h2 mat-dialog-title>Low Confidence Read</h2>
 
     <mat-dialog-content>
@@ -41,29 +41,29 @@ import {
       <button mat-button color="primary" (click)="keep()">Keep it</button>
     </mat-dialog-actions>
   `,
-  imports: [
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    MatButtonModule
-  ],
+    imports: [
+        MatDialogTitle,
+        MatDialogContent,
+        MatDialogActions,
+        MatButtonModule
+    ],
 })
 export class OcrWarningDialog {
-  readonly dialogRef = inject(MatDialogRef<OcrWarningDialog>);
-  readonly data = inject<{ name: string; preview: string }>(MAT_DIALOG_DATA);
+    readonly dialogRef = inject(MatDialogRef<OcrWarningDialog>);
+    readonly data = inject<{ name: string; preview: string }>(MAT_DIALOG_DATA);
 
-  keep() {
-    this.dialogRef.close('keep');
-  }
+    keep() {
+        this.dialogRef.close('keep');
+    }
 
-  discard() {
-    this.dialogRef.close('discard');
-  }
+    discard() {
+        this.dialogRef.close('discard');
+    }
 }
 
 @Component({
-  selector: 'ocr-error-dialog',
-  template: `
+    selector: 'ocr-error-dialog',
+    template: `
     <h2 mat-dialog-title>OCR Failed</h2>
 
     <mat-dialog-content>
@@ -71,16 +71,21 @@ export class OcrWarningDialog {
     </mat-dialog-content>
 
     <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>OK</button>
+      <button mat-button mat-dialog-close (click)="close()">OK</button>
     </mat-dialog-actions>
   `,
-  imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButtonModule],
+    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButtonModule],
 })
-export class OcrErrorDialog { }
+export class OcrErrorDialog { 
+    readonly dialogRef = inject(MatDialogRef<OcrErrorDialog>);
+    close() {
+        this.dialogRef.close();
+    }
+}
 
 @Component({
-  selector: 'ocr-generic-error-dialog',
-  template: `
+    selector: 'ocr-generic-error-dialog',
+    template: `
     <h2 mat-dialog-title>{{ data.title }}</h2>
 
     <mat-dialog-content>
@@ -88,16 +93,21 @@ export class OcrErrorDialog { }
     </mat-dialog-content>
 
     <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>OK</button>
+      <button mat-button mat-dialog-close (click)="close()">OK</button>
     </mat-dialog-actions>
   `,
-  imports: [
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    MatButtonModule
-  ],
+    imports: [
+        MatDialogTitle,
+        MatDialogContent,
+        MatDialogActions,
+        MatButtonModule
+    ],
 })
 export class OcrGenericErrorDialog {
-  readonly data = inject<{ title: string; message: string }>(MAT_DIALOG_DATA);
+    readonly dialogRef = inject(MatDialogRef<OcrGenericErrorDialog>);
+    readonly data = inject<{ title: string; message: string }>(MAT_DIALOG_DATA);
+
+    close() {
+        this.dialogRef.close();
+    }
 }
