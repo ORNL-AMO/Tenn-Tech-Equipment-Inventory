@@ -71,3 +71,44 @@ mat-card {
   display: inline-flex;
   border: 1px solid #ddd;
 }
+
+/* Grid Container */
+mat-grid-list {
+  max-width: 100%;
+}
+
+/* Image container */
+mat-grid-tile {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Images */
+mat-grid-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Caption overlay */
+.caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+  font-size: 1rem;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: all 0.3s ease;
+}
+
+/* Hover effects */
+mat-grid-tile:hover .caption {
+  opacity: 1;
+  transform: translateY(0);
+}

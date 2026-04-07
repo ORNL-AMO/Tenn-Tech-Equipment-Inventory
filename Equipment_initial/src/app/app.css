@@ -75,3 +75,7 @@ main {
     width: auto;
     margin-bottom: 1rem;
 }
+
+.uploader {
+    max-width: 50%;
+}

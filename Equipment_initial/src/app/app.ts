@@ -5,10 +5,12 @@ import { Header } from './header/header';
 import { UploadImage } from './upload-image/upload-image';
 import { Webcam } from './webcam/webcam';
 import { History } from './history/history';
+import { OCRComponent } from './ocr/ocr.component';
+
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MatTabsModule, Header, UploadImage, Webcam, History],
+  imports: [RouterOutlet, OCRComponent, MatTabsModule, Header, UploadImage, Webcam, History],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

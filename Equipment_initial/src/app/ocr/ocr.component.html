@@ -1,41 +1,4 @@
-<mat-button-toggle-group [(ngModel)]="inputType" name="inputType">
-    <mat-button-toggle value="Camera">
-        <mat-icon>photo_camera</mat-icon> Camera
-    </mat-button-toggle>
-    <mat-button-toggle disabled value="Both">Both</mat-button-toggle>
-    <mat-button-toggle value="Files">
-        <mat-icon>upload_file</mat-icon> Files
-    </mat-button-toggle>
-</mat-button-toggle-group>
-
-<label for="files">Select Image:</label>
-<input type="file" id="fileInput" placeholder="Upload Image Here" accept=".jpg, .jpeg, .png"
-    (change)="onFileSelected($event)" multiple />
-<button matButton="filled" type=button [disabled]="loading" (click)="onUpload()">Scan {{ inputType }}</button>
 <br>@if(loading){<mat-spinner></mat-spinner>}
-<!-- Dynamically load the file preview window only when files selected -->
-@if(filesInput.length > 0){
-<mat-grid-list cols="2" gutterSize="15px" rowHeight="2:1">
-
-    <!-- File preview loop to display up to 10 files to prevent extremely long page -->
-    @for(file of filesInput.slice(0, 10); track file.name){
-    <mat-grid-tile>
-        <!-- Image Preview -->
-        <img [src]="file.content" [alt]="file.name" class="preview-img" />
-        <!-- Image File name with size -->
-        <div class="caption">{{ file.name }} ({{ file.size / 1024 | number:'1.0-2' }} KB)</div>
-    </mat-grid-tile>
-    }
-</mat-grid-list>
-<!-- Notification if more than 10 images uploaded (so user isn't confused)-->
-@if(filesInput.length > 10){
-<h2 style="text-align: center">10 Image Preview Limit Reached</h2>
-}
-<!-- information of how many files where uploaded (so user isn't confused)-->
-<p>recieved {{filesInput.length}} files </p>
-}
-
-<br>
 
 <!-- toggled statement to let user know if the ocr service is processing their image -->
 <mat-divider style="margin: 10px"></mat-divider>

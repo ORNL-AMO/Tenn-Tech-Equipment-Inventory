@@ -1,6 +1,4 @@
 <section>
-    <app-ocr />
-    
     <div class="example-wrap">
         <span class="example-trigger">Example</span>
         <mat-card class="mat-surface-container-highest" appearance="outlined">
@@ -12,4 +10,37 @@
                 alt="Motor nameplate example 3" />
         </mat-card>
     </div>
+
+</section>
+
+<section>
+
+    <label for="files">Select Image:</label>
+    <input type="file" id="fileInput" placeholder="Upload Image Here" accept=".jpg, .jpeg, .png"
+        (change)="onFileSelected($event)" multiple />
+    <!-- <button matButton="filled" type=button [disabled]="loading" (click)="onUpload()">Scan {{ inputType }}</button> -->
+
+<!-- Dynamically load the file preview window only when files selected -->
+    @if(filesInput.length > 0){
+    <mat-grid-list cols="2" gutterSize="15px" rowHeight="2:1">
+
+        <!-- File preview loop to display up to 10 files to prevent extremely long page -->
+        @for(file of filesInput.slice(0, 10); track file.name){
+            <!-- Image Preview -->
+        <mat-grid-tile>
+            <img [src]="file.content" [alt]="file.name" class="preview-img" />
+            <!-- Image File name with size -->
+            <div class="caption">{{ file.name }} ({{ file.size / 1024 | number:'1.0-2' }} KB)</div>
+        </mat-grid-tile>
+        }
+    </mat-grid-list>
+    <!-- Notification if more than 10 images uploaded (so user isn't confused)-->
+    @if(filesInput.length > 10){
+    <h2 style="text-align: center">10 Image Preview Limit Reached</h2>
+    }
+    <!-- information of how many files where uploaded (so user isn't confused)-->
+    <p>recieved {{filesInput.length}} files </p>
+    }
+
+    <br>
 </section>
