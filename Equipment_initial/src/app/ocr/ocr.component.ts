@@ -3,6 +3,8 @@ import { OCRService } from "./ocr";
 import { ImageUtils } from "./image-utils";
 import { NormalizeTextPipe } from "./normalize-text-pipe";
 import { ImagePasser } from "../image-passer";
+import { UploadImage } from "../upload-image/upload-image";
+import { DecimalPipe } from "@angular/common"
 import { FormsModule } from "@angular/forms";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -64,7 +66,7 @@ interface motorData {
     selector: 'app-ocr',
     templateUrl: './ocr.component.html',
     styleUrl: './ocr.component.css',
-    imports: [MatProgressBarModule, MatButtonToggleModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule, MatInputModule, MatFormFieldModule, MatCheckboxModule, MatMenuModule]
+    imports: [DecimalPipe, UploadImage, MatProgressBarModule, MatButtonToggleModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule, MatInputModule, MatFormFieldModule, MatCheckboxModule, MatMenuModule]
 })
 export class OCRComponent {
     pageOver: number = 1;
@@ -82,9 +84,9 @@ export class OCRComponent {
     // Field selection for save filtering
     selectedFields: Set<string> = new Set([
         'name', 'result', 'description',
-        'CAT_NO', 'SPEC', 'HORSEPOWER', 'VOLTAGE', 'AMPERAGE', 'RPM', 
-        'FRAME', 'HERTZ', 'PH', 'SER_F', 'CODE', 'DES', 'CLASS', 
-        'NEMA_NOM_EFF', 'P_F', 'RATING', 'CC', 'USABLE_AT', 
+        'CAT_NO', 'SPEC', 'HORSEPOWER', 'VOLTAGE', 'AMPERAGE', 'RPM',
+        'FRAME', 'HERTZ', 'PH', 'SER_F', 'CODE', 'DES', 'CLASS',
+        'NEMA_NOM_EFF', 'P_F', 'RATING', 'CC', 'USABLE_AT',
         'BEARINGS_DE', 'BEARINGS_ODE', 'ENCL', 'SERIAL_NUMBER'
     ]);
     allFieldsSelected: boolean = true;
@@ -106,9 +108,9 @@ export class OCRComponent {
         // Filter out unselected fields by setting them to undefined
         const filteredItem = { ...item };
         const fieldsToCheck = [
-            'CAT_NO', 'SPEC', 'HORSEPOWER', 'VOLTAGE', 'AMPERAGE', 'RPM', 
-            'FRAME', 'HERTZ', 'PH', 'SER_F', 'CODE', 'DES', 'CLASS', 
-            'NEMA_NOM_EFF', 'P_F', 'RATING', 'CC', 'USABLE_AT', 
+            'CAT_NO', 'SPEC', 'HORSEPOWER', 'VOLTAGE', 'AMPERAGE', 'RPM',
+            'FRAME', 'HERTZ', 'PH', 'SER_F', 'CODE', 'DES', 'CLASS',
+            'NEMA_NOM_EFF', 'P_F', 'RATING', 'CC', 'USABLE_AT',
             'BEARINGS_DE', 'BEARINGS_ODE', 'ENCL', 'SERIAL_NUMBER'
         ];
 
@@ -125,8 +127,7 @@ export class OCRComponent {
     async onFileSelected(event: Event): Promise<void> {
         const input = event.target as HTMLInputElement;
         // Clear the image preview and extraction results
-        this.filesInput = []; //Clear previous files
-        this.inventory = []; //Clear previous inventory
+        // this.filesInput = []; //Clear previous files
 
         // Check if a file was selected
         if (input.files && input.files.length > 0) {
@@ -135,7 +136,8 @@ export class OCRComponent {
 
             Array.from(input.files).forEach(file => {
                 const reader = new FileReader();
-
+                // Read as Data URL
+                reader.readAsDataURL(file);
                 reader.onload = () => {
                     const fileSizeMB = file.size / (1024 * 1024);
                     if (fileSizeMB > maxSizeMB) {
@@ -147,14 +149,19 @@ export class OCRComponent {
                         return;
                     }
                     else {
-                        this.filesInput.push({
-                            name: file.name,
-                            type: file.type,
-                            size: file.size,
-                            content: reader.result,
-                            fullFile: file
-                        });
-                        console.log('File added:', file.name);
+                        // make sure that you don't add any duplicate files (maybe remove if causes to much latency)
+                        if (this.filesInput.find(files => files.name === file.name)) {
+                            console.log("Duplicate file skipped", file.name);
+                        } else {
+                            this.filesInput.push({
+                                name: file.name,
+                                type: file.type,
+                                size: file.size,
+                                content: reader.result,
+                                fullFile: file
+                            });
+                            console.log('File added:', file.name);
+                        }
                     }
                     this.cd.detectChanges();
                 };
@@ -162,11 +169,8 @@ export class OCRComponent {
                     console.error('Error reading file: ${file.name}');
                     throw ("Error reading file: ${file.name}");
                 };
-                // Read as Data URL
-                reader.readAsDataURL(file);
             });
         } else {
-            this.filesInput = [];
             this.cd.detectChanges();
         }
     }
@@ -328,9 +332,9 @@ export class OCRComponent {
             this.selectedFields.clear();
         } else {
             const allFields = [
-                'CAT_NO', 'SPEC', 'HORSEPOWER', 'VOLTAGE', 'AMPERAGE', 'RPM', 
-                'FRAME', 'HERTZ', 'PH', 'SER_F', 'CODE', 'DES', 'CLASS', 
-                'NEMA_NOM_EFF', 'P_F', 'RATING', 'CC', 'USABLE_AT', 
+                'CAT_NO', 'SPEC', 'HORSEPOWER', 'VOLTAGE', 'AMPERAGE', 'RPM',
+                'FRAME', 'HERTZ', 'PH', 'SER_F', 'CODE', 'DES', 'CLASS',
+                'NEMA_NOM_EFF', 'P_F', 'RATING', 'CC', 'USABLE_AT',
                 'BEARINGS_DE', 'BEARINGS_ODE', 'ENCL', 'SERIAL_NUMBER'
             ];
             allFields.forEach(field => this.selectedFields.add(field));
@@ -340,9 +344,9 @@ export class OCRComponent {
 
     updateAllFieldsSelected(): void {
         const allFields = [
-            'CAT_NO', 'SPEC', 'HORSEPOWER', 'VOLTAGE', 'AMPERAGE', 'RPM', 
-            'FRAME', 'HERTZ', 'PH', 'SER_F', 'CODE', 'DES', 'CLASS', 
-            'NEMA_NOM_EFF', 'P_F', 'RATING', 'CC', 'USABLE_AT', 
+            'CAT_NO', 'SPEC', 'HORSEPOWER', 'VOLTAGE', 'AMPERAGE', 'RPM',
+            'FRAME', 'HERTZ', 'PH', 'SER_F', 'CODE', 'DES', 'CLASS',
+            'NEMA_NOM_EFF', 'P_F', 'RATING', 'CC', 'USABLE_AT',
             'BEARINGS_DE', 'BEARINGS_ODE', 'ENCL', 'SERIAL_NUMBER'
         ];
         this.allFieldsSelected = allFields.every(field => this.selectedFields.has(field));

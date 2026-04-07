@@ -6,19 +6,9 @@
 
   <mat-tab-group>
     <mat-tab label="Scanner">
-
-      <mat-tab-group class="uploader">
-        <mat-tab label="Files">
-          <section class="tab-content">
-            <app-upload-image />
-          </section>
-        </mat-tab>
-        <mat-tab label="Camera">
-          <section class="tab-content">
-            <app-webcam />
-          </section>
-        </mat-tab>
-      </mat-tab-group>
+      <!-- temporarilly side by side for development, will make a button by end -->
+      <app-webcam style="display: inline-block; width: 50%;" />
+      <br>
       <app-ocr />
     </mat-tab>
 
