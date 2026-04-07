@@ -1,14 +1,16 @@
 <app-upload-image (fileAdded)="onFileSelected($event)" />
 <app-webcam (fileSelected)="onFileSelected($event)" />
-
+<mat-divider style="margin: 20px 0px"></mat-divider>
 <!-- Dynamically load the file preview window only when files selected -->
 @if(filesInput.length > 0){
+<button matButton="filled" (click)="clearPreview()">Clear Preview</button>
 <mat-grid-list cols="2" gutterSize="15px" rowHeight="2:1">
 
     <!-- File preview loop to display up to 10 files to prevent extremely long page -->
     @for(file of filesInput.slice(0, 10); track file.name){
     <!-- Image Preview -->
     <mat-grid-tile>
+        <button matButton="tonal" (click)="deletePreviewItem(file.content)">X</button>
         <img [src]="file.content" [alt]="file.name" class="preview-img" />
         <!-- Image File name with size -->
         <div class="caption">{{ file.name }} ({{ file.size / 1024 | number:'1.0-2' }} KB)</div>
@@ -23,7 +25,7 @@
 <p>recieved {{filesInput.length}} files </p>
 }
 
-<br>
+<mat-divider style="margin: 20px 0px"></mat-divider>
 
 <button matButton="filled" type=button [disabled]="loading" (click)="onUpload()">Scan Files</button>
 
@@ -31,7 +33,7 @@
 <br>@if(loading){<mat-spinner></mat-spinner>}
 
 <!-- toggled statement to let user know if the ocr service is processing their image -->
-<mat-divider style="margin: 10px"></mat-divider>
+<!-- <mat-divider style="margin: 10px"></mat-divider> -->
 @if(loading){
 <p>Extracting text...</p>
 <mat-progress-bar mode="buffer" [value]="extractionProgress"></mat-progress-bar>
@@ -46,8 +48,10 @@
     @if (inventory.length>1){
     <mat-paginator class="mat-bg-primary-container" [pageSizeOptions]="[1,5,10]" [length]="inventory.length"
         (page)="switchPage($event)"></mat-paginator>}
+    <button matButton="filled" (click)="clearInventory()">Clear Inventory</button>
     <br>
-    @for(item of inventory.slice(currentPage, pageOver); track item.name){
+    @for(item of inventory.slice(currentPage, pageOver); track item.id){
+    <button matButton="tonal" (click)="deleteInventoryItem(item.id)">X</button>
 
     <h2>Result for {{item.name}}</h2>
     <br>

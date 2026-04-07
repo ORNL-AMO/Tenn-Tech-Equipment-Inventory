@@ -1,16 +1,3 @@
-input[type="file"] {
-    border: solid 1px var(--primary-color);
-    padding: 10px;
-    border-radius: 8px;
-    margin: var(--content-padding);
-    display: inline-block;
-}
-
-label {
-    display: block;
-    margin-left: var(--content-padding);
-}
-
 mat-form-field {
     width: 100%;
 }

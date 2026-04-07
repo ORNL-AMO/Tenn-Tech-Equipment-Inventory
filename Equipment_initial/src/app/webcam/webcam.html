@@ -2,25 +2,11 @@
     permission</button><br>
 @if(webcamPermission){
 <div>
-    <!-- <button matButton="filled" type="button" (click)="chooseDevice()">{{showDevices? 'Choose A Device' : 'List
-        Cameras'}}</button>
-    Current Selection: {{currentDevice}} -->
-    <!-- @if(false){<div>
-        <ul class="List">
-            @for (device of mediaDevices; track device.deviceId){
-            <li>
-                <button class="devices" type="button" (click)="selectDevice(device)">Select {{device.label}}</button>
-                <!-- use this second button for multi-cam support -->
-                <!--<button class="devices" type="button" (click)="selectDevice(device.deviceId, device.label, videoElement)">Select {{device.label}}</button> -->
-            <!--</li>
-            }
-        </ul>
-    </div>} -->
     <mat-form-field>
         <mat-label>Camera</mat-label>
         <mat-select required [(value)]="selectedDevice" (selectionChange)="selectDevice($event.value)">
             @for (device of mediaDevices; track device.deviceId){
-                <mat-option [value]="device" > {{ device.label }}</mat-option>
+            <mat-option [value]="device"> {{ device.label }}</mat-option>
             }
         </mat-select>
     </mat-form-field>
@@ -35,8 +21,5 @@
         <div>
             @if(camOn){<button matButton="filled" type="button" (click)="capCam()">Capture</button>}
         </div>
-    </div>
-    <div>
-        @if(capturedImageDataUrl){<img [src]="capturedImageDataUrl" alt="Captured frame" />}
     </div>
 </div>}

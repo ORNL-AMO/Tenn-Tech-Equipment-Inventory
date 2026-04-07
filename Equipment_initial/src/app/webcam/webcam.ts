@@ -86,12 +86,6 @@ export class Webcam {
     this.captureCamera();
   }
 
-  capturedImageDataUrl?: string;
-  capturedImageBlob?: Blob;
-
-
-
-
   fileSelected = output<{ target: { files: File[] } }>();
   //grabs a frame from the camera and puts in on the page
   private async captureCamera() {
@@ -121,25 +115,19 @@ export class Webcam {
 
     canvas.toBlob((blob) => {
       if (blob) {
-        const file = new File([blob], 'capture.png', { type: 'image/png' });
+        // Append timestamp to filename
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const filename = `capture-${timestamp}.png`;
+
+
+
+        const file = new File([blob], filename, { type: 'image/png' });
         this.fileSelected.emit({ target: { files: [file] } });
       }
     }, 'image/png');
-
-
-    // // Data URL for simple previews.
-    // this.capturedImageDataUrl = canvas.toDataURL('image/png');
-
-    // // Blob for uploads / saving.
-    // const blob = await this.canvasToBlob(canvas, 'image/png');
-    // this.imagePasser.setBlobAsFile(blob, 'capture.png');
-    // this.capturedImageBlob = blob;
-    // return blob;
   }
 
 
-
-  
   //Waits till video is there to do do anything
   private waitForVideoReady(video: HTMLVideoElement): Promise<void> {
     if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && video.videoWidth > 0) {
@@ -165,18 +153,6 @@ export class Webcam {
     });
   }
 
-  //converts the canvas picture to a Blob type
-  // private canvasToBlob(canvas: HTMLCanvasElement, type: string): Promise<Blob> {
-  //   return new Promise((resolve, reject) => {
-  //     canvas.toBlob((b) => {
-  //       if (!b) {
-  //         reject(new Error('Canvas toBlob returned null'));
-  //         return;
-  //       }
-  //       resolve(b);
-  //     }, type);
-  //   });
-  // }
 
   //Attempts to get camera permission by starting the camera temprorarily
   private async requestCameraPermissions() {
