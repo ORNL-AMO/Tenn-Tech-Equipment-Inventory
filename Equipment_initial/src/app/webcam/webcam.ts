@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectorRef, output } from '@angular/core';
 import { ImagePasser } from '../image-passer';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -83,14 +83,18 @@ export class Webcam {
 
   //Callable camera capture function
   public capCam() {
-    this.withCatch(this.captureCamera());
+    this.captureCamera();
   }
 
   capturedImageDataUrl?: string;
   capturedImageBlob?: Blob;
 
+
+
+
+  fileSelected = output<{ target: { files: File[] } }>();
   //grabs a frame from the camera and puts in on the page
-  private async captureCamera(): Promise<Blob> {
+  private async captureCamera() {
     if (!this.camOn || !this.videoElement?.nativeElement) {
       throw new Error('Camera is not running');
     }
@@ -115,16 +119,27 @@ export class Webcam {
     }
     ctx.drawImage(video, 0, 0, width, height);
 
-    // Data URL for simple previews.
-    this.capturedImageDataUrl = canvas.toDataURL('image/png');
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const file = new File([blob], 'capture.png', { type: 'image/png' });
+        this.fileSelected.emit({ target: { files: [file] } });
+      }
+    }, 'image/png');
 
-    // Blob for uploads / saving.
-    const blob = await this.canvasToBlob(canvas, 'image/png');
-    this.imagePasser.setBlobAsFile(blob, 'capture.png');
-    this.capturedImageBlob = blob;
-    return blob;
+
+    // // Data URL for simple previews.
+    // this.capturedImageDataUrl = canvas.toDataURL('image/png');
+
+    // // Blob for uploads / saving.
+    // const blob = await this.canvasToBlob(canvas, 'image/png');
+    // this.imagePasser.setBlobAsFile(blob, 'capture.png');
+    // this.capturedImageBlob = blob;
+    // return blob;
   }
 
+
+
+  
   //Waits till video is there to do do anything
   private waitForVideoReady(video: HTMLVideoElement): Promise<void> {
     if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && video.videoWidth > 0) {
@@ -151,17 +166,17 @@ export class Webcam {
   }
 
   //converts the canvas picture to a Blob type
-  private canvasToBlob(canvas: HTMLCanvasElement, type: string): Promise<Blob> {
-    return new Promise((resolve, reject) => {
-      canvas.toBlob((b) => {
-        if (!b) {
-          reject(new Error('Canvas toBlob returned null'));
-          return;
-        }
-        resolve(b);
-      }, type);
-    });
-  }
+  // private canvasToBlob(canvas: HTMLCanvasElement, type: string): Promise<Blob> {
+  //   return new Promise((resolve, reject) => {
+  //     canvas.toBlob((b) => {
+  //       if (!b) {
+  //         reject(new Error('Canvas toBlob returned null'));
+  //         return;
+  //       }
+  //       resolve(b);
+  //     }, type);
+  //   });
+  // }
 
   //Attempts to get camera permission by starting the camera temprorarily
   private async requestCameraPermissions() {
@@ -194,7 +209,7 @@ export class Webcam {
       // }
       this.mediaDevices = [];
       allDevices.forEach(device => { //only grab video inputs, no other types
-        if (device.kind == 'videoinput') {this.mediaDevices.push(device)}
+        if (device.kind == 'videoinput') { this.mediaDevices.push(device) }
       });
       this.cd.detectChanges();
     }
@@ -206,7 +221,7 @@ export class Webcam {
   @ViewChild('videoElement', { static: false }) videoElement!: ElementRef;
   //Starts the video element
   private async startStreaming() {
-    if (this.mediaStream) {this.closeStream(this.mediaStream);}
+    if (this.mediaStream) { this.closeStream(this.mediaStream); }
     try {
       this.mediaStream = await this.getSelectedDeviceMediaStream();
       //put this into html page to show webcam
@@ -239,12 +254,12 @@ export class Webcam {
         webcamDevice = this.mediaDevices[0];
         this.selectedDevice = webcamDevice;
       }
-    } else{throw new Error("No Devices Available");}
+    } else { throw new Error("No Devices Available"); }
 
-    if (!webcamDevice) {throw new Error('Webcam not found');}
+    if (!webcamDevice) { throw new Error('Webcam not found'); }
 
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: {deviceId: { exact: webcamDevice.deviceId }}
+      video: { deviceId: { exact: webcamDevice.deviceId } }
     });
     this.cd.detectChanges();
     return stream;

@@ -4,6 +4,7 @@ import { ImageUtils } from "./image-utils";
 import { NormalizeTextPipe } from "./normalize-text-pipe";
 import { ImagePasser } from "../image-passer";
 import { UploadImage } from "../upload-image/upload-image";
+import { Webcam } from '../webcam/webcam';
 import { DecimalPipe } from "@angular/common"
 import { FormsModule } from "@angular/forms";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -66,7 +67,7 @@ interface motorData {
     selector: 'app-ocr',
     templateUrl: './ocr.component.html',
     styleUrl: './ocr.component.css',
-    imports: [DecimalPipe, UploadImage, MatProgressBarModule, MatButtonToggleModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule, MatInputModule, MatFormFieldModule, MatCheckboxModule, MatMenuModule]
+    imports: [DecimalPipe, UploadImage, Webcam, MatProgressBarModule, MatButtonToggleModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule, MatInputModule, MatFormFieldModule, MatCheckboxModule, MatMenuModule]
 })
 export class OCRComponent {
     pageOver: number = 1;
@@ -124,7 +125,7 @@ export class OCRComponent {
         this._snackBar.open(`Saved "${item.name}" to history`, "Ok", { duration: 5000 });
     }
 
-    async onFileSelected(event: Event): Promise<void> {
+    async onFileSelected(event: Event | { target: { files: File[] } }): Promise<void> {
         const input = event.target as HTMLInputElement;
         // Clear the image preview and extraction results
         // this.filesInput = []; //Clear previous files
@@ -150,7 +151,7 @@ export class OCRComponent {
                     }
                     else {
                         // make sure that you don't add any duplicate files (maybe remove if causes to much latency)
-                        if (this.filesInput.find(files => files.name === file.name)) {
+                        if (this.filesInput.find(files => files.content === reader.result)) {
                             console.log("Duplicate file skipped", file.name);
                         } else {
                             this.filesInput.push({
@@ -176,145 +177,136 @@ export class OCRComponent {
     }
 
     async onUpload(): Promise<void> {
-        this.inventory = [];
+        // this.inventory = [];
         // No file selected, let the user know and stop
-        if (!(this.filesInput.length > 0) && this.inputType == "Files") {
-            console.error('No File Selected');
-            alert("Please select a file to process")
-            return;
-        } else if (!this.imagePasser.currentFile && this.inputType == "Camera") {
-            console.error('No capture available');
-            alert("No Image captured from camera");
+        if (!(this.filesInput.length > 0)) {
+            console.error('No Files Imported');
+            alert("Please add a file or picture to process")
             return;
         }
         this.loading = true;
-        if (this.inputType == "Both") {
-            //add ability to do both here!!!
-        } else if (this.inputType == "Camera") { //use camera
-            if (!this.imagePasser.currentFile) {
-                this.loading = false;
-                return;
-            }
-            try {
-                // Show the extracting message and begin processing
-                this.loading = true;
-                console.log("Loading = " + this.loading);
-                // Preprocess and do OCR on an image passed from another component, if it exists
-                console.log("File being sent to prepareImage:", this.imagePasser.currentFile!);
-                console.log("Type:", typeof this.imagePasser.currentFile!);
-                console.log("Instanceof File:", this.imagePasser.currentFile! instanceof File);
-                const canvas = await this.imageUtils.prepareImage(this.imagePasser.currentFile!);
-                const imageData = canvas.toDataURL('image/png');
-                const result = await this.ocr.extractText(canvas, "Camera Input");
-                const description = new NormalizeTextPipe().transform(result);
-                const extractedValues = await this.textExtractor.extractValues(description);
-                // Populate developer fields so it's easy to see where to edit                
-                const motor: motorData = {
-                    id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
-                    name: "Camera input",
-                    result: result,
-                    description: description,
-                    image: imageData,
-                    savedAt: new Date().toLocaleString(),
-                    CAT_NO: extractedValues.CAT_NO,
-                    SPEC: extractedValues.SPEC,
-                    HORSEPOWER: extractedValues.HORSEPOWER,
-                    VOLTAGE: extractedValues.VOLTAGE,
-                    AMPERAGE: extractedValues.AMPERAGE,
-                    RPM: extractedValues.RPM,
-                    FRAME: extractedValues.FRAME,
-                    HERTZ: extractedValues.HERTZ,
-                    PH: extractedValues.PH,
-                    SER_F: extractedValues.SER_F,
-                    CODE: extractedValues.CODE,
-                    DES: extractedValues.DES,
-                    CLASS: extractedValues.CLASS,
-                    NEMA_NOM_EFF: extractedValues.NEMA_NOM_EFF,
-                    P_F: extractedValues.P_F,
-                    RATING: extractedValues.RATING,
-                    CC: extractedValues.CC,
-                    USABLE_AT: extractedValues.USABLE_AT,
-                    BEARINGS_DE: extractedValues.BEARINGS_DE,
-                    BEARINGS_ODE: extractedValues.BEARINGS_ODE,
-                    ENCL: extractedValues.ENCL,
-                    SERIAL_NUMBER: extractedValues.SERIAL_NUMBER
-                };
-                this.inventory.push(motor);
-                this.saveItem(motor);
-                return;
-            }
-            catch (error) {
-                console.error('Error during OCR processing:', error);
-                alert('An error occurred during OCR processing. Please try again with a different image or check the console for more details.');
-            }
-            finally {
-                this.loading = false;
+        if (!this.imagePasser.currentFile) {
+            this.loading = false;
+            return;
+        }
+        try {
+            // Show the extracting message and begin processing
+            this.loading = true;
+            console.log("Loading = " + this.loading);
+            // Preprocess and do OCR on an image passed from another component, if it exists
+            console.log("File being sent to prepareImage:", this.imagePasser.currentFile!);
+            console.log("Type:", typeof this.imagePasser.currentFile!);
+            console.log("Instanceof File:", this.imagePasser.currentFile! instanceof File);
+            const canvas = await this.imageUtils.prepareImage(this.imagePasser.currentFile!);
+            const imageData = canvas.toDataURL('image/png');
+            const result = await this.ocr.extractText(canvas, "Camera Input");
+            const description = new NormalizeTextPipe().transform(result);
+            const extractedValues = await this.textExtractor.extractValues(description);
+            // Populate developer fields so it's easy to see where to edit                
+            const motor: motorData = {
+                id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
+                name: "Camera input",
+                result: result,
+                description: description,
+                image: imageData,
+                savedAt: new Date().toLocaleString(),
+                CAT_NO: extractedValues.CAT_NO,
+                SPEC: extractedValues.SPEC,
+                HORSEPOWER: extractedValues.HORSEPOWER,
+                VOLTAGE: extractedValues.VOLTAGE,
+                AMPERAGE: extractedValues.AMPERAGE,
+                RPM: extractedValues.RPM,
+                FRAME: extractedValues.FRAME,
+                HERTZ: extractedValues.HERTZ,
+                PH: extractedValues.PH,
+                SER_F: extractedValues.SER_F,
+                CODE: extractedValues.CODE,
+                DES: extractedValues.DES,
+                CLASS: extractedValues.CLASS,
+                NEMA_NOM_EFF: extractedValues.NEMA_NOM_EFF,
+                P_F: extractedValues.P_F,
+                RATING: extractedValues.RATING,
+                CC: extractedValues.CC,
+                USABLE_AT: extractedValues.USABLE_AT,
+                BEARINGS_DE: extractedValues.BEARINGS_DE,
+                BEARINGS_ODE: extractedValues.BEARINGS_ODE,
+                ENCL: extractedValues.ENCL,
+                SERIAL_NUMBER: extractedValues.SERIAL_NUMBER
+            };
+            this.inventory.push(motor);
+            this.saveItem(motor);
+            return;
+        }
+        catch (error) {
+            console.error('Error during OCR processing:', error);
+            alert('An error occurred during OCR processing. Please try again with a different image or check the console for more details.');
+        }
+        finally {
+            this.loading = false;
+            this.cd.detectChanges();
+        }
+        try {
+            for (let i = 0; i < this.filesInput.length; i++) {
                 this.cd.detectChanges();
-            }
-        } else if (this.inputType == "Files") {
-            try {
-                for (let i = 0; i < this.filesInput.length; i++) {
-                    this.cd.detectChanges();
 
-                    const file = this.filesInput[i];
+                const file = this.filesInput[i];
 
-                    try {
-                        const canvas = await this.imageUtils.prepareImage(file.fullFile);
+                try {
+                    const canvas = await this.imageUtils.prepareImage(file.fullFile);
 
-                        const text = await this.ocr.extractText(canvas, file.name);
+                    const text = await this.ocr.extractText(canvas, file.name);
 
-                        const description = new NormalizeTextPipe().transform(text);
+                    const description = new NormalizeTextPipe().transform(text);
 
-                        const extractedValues = await this.textExtractor.extractValues(description);
+                    const extractedValues = await this.textExtractor.extractValues(description);
 
-                        const motor: motorData = {
-                            id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
-                            name: file.name,
-                            result: text,
-                            description,
-                            image: typeof file.content === 'string' ? file.content : undefined,
-                            savedAt: new Date().toLocaleString(),
-                            CAT_NO: extractedValues.CAT_NO,
-                            SPEC: extractedValues.SPEC,
-                            HORSEPOWER: extractedValues.HORSEPOWER,
-                            VOLTAGE: extractedValues.VOLTAGE,
-                            AMPERAGE: extractedValues.AMPERAGE,
-                            RPM: extractedValues.RPM,
-                            FRAME: extractedValues.FRAME,
-                            HERTZ: extractedValues.HERTZ,
-                            PH: extractedValues.PH,
-                            SER_F: extractedValues.SER_F,
-                            CODE: extractedValues.CODE,
-                            DES: extractedValues.DES,
-                            CLASS: extractedValues.CLASS,
-                            NEMA_NOM_EFF: extractedValues.NEMA_NOM_EFF,
-                            P_F: extractedValues.P_F,
-                            RATING: extractedValues.RATING,
-                            CC: extractedValues.CC,
-                            USABLE_AT: extractedValues.USABLE_AT,
-                            BEARINGS_DE: extractedValues.BEARINGS_DE,
-                            BEARINGS_ODE: extractedValues.BEARINGS_ODE,
-                            ENCL: extractedValues.ENCL,
-                            SERIAL_NUMBER: extractedValues.SERIAL_NUMBER
-                        };
-                        this.inventory.push(motor);
-                        this.saveItem(motor);
+                    const motor: motorData = {
+                        id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
+                        name: file.name,
+                        result: text,
+                        description,
+                        image: typeof file.content === 'string' ? file.content : undefined,
+                        savedAt: new Date().toLocaleString(),
+                        CAT_NO: extractedValues.CAT_NO,
+                        SPEC: extractedValues.SPEC,
+                        HORSEPOWER: extractedValues.HORSEPOWER,
+                        VOLTAGE: extractedValues.VOLTAGE,
+                        AMPERAGE: extractedValues.AMPERAGE,
+                        RPM: extractedValues.RPM,
+                        FRAME: extractedValues.FRAME,
+                        HERTZ: extractedValues.HERTZ,
+                        PH: extractedValues.PH,
+                        SER_F: extractedValues.SER_F,
+                        CODE: extractedValues.CODE,
+                        DES: extractedValues.DES,
+                        CLASS: extractedValues.CLASS,
+                        NEMA_NOM_EFF: extractedValues.NEMA_NOM_EFF,
+                        P_F: extractedValues.P_F,
+                        RATING: extractedValues.RATING,
+                        CC: extractedValues.CC,
+                        USABLE_AT: extractedValues.USABLE_AT,
+                        BEARINGS_DE: extractedValues.BEARINGS_DE,
+                        BEARINGS_ODE: extractedValues.BEARINGS_ODE,
+                        ENCL: extractedValues.ENCL,
+                        SERIAL_NUMBER: extractedValues.SERIAL_NUMBER
+                    };
+                    this.inventory.push(motor);
+                    this.saveItem(motor);
 
-                    } catch (err: any) {
-                        console.warn(`Skipping ${file.name}`, err);
-                        alert(`Error processing file ${file.name}. Skipping file.`);
-                    }
-                    this.extractionProgress = ((i + 1) / this.filesInput.length) * 100;
-                    this.cd.detectChanges();
+                } catch (err: any) {
+                    console.warn(`Skipping ${file.name}`, err);
+                    alert(`Error processing file ${file.name}. Skipping file.`);
                 }
-
-            } catch (error) {
-                console.error('Unexpected batch error:', error);
-            } finally {
-                this.loading = false;
+                this.extractionProgress = ((i + 1) / this.filesInput.length) * 100;
                 this.cd.detectChanges();
-                this._snackBar.open("All Files Processed", "Ok", { duration: 5000 });
             }
+
+        } catch (error) {
+            console.error('Unexpected batch error:', error);
+        } finally {
+            this.loading = false;
+            this.cd.detectChanges();
+            this._snackBar.open("All Files Processed", "Ok", { duration: 5000 });
         }
     }
 

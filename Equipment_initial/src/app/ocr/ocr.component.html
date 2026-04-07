@@ -1,4 +1,5 @@
-<app-upload-image style="display: inline-block; width: 50%;" (fileAdded)="onFileSelected($event)" />
+<app-upload-image (fileAdded)="onFileSelected($event)" />
+<app-webcam (fileSelected)="onFileSelected($event)" />
 
 <!-- Dynamically load the file preview window only when files selected -->
 @if(filesInput.length > 0){
@@ -23,6 +24,9 @@
 }
 
 <br>
+
+<button matButton="filled" type=button [disabled]="loading" (click)="onUpload()">Scan Files</button>
+
 
 <br>@if(loading){<mat-spinner></mat-spinner>}
 
