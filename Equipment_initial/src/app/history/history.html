@@ -32,12 +32,13 @@
               <span class="header-timestamp">{{ item.savedAt || 'Unknown time' }}</span>
             </div>
             <div class="header-actions">
-              <button mat-mini-fab color="primary" aria-label="Download this entry" (click)="exportItem(item, 'json'); $event.stopPropagation();">
+              <button matFab extended color="primary" aria-label="Download this entry" (click)="exportItem(item, 'json'); $event.stopPropagation();">
                 <mat-icon>download</mat-icon> Download as
               </button>
-              <button mat-mini-fab color="warn" aria-label="Delete entry" (click)="deleteItem(item); $event.stopPropagation();">
+              <button matFab extended color="warn" aria-label="Delete entry" (click)="deleteItem(item); $event.stopPropagation();">
                 <mat-icon>delete</mat-icon> Delete
               </button>
+              <a style="padding-right:8px"></a>
             </div>
           </mat-expansion-panel-header>
 
