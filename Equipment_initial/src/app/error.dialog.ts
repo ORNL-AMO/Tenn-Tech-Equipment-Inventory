@@ -1,4 +1,3 @@
-// import Swal from 'sweetalert2';
 import { ChangeDetectionStrategy, Component, inject, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -84,7 +83,7 @@ export class OcrErrorDialog {
 }
 
 @Component({
-    selector: 'ocr-generic-error-dialog',
+    selector: 'generic-error-dialog',
     template: `
     <h2 mat-dialog-title>{{ data.title }}</h2>
 
@@ -103,8 +102,8 @@ export class OcrErrorDialog {
         MatButtonModule
     ],
 })
-export class OcrGenericErrorDialog {
-    readonly dialogRef = inject(MatDialogRef<OcrGenericErrorDialog>);
+export class GenericErrorDialog {
+    readonly dialogRef = inject(MatDialogRef<GenericErrorDialog>);
     readonly data = inject<{ title: string; message: string }>(MAT_DIALOG_DATA);
 
     close() {

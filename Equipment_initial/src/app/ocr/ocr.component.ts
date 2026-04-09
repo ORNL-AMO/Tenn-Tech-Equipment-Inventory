@@ -22,6 +22,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { HistoryService } from '../history/history.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from '@angular/material/menu';
+import { GenericErrorDialog } from "../error.dialog";
+import { MatDialog } from "@angular/material/dialog";
 
 
 interface uploadedFiles {
@@ -70,6 +72,7 @@ interface motorData {
     imports: [DecimalPipe, UploadImage, Webcam, MatProgressBarModule, MatButtonToggleModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule, MatInputModule, MatFormFieldModule, MatCheckboxModule, MatMenuModule]
 })
 export class OCRComponent {
+    private dialog = inject(MatDialog);
     pageOver: number = 1;
     currentPage: number = 0;
     inputType: String = 'Camera';
@@ -143,10 +146,20 @@ export class OCRComponent {
                     const fileSizeMB = file.size / (1024 * 1024);
                     if (fileSizeMB > maxSizeMB) {
                         console.log("${file.name} is too big of a file. Skipping file.");
-                        alert(file.name + " is too big of a file. Skipping file.");
+                        this.dialog.open(GenericErrorDialog, {
+                            data: {
+                                title: 'File Too Large',
+                                message: file.name + " is too big of a file. Skipping file."
+                            }
+                        });
                     }
                     else if (!this.allowedTypes.includes(file.type)) {
-                        alert(file.name + "is an invalid file type. Skipping file");
+                        this.dialog.open(GenericErrorDialog, {
+                            data: {
+                                title: 'Invalid File Type',
+                                message: file.name + " is an invalid file type. Skipping file."
+                            }
+                        });
                         return;
                     }
                     else {
@@ -193,7 +206,12 @@ export class OCRComponent {
         // No file selected, let the user know and stop
         if (!(this.filesInput.length > 0)) {
             console.error('No Files Imported');
-            alert("Please add a file or picture to process")
+            this.dialog.open(GenericErrorDialog, {
+                data: {
+                    title: 'No Files Selected',
+                    message: "Please select a file or picture to process."
+                }
+            });
             return;
         }
         this.loading = true;
@@ -241,7 +259,12 @@ export class OCRComponent {
 
                 } catch (err: any) {
                     console.warn(`Skipping ${file.name}`, err);
-                    alert(`Error processing file ${file.name}. Skipping file.`);
+                    this.dialog.open(GenericErrorDialog, {
+                            data: {
+                                title: 'An Error Occurred',
+                                message: `Error processing file ${file.name}. Skipping file.`
+                            }
+                        });
                 }
                 this.extractionProgress = ((i + 1) / this.filesInput.length) * 100;
                 this.cd.detectChanges();

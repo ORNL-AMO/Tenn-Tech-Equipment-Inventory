@@ -1,10 +1,12 @@
-import { Component, ElementRef, ViewChild, ChangeDetectorRef, output } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectorRef, output, inject } from '@angular/core';
 import { ImagePasser } from '../image-passer';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDialog } from '@angular/material/dialog';
+import { GenericErrorDialog } from '../error.dialog';
 
 
 @Component({
@@ -15,21 +17,42 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 })
 
 export class Webcam {
+  private dialog = inject(MatDialog);
 
   // Centralized error handler
   private handleError(error: any) {
     console.error('An error occurred:', error);
     if (error.name == "NotReadableError") {
-      alert("Could not confirm camera presence.\nMake sure main camera is not in use.\nMake sure camera is on.");
+      this.dialog.open(GenericErrorDialog, {
+        data: {
+          title: 'Camera Not Detected',
+          message: "Could not confirm camera presence.\nMake sure main camera is not in use.\nMake sure camera is on."
+        }
+      });
     }
     else if (error.name == "NotAllowedError") {
-      alert("Camera permission is denied.\nPlease allow camera to use this function.");
+      this.dialog.open(GenericErrorDialog, {
+        data: {
+          title: 'Camera Permission Denied',
+          message: "Camera permission is denied.\nPlease allow camera to use this function."
+        }
+      });
     }
     else if (error.name == "AbortError") {
-      alert("Could not open camera.\nAnother application may be using it already.");
+      this.dialog.open(GenericErrorDialog, {
+        data: {
+          title: 'Camera Not Accessible',
+          message: "Could not open camera.\nAnother application may be using it already."
+        }
+      });
     }
     else {
-      alert("Unexpected Error\n" + error);
+      this.dialog.open(GenericErrorDialog, {
+        data: {
+          title: 'An Unexpected Error Occurred',
+          message: "Unexpected Error\n" + error
+        }
+      });
     }
   }
 
