@@ -118,7 +118,7 @@ p {
 .header-actions button {
   min-width: 36px;
   height: 36px;
-  padding: 0;
+  padding: 5;
 }
 
 .header-placeholder {
