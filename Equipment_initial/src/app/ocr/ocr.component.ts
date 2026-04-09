@@ -199,49 +199,53 @@ export class OCRComponent {
         this.loading = true;
         try {
             for (let i = 0; i < this.filesInput.length; i++) {
-                this.cd.detectChanges();
                 const file = this.filesInput[i];
-                try {
-                    const canvas = await this.imageUtils.prepareImage(file.fullFile);
-                    const text = await this.ocr.extractText(canvas, file.name);
-                    const description = new NormalizeTextPipe().transform(text);
-                    const extractedValues = await this.textExtractor.extractValues(description);
-                    const motor: motorData = {
-                        id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
-                        name: file.name,
-                        result: text,
-                        description,
-                        image: typeof file.content === 'string' ? file.content : undefined,
-                        savedAt: new Date().toLocaleString(),
-                        CAT_NO: extractedValues.CAT_NO,
-                        SPEC: extractedValues.SPEC,
-                        HORSEPOWER: extractedValues.HORSEPOWER,
-                        VOLTAGE: extractedValues.VOLTAGE,
-                        AMPERAGE: extractedValues.AMPERAGE,
-                        RPM: extractedValues.RPM,
-                        FRAME: extractedValues.FRAME,
-                        HERTZ: extractedValues.HERTZ,
-                        PH: extractedValues.PH,
-                        SER_F: extractedValues.SER_F,
-                        CODE: extractedValues.CODE,
-                        DES: extractedValues.DES,
-                        CLASS: extractedValues.CLASS,
-                        NEMA_NOM_EFF: extractedValues.NEMA_NOM_EFF,
-                        P_F: extractedValues.P_F,
-                        RATING: extractedValues.RATING,
-                        CC: extractedValues.CC,
-                        USABLE_AT: extractedValues.USABLE_AT,
-                        BEARINGS_DE: extractedValues.BEARINGS_DE,
-                        BEARINGS_ODE: extractedValues.BEARINGS_ODE,
-                        ENCL: extractedValues.ENCL,
-                        SERIAL_NUMBER: extractedValues.SERIAL_NUMBER
-                    };
-                    this.inventory.push(motor);
-                    this.saveItem(motor);
+                if (this.inventory.find(motor => motor.image === file.content)) {
+                    console.log("duplicate motor. skipping");
+                } else {
+                    this.cd.detectChanges();
+                    try {
+                        const canvas = await this.imageUtils.prepareImage(file.fullFile);
+                        const text = await this.ocr.extractText(canvas, file.name);
+                        const description = new NormalizeTextPipe().transform(text);
+                        const extractedValues = await this.textExtractor.extractValues(description);
+                        const motor: motorData = {
+                            id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
+                            name: file.name,
+                            result: text,
+                            description,
+                            image: typeof file.content === 'string' ? file.content : undefined,
+                            savedAt: new Date().toLocaleString(),
+                            CAT_NO: extractedValues.CAT_NO,
+                            SPEC: extractedValues.SPEC,
+                            HORSEPOWER: extractedValues.HORSEPOWER,
+                            VOLTAGE: extractedValues.VOLTAGE,
+                            AMPERAGE: extractedValues.AMPERAGE,
+                            RPM: extractedValues.RPM,
+                            FRAME: extractedValues.FRAME,
+                            HERTZ: extractedValues.HERTZ,
+                            PH: extractedValues.PH,
+                            SER_F: extractedValues.SER_F,
+                            CODE: extractedValues.CODE,
+                            DES: extractedValues.DES,
+                            CLASS: extractedValues.CLASS,
+                            NEMA_NOM_EFF: extractedValues.NEMA_NOM_EFF,
+                            P_F: extractedValues.P_F,
+                            RATING: extractedValues.RATING,
+                            CC: extractedValues.CC,
+                            USABLE_AT: extractedValues.USABLE_AT,
+                            BEARINGS_DE: extractedValues.BEARINGS_DE,
+                            BEARINGS_ODE: extractedValues.BEARINGS_ODE,
+                            ENCL: extractedValues.ENCL,
+                            SERIAL_NUMBER: extractedValues.SERIAL_NUMBER
+                        };
+                        this.inventory.push(motor);
+                        this.saveItem(motor);
 
-                } catch (err: any) {
-                    console.warn(`Skipping ${file.name}`, err);
-                    alert(`Error processing file ${file.name}. Skipping file.`);
+                    } catch (err: any) {
+                        console.warn(`Skipping ${file.name}`, err);
+                        alert(`Error processing file ${file.name}. Skipping file.`);
+                    }
                 }
                 this.extractionProgress = ((i + 1) / this.filesInput.length) * 100;
                 this.cd.detectChanges();
