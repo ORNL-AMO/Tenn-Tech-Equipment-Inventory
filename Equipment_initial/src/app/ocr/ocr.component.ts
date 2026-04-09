@@ -22,6 +22,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { HistoryService } from '../history/history.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from '@angular/material/menu';
+import { GenericErrorDialog } from "../error.dialog";
+import { MatDialog } from "@angular/material/dialog";
 
 
 interface uploadedFiles {
@@ -70,6 +72,7 @@ interface motorData {
     imports: [DecimalPipe, UploadImage, Webcam, MatProgressBarModule, MatButtonToggleModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule, MatInputModule, MatFormFieldModule, MatCheckboxModule, MatMenuModule]
 })
 export class OCRComponent {
+    private dialog = inject(MatDialog);
     pageOver: number = 1;
     currentPage: number = 0;
     inputType: String = 'Camera';
@@ -143,10 +146,20 @@ export class OCRComponent {
                     const fileSizeMB = file.size / (1024 * 1024);
                     if (fileSizeMB > maxSizeMB) {
                         console.log("${file.name} is too big of a file. Skipping file.");
-                        alert(file.name + " is too big of a file. Skipping file.");
+                        this.dialog.open(GenericErrorDialog, {
+                            data: {
+                                title: 'File Too Large',
+                                message: file.name + " is too big of a file. Skipping file."
+                            }
+                        });
                     }
                     else if (!this.allowedTypes.includes(file.type)) {
-                        alert(file.name + "is an invalid file type. Skipping file");
+                        this.dialog.open(GenericErrorDialog, {
+                            data: {
+                                title: 'Invalid File Type',
+                                message: file.name + " is an invalid file type. Skipping file."
+                            }
+                        });
                         return;
                     }
                     else {
@@ -193,59 +206,65 @@ export class OCRComponent {
         // No file selected, let the user know and stop
         if (!(this.filesInput.length > 0)) {
             console.error('No Files Imported');
-            alert("Please add a file or picture to process")
+            this.dialog.open(GenericErrorDialog, {
+                data: {
+                    title: 'No Files Selected',
+                    message: "Please select a file or picture to process."
+                }
+            });
             return;
         }
         this.loading = true;
         try {
             for (let i = 0; i < this.filesInput.length; i++) {
+                this.cd.detectChanges();
                 const file = this.filesInput[i];
-                if (this.inventory.find(motor => motor.image === file.content)) {
-                    console.log("duplicate motor. skipping");
-                } else {
-                    this.cd.detectChanges();
-                    try {
-                        const canvas = await this.imageUtils.prepareImage(file.fullFile);
-                        const text = await this.ocr.extractText(canvas, file.name);
-                        const description = new NormalizeTextPipe().transform(text);
-                        const extractedValues = await this.textExtractor.extractValues(description);
-                        const motor: motorData = {
-                            id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
-                            name: file.name,
-                            result: text,
-                            description,
-                            image: typeof file.content === 'string' ? file.content : undefined,
-                            savedAt: new Date().toLocaleString(),
-                            CAT_NO: extractedValues.CAT_NO,
-                            SPEC: extractedValues.SPEC,
-                            HORSEPOWER: extractedValues.HORSEPOWER,
-                            VOLTAGE: extractedValues.VOLTAGE,
-                            AMPERAGE: extractedValues.AMPERAGE,
-                            RPM: extractedValues.RPM,
-                            FRAME: extractedValues.FRAME,
-                            HERTZ: extractedValues.HERTZ,
-                            PH: extractedValues.PH,
-                            SER_F: extractedValues.SER_F,
-                            CODE: extractedValues.CODE,
-                            DES: extractedValues.DES,
-                            CLASS: extractedValues.CLASS,
-                            NEMA_NOM_EFF: extractedValues.NEMA_NOM_EFF,
-                            P_F: extractedValues.P_F,
-                            RATING: extractedValues.RATING,
-                            CC: extractedValues.CC,
-                            USABLE_AT: extractedValues.USABLE_AT,
-                            BEARINGS_DE: extractedValues.BEARINGS_DE,
-                            BEARINGS_ODE: extractedValues.BEARINGS_ODE,
-                            ENCL: extractedValues.ENCL,
-                            SERIAL_NUMBER: extractedValues.SERIAL_NUMBER
-                        };
-                        this.inventory.push(motor);
-                        this.saveItem(motor);
+                try {
+                    const canvas = await this.imageUtils.prepareImage(file.fullFile);
+                    const text = await this.ocr.extractText(canvas, file.name);
+                    const description = new NormalizeTextPipe().transform(text);
+                    const extractedValues = await this.textExtractor.extractValues(description);
+                    const motor: motorData = {
+                        id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
+                        name: file.name,
+                        result: text,
+                        description,
+                        image: typeof file.content === 'string' ? file.content : undefined,
+                        savedAt: new Date().toLocaleString(),
+                        CAT_NO: extractedValues.CAT_NO,
+                        SPEC: extractedValues.SPEC,
+                        HORSEPOWER: extractedValues.HORSEPOWER,
+                        VOLTAGE: extractedValues.VOLTAGE,
+                        AMPERAGE: extractedValues.AMPERAGE,
+                        RPM: extractedValues.RPM,
+                        FRAME: extractedValues.FRAME,
+                        HERTZ: extractedValues.HERTZ,
+                        PH: extractedValues.PH,
+                        SER_F: extractedValues.SER_F,
+                        CODE: extractedValues.CODE,
+                        DES: extractedValues.DES,
+                        CLASS: extractedValues.CLASS,
+                        NEMA_NOM_EFF: extractedValues.NEMA_NOM_EFF,
+                        P_F: extractedValues.P_F,
+                        RATING: extractedValues.RATING,
+                        CC: extractedValues.CC,
+                        USABLE_AT: extractedValues.USABLE_AT,
+                        BEARINGS_DE: extractedValues.BEARINGS_DE,
+                        BEARINGS_ODE: extractedValues.BEARINGS_ODE,
+                        ENCL: extractedValues.ENCL,
+                        SERIAL_NUMBER: extractedValues.SERIAL_NUMBER
+                    };
+                    this.inventory.push(motor);
+                    this.saveItem(motor);
 
-                    } catch (err: any) {
-                        console.warn(`Skipping ${file.name}`, err);
-                        alert(`Error processing file ${file.name}. Skipping file.`);
-                    }
+                } catch (err: any) {
+                    console.warn(`Skipping ${file.name}`, err);
+                    this.dialog.open(GenericErrorDialog, {
+                            data: {
+                                title: 'An Error Occurred',
+                                message: `Error processing file ${file.name}. Skipping file.`
+                            }
+                        });
                 }
                 this.extractionProgress = ((i + 1) / this.filesInput.length) * 100;
                 this.cd.detectChanges();

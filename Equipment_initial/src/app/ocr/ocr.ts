@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { createWorker } from 'tesseract.js';
 import { ImagePasser } from '../image-passer';
 import { MatDialog } from '@angular/material/dialog';
-import { OcrWarningDialog, OcrErrorDialog, OcrGenericErrorDialog } from './ocr.error.dialog';
+import { OcrWarningDialog, OcrErrorDialog, GenericErrorDialog } from '../error.dialog';
 
 @Injectable({
   providedIn: 'root',
@@ -77,7 +77,6 @@ export class OCRService {
 
         const result = await dialogRef.afterClosed().toPromise();
 
-        // Handle result (same logic as SweetAlert)
         if (result === 'keep') {
           return salvagedText;
         } else if (result === 'discard') {
@@ -87,7 +86,7 @@ export class OCRService {
         }
       }
       else if (err.message === "OCR Timeout") {
-        this.dialog.open(OcrGenericErrorDialog, {
+        this.dialog.open(GenericErrorDialog, {
           data: {
             title: 'OCR Timeout',
             message: 'OCR took too long and was stopped. No salvageable text was found.'
@@ -97,7 +96,7 @@ export class OCRService {
         throw new Error("OCR failed due to timeout with no salvageable text");
       }
       else {
-        this.dialog.open(OcrGenericErrorDialog, {
+        this.dialog.open(GenericErrorDialog, {
           data: {
             title: 'OCR Error',
             message: 'An unexpected error occurred during OCR processing.'
