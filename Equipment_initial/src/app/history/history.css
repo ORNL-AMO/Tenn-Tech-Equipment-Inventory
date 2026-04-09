@@ -116,7 +116,7 @@ p {
 }
 
 .header-actions button {
-  min-width: 36px;
+  min-width: 12px;
   height: 36px;
   padding: 5;
 }
@@ -391,6 +391,19 @@ p {
 }
 
 @media (max-width: 768px) {
+  .button-text {
+    display: none;
+  }
+
+  .header-actions button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: auto;
+    width: 36px;
+    padding: 0;
+  }
+
   .details-specs-wrapper {
     grid-template-columns: 1fr;
     gap: 8px;

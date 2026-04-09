@@ -33,10 +33,10 @@
             </div>
             <div class="header-actions">
               <button matFab extended color="primary" aria-label="Download this entry" (click)="exportItem(item, 'json'); $event.stopPropagation();">
-                <mat-icon>download</mat-icon> Download as
+                <mat-icon>download</mat-icon><span class="button-text">Download as</span>
               </button>
               <button matFab extended color="warn" aria-label="Delete entry" (click)="deleteItem(item); $event.stopPropagation();">
-                <mat-icon>delete</mat-icon> Delete
+                <mat-icon>delete</mat-icon><span class="button-text">Delete</span>
               </button>
               <a style="padding-right:8px"></a>
             </div>
@@ -64,7 +64,7 @@
                   <p class="raw-result">{{ item.result }}</p>
                 </div>
               </div>
-
+              
               <div class="specs-grid">
               <div class="spec-item">
                 <strong>CAT_NO</strong>
