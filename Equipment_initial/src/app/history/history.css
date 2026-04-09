@@ -390,7 +390,7 @@ p {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .button-text {
     display: none;
   }
@@ -402,6 +402,11 @@ p {
     min-width: auto;
     width: 36px;
     padding: 0;
+  }
+
+  .header-actions button .mat-icon {
+    margin-left: 0;
+    margin-right: 0;
   }
 
   .details-specs-wrapper {
