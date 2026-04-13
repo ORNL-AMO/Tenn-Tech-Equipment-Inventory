@@ -1,0 +1,70 @@
+<h2 mat-dialog-title>Scanner Quick Guide</h2>
+
+<mat-dialog-content>
+  <p class="welcome-text">
+    Welcome to the Document Scanner. Use this tool to upload high-resolution images and convert them into editable text using our AI engine.
+  </p>
+
+  <mat-accordion multi="false">
+    
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>crop</mat-icon> Upload & Cropping
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <p>1. <strong><mat-icon>upload_file</mat-icon> Upload</strong> documents using the sidebar.</p>
+      <p>2. <strong><mat-icon>crop_free</mat-icon> Align</strong> the box tightly around the target text to ensure the highest OCR accuracy.</p>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>rotate_right</mat-icon> Rotation
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="tool-row">
+        <mat-icon class="boxed">rotate_left</mat-icon> 
+        <mat-icon class="boxed">rotate_right</mat-icon>
+        <span><strong>Hard Rotate:</strong> Turn the image exactly 90°.</span>
+      </div>
+      <div class="tool-row">
+        <mat-icon class="boxed">remove</mat-icon> 
+        <mat-icon class="boxed">add</mat-icon>
+        <span><strong>Step Rotate:</strong> Nudge the image by 1° for fine alignment.</span>
+      </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>zoom_in</mat-icon> Zooming
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="tool-row">
+        <mat-icon class="boxed">lock_open</mat-icon>
+        <span><strong>Zoom Lock:</strong> When locked (<mat-icon>lock</mat-icon>), the crop box scales <em>with</em> the canvas.</span>
+      </div>
+      <div class="tool-row">
+        <mat-icon class="boxed">zoom_out</mat-icon> 
+        <mat-icon class="boxed">zoom_in</mat-icon>
+        <span><strong>Zoom:</strong> Magnify the canvas (10% to 1000%).</span>
+      </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>auto_fix_high</mat-icon> Extraction
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <p><strong><mat-icon>description</mat-icon> Single:</strong> Run OCR on the currently selected image.</p>
+      <p><strong><mat-icon>layers</mat-icon> Batch:</strong> Process all uploaded images sequentially. Useful for multi-page documents.</p>
+    </mat-expansion-panel>
+
+  </mat-accordion>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-flat-button color="primary" [mat-dialog-close]="true">Got it</button>
+</mat-dialog-actions>
