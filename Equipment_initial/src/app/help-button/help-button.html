@@ -2,7 +2,7 @@
 
 <mat-dialog-content>
   <p class="welcome-text">
-    Welcome to the Document Scanner. Use this tool to upload high-resolution images and convert them into editable text using our AI engine.
+    Welcome to the Image Scanner Prototype. Use this tool to upload high-resolution images and convert them into editable text.
   </p>
 
   <mat-accordion multi="false">
@@ -10,46 +10,10 @@
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <mat-icon>crop</mat-icon> Upload & Cropping
+          <mat-icon>upload_file</mat-icon> Upload
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <p>1. <strong><mat-icon>upload_file</mat-icon> Upload</strong> documents using the sidebar.</p>
-      <p>2. <strong><mat-icon>crop_free</mat-icon> Align</strong> the box tightly around the target text to ensure the highest OCR accuracy.</p>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <mat-icon>rotate_right</mat-icon> Rotation
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <div class="tool-row">
-        <mat-icon class="boxed">rotate_left</mat-icon> 
-        <mat-icon class="boxed">rotate_right</mat-icon>
-        <span><strong>Hard Rotate:</strong> Turn the image exactly 90°.</span>
-      </div>
-      <div class="tool-row">
-        <mat-icon class="boxed">remove</mat-icon> 
-        <mat-icon class="boxed">add</mat-icon>
-        <span><strong>Step Rotate:</strong> Nudge the image by 1° for fine alignment.</span>
-      </div>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <mat-icon>zoom_in</mat-icon> Zooming
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <div class="tool-row">
-        <mat-icon class="boxed">lock_open</mat-icon>
-        <span><strong>Zoom Lock:</strong> When locked (<mat-icon>lock</mat-icon>), the crop box scales <em>with</em> the canvas.</span>
-      </div>
-      <div class="tool-row">
-        <mat-icon class="boxed">zoom_out</mat-icon> 
-        <mat-icon class="boxed">zoom_in</mat-icon>
-        <span><strong>Zoom:</strong> Magnify the canvas (10% to 1000%).</span>
-      </div>
+      <p><strong>Upload</strong> documents using the Choose Files button or by activating the camera and taking a picture.</p>
     </mat-expansion-panel>
 
     <mat-expansion-panel>
@@ -58,9 +22,31 @@
           <mat-icon>auto_fix_high</mat-icon> Extraction
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <p><strong><mat-icon>description</mat-icon> Single:</strong> Run OCR on the currently selected image.</p>
-      <p><strong><mat-icon>layers</mat-icon> Batch:</strong> Process all uploaded images sequentially. Useful for multi-page documents.</p>
+      <p><strong>Extract</strong> the text from the uplaoded images by clicking the Scan Files button. This will automatically perform the extraction on all files.</p>
     </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>camera_enhance_icon</mat-icon> Camera
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="tool-row">
+        <p> The <strong>Camera</strong> can be activated by first clicking the Give Camera permission button, giving the app permission to access your device camera when prompted, selecting your device's camera in the dropdown, and then clicking the Start Camera button.</p>
+      </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>history</mat-icon> History
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="tool-row">
+        <p>The <strong>History</strong> panel shows a list of recently uploaded images and their extraction results. Click on an entry to expand it and see a more detailed view. Use the Download As button to save the entry as a file on your device. Use the Delete button to permanently delete the entry from your history.</p>
+      </div>
+    </mat-expansion-panel>
+
 
   </mat-accordion>
 </mat-dialog-content>
