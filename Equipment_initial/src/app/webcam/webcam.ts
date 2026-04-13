@@ -1,5 +1,4 @@
 import { Component, ElementRef, ViewChild, ChangeDetectorRef, output, inject } from '@angular/core';
-import { ImagePasser } from '../image-passer';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
@@ -62,8 +61,7 @@ export class Webcam {
     return promise.catch(err => this.handleError(err));
   }
 
-  constructor(private imagePasser: ImagePasser,
-    private readonly cd: ChangeDetectorRef) { }
+  constructor(private readonly cd: ChangeDetectorRef) { }
 
   webcamPermission: boolean = false;
   camOn: boolean = false;

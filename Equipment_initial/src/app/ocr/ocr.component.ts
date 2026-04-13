@@ -2,7 +2,6 @@ import { Component, inject, ChangeDetectorRef, input } from "@angular/core";
 import { OCRService } from "./ocr";
 import { ImageUtils } from "./image-utils";
 import { NormalizeTextPipe } from "./normalize-text-pipe";
-import { ImagePasser } from "../image-passer";
 import { UploadImage } from "../upload-image/upload-image";
 import { Webcam } from '../webcam/webcam';
 import { DecimalPipe } from "@angular/common"
@@ -97,7 +96,6 @@ export class OCRComponent {
 
     constructor(private ocr: OCRService,
         private readonly cd: ChangeDetectorRef,
-        private imagePasser: ImagePasser,
         private textExtractor: TextExtractorService,
         private historyService: HistoryService) { }
 

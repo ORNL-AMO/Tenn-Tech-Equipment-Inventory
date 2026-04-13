@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
 import { createWorker } from 'tesseract.js';
-import { ImagePasser } from '../image-passer';
 import { MatDialog } from '@angular/material/dialog';
 import { OcrWarningDialog, OcrErrorDialog, GenericErrorDialog } from '../error.dialog';
 
@@ -10,7 +9,6 @@ import { OcrWarningDialog, OcrErrorDialog, GenericErrorDialog } from '../error.d
 
 export class OCRService {
   private dialog = inject(MatDialog);
-  constructor(private imagePasser: ImagePasser) { }
   async extractText(image: HTMLCanvasElement | HTMLImageElement, name: string): Promise<string> {
 
     const worker = await createWorker('eng');
