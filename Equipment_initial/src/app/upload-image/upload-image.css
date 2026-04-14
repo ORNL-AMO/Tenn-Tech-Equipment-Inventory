@@ -1,9 +1,12 @@
-input[type="file"] {
+.upload {
   border: solid 1px var(--primary-color);
   padding: 10px;
   border-radius: 8px;
   margin: var(--content-padding);
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10vh;
 }
 
 label {
