@@ -9,10 +9,21 @@
   height: 10vh;
 }
 
-label {
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20vh;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+/* label {
   display: block;
   margin-left: var(--content-padding);
-}
+} */
 
 img {
   max-width: 100%;
