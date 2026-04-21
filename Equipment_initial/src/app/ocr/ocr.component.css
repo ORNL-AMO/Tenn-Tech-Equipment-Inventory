@@ -120,7 +120,7 @@ mat-grid-list {
 /* Image container */
 mat-grid-tile {
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Images */
@@ -137,7 +137,7 @@ mat-grid-tile img {
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
     color: #fff;
     padding: 10px;
     text-align: center;
@@ -145,6 +145,22 @@ mat-grid-tile img {
     opacity: 0;
     transform: translateY(100%);
     transition: all 0.3s ease;
+}
+
+.image-modal-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2100;
+    border: none;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
 }
 
 /* Hover effects */
