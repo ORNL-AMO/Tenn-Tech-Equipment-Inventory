@@ -38,6 +38,8 @@ export class UploadImage {
   }
   profileImg = new FormControl();
   
+  
+
   get images() {
     const images = this.profileImg.value;
     this.fileAdded.emit(images);

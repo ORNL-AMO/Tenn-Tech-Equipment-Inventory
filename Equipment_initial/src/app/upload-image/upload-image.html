@@ -19,8 +19,8 @@
 <div class="app-container">
 <mat-form-field appearance="outline">
     <mat-label>Drop only .png, .jpg, .jpeg files!</mat-label>
-    <ngx-mat-dropzone (change)="selectFile($event)">
-        <input type="file" fileInput mode="replace" multiple [formControl]="profileImg" (change)="selectFile($event)"
+    <ngx-mat-dropzone>
+        <input #fileInput type="file" fileInput mode="replace" multiple [formControl]="profileImg" (input)="selectFile($event)"
             accept="image/jpg, image/jpeg, image/png" />
         @for (image of images; track image.name) {
             <mat-chip-row>

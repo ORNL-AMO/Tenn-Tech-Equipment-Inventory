@@ -126,6 +126,7 @@ export class OCRComponent {
         this._snackBar.open(`Saved "${item.name}" to history`, "Ok", { duration: 5000 });
     }
 
+
     async onFileSelected(event: Event | { target: { files: File[] } }): Promise<void> {
         const input = event.target as HTMLInputElement;
         // Clear the image preview and extraction results
