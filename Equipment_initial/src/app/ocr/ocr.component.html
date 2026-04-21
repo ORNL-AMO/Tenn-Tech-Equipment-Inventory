@@ -10,7 +10,9 @@
     @for(file of filesInput.slice(0, 10); track file.name){
     <!-- Image Preview -->
     <mat-grid-tile>
-        <button matButton="tonal" (click)="deletePreviewItem(file.content)">X</button>
+        <button class="image-modal-close" (click)="deletePreviewItem(file.content)">
+            <mat-icon>close</mat-icon>
+        </button>
         <img [src]="file.content" [alt]="file.name" class="preview-img" />
         <!-- Image File name with size -->
         <div class="caption">{{ file.name }} ({{ file.size / 1024 | number:'1.0-2' }} KB)</div>
