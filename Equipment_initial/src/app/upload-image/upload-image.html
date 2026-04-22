@@ -17,20 +17,19 @@
     </div>
 </section>
 <div class="app-container">
-<mat-form-field appearance="outline">
-    <mat-label>Drop only .png, .jpg, .jpeg files!</mat-label>
-    <ngx-mat-dropzone>
-        <input #fileInput type="file" fileInput mode="replace" multiple [formControl]="profileImg" (input)="selectFile($event)"
-            accept="image/jpg, image/jpeg, image/png" />
-        @for (image of images; track image.name) {
+    <mat-form-field appearance="outline">
+        <mat-label><mat-icon>file_upload</mat-icon>Drop only .png, .jpg, .jpeg files!</mat-label>
+        <ngx-mat-dropzone>
+            <input type="file" fileInput mode="replace" multiple [formControl]="profileImg"
+                accept="image/jpg, image/jpeg, image/png" (selectionChange)="onControlChange()" />
+            @for (image of images; track image.name) {
             <mat-chip-row>
                 {{ image.name }}
             </mat-chip-row>
-        }
-    </ngx-mat-dropzone>
-    <mat-icon matSuffix>cloud_upload</mat-icon>
-    <mat-error>Only image files allowed!</mat-error>
-</mat-form-field>
+            }
+        </ngx-mat-dropzone>
+        <mat-error>Only image files allowed!</mat-error>
+    </mat-form-field>
 
-<div style="width: 40px"></div>
+    <div style="width: 40px"></div>
 </div>
