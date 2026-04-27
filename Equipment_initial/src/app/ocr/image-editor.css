@@ -3,13 +3,13 @@
   flex-direction: column;
   height: 100vh;
   max-height: 100%;
-  background: #1a1a1a;
+  /* background: #1a1a1a; */
   overflow: hidden;
 }
 
 .toolbar {
-  background: #2c3e50;
-  color: white;
+  /* background: #2c3e50; */
+  /* color: white; */
   padding: 10px 20px;
   display: flex;
   justify-content: space-between;
