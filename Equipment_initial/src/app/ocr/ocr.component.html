@@ -15,7 +15,12 @@
         </button>
         <img [src]="file.content" [alt]="file.name" class="preview-img" />
         <!-- Image File name with size -->
-        <div class="caption">{{ file.name }} ({{ file.size / 1024 | number:'1.0-2' }} KB)</div>
+        <div class="caption">
+            <div class="caption-content">
+                <span class="file-info">{{ file.name }} ({{ file.size / 1024 | number:'1.0-2' }} KB)</span>
+                <button type="button" class="edit-btn" (click)="openEditor(file)">EDIT</button>
+            </div>
+        </div>
     </mat-grid-tile>
     }
 </mat-grid-list>

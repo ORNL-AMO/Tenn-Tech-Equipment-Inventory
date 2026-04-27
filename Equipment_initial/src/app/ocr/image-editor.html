@@ -1,0 +1,41 @@
+<div class="editor-container">
+  <header class="toolbar">
+    
+    <div class="title-section">
+      <strong>Editing:</strong>
+      <span class="file-name">{{ data.name }}</span>
+    </div>
+
+    <div class="control-group">
+      <div class="btn-row">
+        <button mat-icon-button (click)="handleHardRotate(-90)"><mat-icon>rotate_left</mat-icon></button>
+        <button mat-icon-button (click)="adjustAngle(-1)"><mat-icon>remove</mat-icon></button>
+        <span class="value-display">{{ currentAngle }}°</span>
+        <button mat-icon-button (click)="adjustAngle(1)"><mat-icon>add</mat-icon></button>
+        <button mat-icon-button (click)="handleHardRotate(90)"><mat-icon>rotate_right</mat-icon></button>
+      </div>
+      <input type="range" min="0" max="360" step="1" [value]="currentAngle" (input)="manualRotate($event)" class="slider">
+    </div>
+
+    <div class="control-group">
+      <div class="btn-row">
+        <button mat-icon-button (click)="handleZoom(-0.1)"><mat-icon>zoom_out</mat-icon></button>
+        <span class="value-display">{{ zoomLevel }}%</span>
+        <button mat-icon-button (click)="handleZoom(0.1)"><mat-icon>zoom_in</mat-icon></button>
+      </div>
+      <input type="range" min="10" max="1000" step="10" [value]="zoomLevel" (input)="manualZoom($event)" class="slider">
+    </div>
+
+    <div class="actions">
+      <button class="rect-btn cancel" (click)="close()">CANCEL</button>
+      <button class="rect-btn save" (click)="save()">APPLY</button>
+    </div>
+    
+  </header>
+
+  <div class="stage">
+    <div class="image-wrapper">
+      <img #imageAsset [src]="data.image" />
+    </div>
+  </div>
+</div>

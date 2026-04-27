@@ -23,6 +23,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from '@angular/material/menu';
 import { GenericErrorDialog } from "../error.dialog";
 import { MatDialog } from "@angular/material/dialog";
+import { ImageEditorComponent } from './image-editor';
 
 
 interface uploadedFiles {
@@ -326,5 +327,42 @@ export class OCRComponent {
 
     isFieldSelected(fieldName: string): boolean {
         return this.selectedFields.has(fieldName);
+    }
+
+    openEditor(file: uploadedFiles) {
+        // We assume the ImageEditorDialogComponent is imported at the top
+        const dialogRef = this.dialog.open(ImageEditorComponent, {
+            data: {
+                image: file.content,
+                name: file.name
+            },
+            width: '95vw',
+            height: '90vh',
+            maxWidth: '100vw'
+        });
+
+        dialogRef.afterClosed().subscribe((editedBase64: string) => {
+            if (editedBase64) {
+               
+                file.content = editedBase64;
+
+                const blob = this.dataURItoBlob(editedBase64);
+                file.fullFile = new File([blob], file.name, { type: 'image/jpeg' });
+                
+                this.cd.detectChanges();
+                this._snackBar.open(`Applied edits to ${file.name}`, "Ok", { duration: 2000 });
+            }
+        });
+    }
+
+    private dataURItoBlob(dataURI: string): Blob {
+        const byteString = atob(dataURI.split(',')[1]);
+        const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], { type: mimeString });
     }
 }
