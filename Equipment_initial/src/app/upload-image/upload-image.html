@@ -1,7 +1,7 @@
 <section>
     <div class="help">
-        <button class="helpBtn" matButton="filled" type="button" (click)="openHelpDialog()">
-            <p><mat-icon class="help-icon">help_outline</mat-icon>Help</p>
+        <button matFab extended type="button" (click)="openHelpDialog()">
+            <mat-icon>help_outline</mat-icon>Help
         </button>
     </div>
     <div class="example-wrap">
@@ -16,6 +16,7 @@
         </mat-card>
     </div>
 </section>
+
 <div class="app-container">
     <mat-form-field appearance="outline">
         <mat-label><mat-icon>file_upload</mat-icon>Drop only .png, .jpg, .jpeg files!</mat-label>

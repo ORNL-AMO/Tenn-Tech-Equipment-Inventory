@@ -8,6 +8,8 @@ import { FileInputDirective } from '@ngx-dropzone/cdk';
 import { MatChipRow } from '@angular/material/chips';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatDropzone } from '@ngx-dropzone/material'
+import { MatButtonModule } from '@angular/material/button';
+
 
 @Component({
   selector: 'app-upload-image',
@@ -21,7 +23,8 @@ import { MatDropzone } from '@ngx-dropzone/material'
     MatChipRow,
     MatError,
     MatFormField,
-    MatLabel
+    MatLabel,
+    MatButtonModule
   ],
   templateUrl: './upload-image.html',
   styleUrl: './upload-image.css',

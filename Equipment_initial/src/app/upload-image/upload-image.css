@@ -1,19 +1,8 @@
-.upload {
-  border: solid 1px var(--primary-color);
-  padding: 10px;
-  border-radius: 8px;
-  margin: var(--content-padding);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 10vh;
-}
-
 .app-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20vh;
+  padding: 15vh;
 }
 
 mat-form-field {
@@ -21,54 +10,13 @@ mat-form-field {
   height: fit-content;
 }
 
-/* label {
-  display: block;
-  margin-left: var(--content-padding);
-} */
-
-img {
-  max-width: 100%;
-  max-height: 100%;
-}
-
-@media (min-width: 200px) and (max-width: 100%) {
-  input[type="file"] {
-    width: 70%;
-  }
-}
-
-@media (max-width: 199px) {
-  input[type="file"] {
-    width: 20%;
-  }
-}
-
-video,
-canvas {
-  max-width: 100%;
-  border: 1px solid #ccc;
-  margin-top: 10px;
-}
 
 /* CSS for the Help Button - Geo*/
 .help {
-  position: relative;
   display:inline-block;
   margin-left: 8px;
-  width: max-content;
-  height: max-content;
 }
 
-.help-icon {
-  font-size: 13px;
-  height: 13px;
-  width: 13px;
-}
-
-.helpBtn {
-  font-size: 0.9rem;
-  cursor: help;
-}
 
 /* CSS for the Example hover-over - Sam*/
 .example-wrap {
@@ -89,9 +37,9 @@ mat-card {
   flex-wrap: wrap;
   width: max-content;
   width: fill;
-  max-width: 60vw;
+  max-width: 80vw;
   position: absolute;
-  z-index: 10;
+  z-index: 2;
   align-content: center;
 }
 
@@ -100,50 +48,8 @@ mat-card {
 }
 
 .example-img {
-  max-width: 100%;
+  max-height: 40vh;
+  max-width: 80vw;
   width: 33%;
-  height: auto;
-  display: inline-flex;
-  border: 1px solid #ddd;
-}
-
-/* Grid Container */
-mat-grid-list {
-  max-width: 100%;
-}
-
-/* Image container */
-mat-grid-tile {
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-/* Images */
-mat-grid-tile img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-
-/* Caption overlay */
-.caption {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  padding: 10px;
-  text-align: center;
-  font-size: 1rem;
-  opacity: 0;
-  transform: translateY(100%);
-  transition: all 0.3s ease;
-}
-
-/* Hover effects */
-mat-grid-tile:hover .caption {
-  opacity: 1;
-  transform: translateY(0);
+  display: inline-block;
 }

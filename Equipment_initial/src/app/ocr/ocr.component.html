@@ -13,7 +13,7 @@
         <button class="image-modal-close" (click)="deletePreviewItem(file.content)">
             <mat-icon>close</mat-icon>
         </button>
-        <img [src]="file.content" [alt]="file.name" class="preview-img" />
+        <img [src]="file.content" [alt]="file.name" class="preview-img" (click)="openEditor(file)" />
         <!-- Image File name with size -->
         <div class="caption">
             <div class="caption-content">
