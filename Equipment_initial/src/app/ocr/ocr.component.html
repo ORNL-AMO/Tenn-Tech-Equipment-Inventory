@@ -1,4 +1,4 @@
-<app-upload-image (fileAdded)="onFileSelected($event)"/>
+<app-upload-image (fileAdded)="onFileSelected($event)" [fileRemoved]="fileRemove" />
 <app-webcam (fileSelected)="onFileSelected($event)" />
 <mat-divider style="margin: 20px 0px"></mat-divider>
 <!-- Dynamically load the file preview window only when files selected -->
@@ -12,7 +12,7 @@
     @for(file of filesInput.slice(0, 10); track file.name){
     <!-- Image Preview -->
     <mat-grid-tile>
-        <button class="image-modal-close" (click)="deletePreviewItem(file.content)">
+        <button class="image-modal-close" (click)="deletePreviewItem(file.fullFile)">
             <mat-icon>close</mat-icon>
         </button>
         <img [src]="file.content" [alt]="file.name" class="preview-img" (click)="openEditor(file)" />

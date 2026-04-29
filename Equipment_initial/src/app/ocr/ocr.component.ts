@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectorRef, input } from "@angular/core";
+import { Component, inject, ChangeDetectorRef } from "@angular/core";
 import { OCRService } from "./ocr";
 import { ImageUtils } from "./image-utils";
 import { NormalizeTextPipe } from "./normalize-text-pipe";
@@ -84,6 +84,7 @@ export class OCRComponent {
     private imageUtils = inject(ImageUtils);
     allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
     private _snackBar = inject(MatSnackBar)
+    fileRemove: File | undefined = undefined
 
     // Field selection for save filtering
     selectedFields: Set<string> = new Set([
@@ -189,14 +190,18 @@ export class OCRComponent {
         }
     }
 
-    deletePreviewItem(deleteId: string | ArrayBuffer | null | undefined) {
-        this.filesInput = this.filesInput.filter(saved => saved.content !== deleteId);
+    deletePreviewItem(deleteThis: File) {
+        this.fileRemove = this.filesInput.find(saved => saved.fullFile === deleteThis)?.fullFile
+        this.filesInput = this.filesInput.filter(saved => saved.fullFile !== deleteThis);
         this.cd.detectChanges();
     }
     // If these are used on the most recent file,
     // then user must submit a different file, or reload page,
     // before it accepts same file again. (input change listener restriction)
     clearPreview() {
+        this.filesInput.forEach(item => { 
+            this.deletePreviewItem(item.fullFile)
+        })
         this.filesInput = [];
         this.cd.detectChanges();
     }
@@ -260,11 +265,11 @@ export class OCRComponent {
                 } catch (err: any) {
                     console.warn(`Skipping ${file.name}`, err);
                     this.dialog.open(GenericErrorDialog, {
-                            data: {
-                                title: 'An Error Occurred',
-                                message: `Error processing file ${file.name}. Skipping file.`
-                            }
-                        });
+                        data: {
+                            title: 'An Error Occurred',
+                            message: `Error processing file ${file.name}. Skipping file.`
+                        }
+                    });
                 }
                 this.extractionProgress = ((i + 1) / this.filesInput.length) * 100;
                 this.cd.detectChanges();
@@ -343,12 +348,12 @@ export class OCRComponent {
 
         dialogRef.afterClosed().subscribe((editedBase64: string) => {
             if (editedBase64) {
-               
+
                 file.content = editedBase64;
 
                 const blob = this.dataURItoBlob(editedBase64);
                 file.fullFile = new File([blob], file.name, { type: 'image/jpeg' });
-                
+
                 this.cd.detectChanges();
                 this._snackBar.open(`Applied edits to ${file.name}`, "Ok", { duration: 2000 });
             }

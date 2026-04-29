@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, output } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, output, effect, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { HelpButtonDialog } from '../help-button/help-button';
 import { Examples } from '../examples/examples'
@@ -30,8 +30,15 @@ import { MatButtonModule } from '@angular/material/button';
 })
 
 export class UploadImage {
-  constructor(private readonly cd: ChangeDetectorRef) { }
   fileAdded = output<Event | { target: { files: File[] } }>();
+  fileRemoved = input<File>();
+  constructor(private readonly cd: ChangeDetectorRef) {
+    effect(() => {
+      if (this.fileRemoved() !== undefined) {
+        this.remove(this.fileRemoved());
+      }
+    });
+   }
   readonly dialog = inject(MatDialog);
   openHelpDialog() {
     this.dialog.open(HelpButtonDialog);
@@ -44,8 +51,8 @@ export class UploadImage {
   onControlChange() {
     // 1 ms delay to allow the FormControl to update first, then emit the file(s)
     setTimeout(() => {
-    this.fileAdded.emit({ target: { files: this.profileImg.value } })
-    this.cd.detectChanges();
+      this.fileAdded.emit({ target: { files: this.profileImg.value } })
+      this.cd.detectChanges();
     }, 1);
   }
 
@@ -54,5 +61,15 @@ export class UploadImage {
 
     if (!images) return [];
     return Array.isArray(images) ? images : [images];
+  }
+
+  remove(image: File | undefined) {
+    if (Array.isArray(this.profileImg.value)) {
+      this.profileImg.setValue(this.profileImg.value.filter((i: File) => i !== image));
+      return;
+    }
+
+    this.profileImg.setValue(null);
+    this.cd.detectChanges();
   }
 }
