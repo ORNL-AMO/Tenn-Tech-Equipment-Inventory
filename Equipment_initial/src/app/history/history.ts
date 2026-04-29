@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { HistoryService } from './history.service';
-import { motorData } from '../motor-data';
+import { motorData } from '../motor-data.model';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';

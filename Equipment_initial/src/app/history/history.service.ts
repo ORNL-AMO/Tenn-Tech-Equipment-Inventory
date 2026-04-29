@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { motorData } from '../motor-data';
+import { motorData } from '../motor-data.model';
 
 
 @Injectable({

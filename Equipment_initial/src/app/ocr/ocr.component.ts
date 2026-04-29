@@ -24,7 +24,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { GenericErrorDialog } from "../error.dialog";
 import { MatDialog } from "@angular/material/dialog";
 import { ImageEditorComponent } from './image-editor';
-import { motorData, uploadedFiles } from '../motor-data'
+import { motorData, uploadedFiles } from '../motor-data.model'
 
 
 @Component({
