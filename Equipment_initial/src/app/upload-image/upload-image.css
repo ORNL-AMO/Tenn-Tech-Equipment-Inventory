@@ -10,46 +10,9 @@ mat-form-field {
   height: fit-content;
 }
 
-
-/* CSS for the Help Button - Geo*/
-.help {
-  display:inline-block;
-  margin-left: 8px;
-}
-
-
 /* CSS for the Example hover-over - Sam*/
-.example-wrap {
-  position: relative;
-  display: inline-block;
-  margin-left: 8px;
-}
-
 .example-trigger {
-  color: #366b38;
   cursor: help;
   text-decoration: underline;
   font-size: 0.9rem;
-}
-
-mat-card {
-  display: none;
-  flex-wrap: wrap;
-  width: max-content;
-  width: fill;
-  max-width: 80vw;
-  position: absolute;
-  z-index: 2;
-  align-content: center;
-}
-
-.example-wrap:hover mat-card {
-  display: block;
-}
-
-.example-img {
-  max-height: 40vh;
-  max-width: 80vw;
-  width: 33%;
-  display: inline-block;
 }

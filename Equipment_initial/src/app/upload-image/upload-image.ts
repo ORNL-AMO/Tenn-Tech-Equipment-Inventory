@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, inject, output } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { HelpButtonDialog } from '../help-button/help-button';
+import { Examples } from '../examples/examples'
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { FileInputDirective } from '@ngx-dropzone/cdk';
@@ -14,7 +14,6 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-upload-image',
   imports: [
-    MatCardModule,
     MatIcon,
     ReactiveFormsModule,
     FileInputDirective,
@@ -33,12 +32,12 @@ import { MatButtonModule } from '@angular/material/button';
 export class UploadImage {
   constructor(private readonly cd: ChangeDetectorRef) { }
   fileAdded = output<Event | { target: { files: File[] } }>();
-  // selectFile(event: Event) {
-  //   this.fileAdded.emit(event);
-  // }
   readonly dialog = inject(MatDialog);
   openHelpDialog() {
     this.dialog.open(HelpButtonDialog);
+  }
+  openExampleDialog() {
+    this.dialog.open(Examples)
   }
   profileImg = new FormControl();
 
