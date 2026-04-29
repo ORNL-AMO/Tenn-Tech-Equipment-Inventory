@@ -2,17 +2,42 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 15vh;
+  padding: 56px 24px 40px;
 }
 
 mat-form-field {
-  width: 100%;
+  width: min(100%, 900px);
+  max-width: 900px;
   height: fit-content;
 }
 
+ngx-mat-dropzone {
+  min-height: 110px;
+  display: flex;
+  align-items: center;
+}
 /* CSS for the Example hover-over - Sam*/
 .example-trigger {
   cursor: help;
   text-decoration: underline;
   font-size: 0.9rem;
+}
+@media (max-width: 768px) {
+  .app-container {
+    padding: 32px 16px 28px;
+  }
+
+  ngx-mat-dropzone {
+    min-height: 88px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-container {
+    padding: 20px 8px 20px;
+  }
+
+  ngx-mat-dropzone {
+    min-height: 76px;
+  }
 }

@@ -55,6 +55,7 @@ export class TextExtractorService {
         { signals: ['CC'], field: 'CC' },
         { signals: ['USABLE AT'], field: 'USABLE_AT' },
         // OPEL, PU, UZ, 
+        // Remove these extra words, once the scanner starts working properly. these are just a stop gap to get some values extracted until the scanner is fixed.
         { signals: ['BEARINGS DE', 'BEARINGS_DE', 'DE'], field: 'BEARINGS_DE' },
         { signals: ['BEARINGS ODE', 'BEARINGS_ODE', 'ODE', 'OPEL'], field: 'BEARINGS_ODE' },
         { signals: ['ENCL', 'ENCLOSURE'], field: 'ENCL' },
