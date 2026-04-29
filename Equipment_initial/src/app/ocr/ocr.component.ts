@@ -195,9 +195,7 @@ export class OCRComponent {
         this.filesInput = this.filesInput.filter(saved => saved.fullFile !== deleteThis);
         this.cd.detectChanges();
     }
-    // If these are used on the most recent file,
-    // then user must submit a different file, or reload page,
-    // before it accepts same file again. (input change listener restriction)
+
     clearPreview() {
         this.filesInput.forEach(item => { 
             this.deletePreviewItem(item.fullFile)
