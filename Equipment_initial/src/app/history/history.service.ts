@@ -1,42 +1,14 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { motorData } from '../motor-data';
 
-export interface MotorData {
-    id?: string;
-    name: string;
-    result: string;
-    description: string;
-    image?: string;
-    savedAt?: string;
-    CAT_NO: string;
-    SPEC: string;
-    HORSEPOWER: string;
-    VOLTAGE: string;
-    AMPERAGE: string;
-    RPM: string;
-    FRAME: string;
-    HERTZ: string;
-    PH: string;
-    SER_F: string;
-    CODE: string;
-    DES: string;
-    CLASS: string;
-    NEMA_NOM_EFF: string;
-    P_F: string;
-    RATING: string;
-    CC: string;
-    USABLE_AT: string;
-    BEARINGS_DE: string;
-    BEARINGS_ODE: string;
-    ENCL: string;
-    SERIAL_NUMBER: string;
-}
 
 @Injectable({
     providedIn: 'root'
 })
+
 export class HistoryService {
-    private savedItems = new BehaviorSubject<MotorData[]>([]);
+    private savedItems = new BehaviorSubject<motorData[]>([]);
     public savedItems$ = this.savedItems.asObservable();
 
     constructor() {
@@ -51,7 +23,7 @@ export class HistoryService {
         }
     }
 
-    saveItem(item: MotorData): void {
+    saveItem(item: motorData): void {
         const current = this.savedItems.value;
         const updated = [...current, item];
         this.savedItems.next(updated);
@@ -59,7 +31,7 @@ export class HistoryService {
         localStorage.setItem('savedItems', JSON.stringify(updated));
     }
 
-    getSavedItems(): MotorData[] {
+    getSavedItems(): motorData[] {
         return this.savedItems.value;
     }
 
@@ -68,9 +40,9 @@ export class HistoryService {
         localStorage.removeItem('savedItems');
     }
 
-    removeItem(itemOrIndex: MotorData | number): void {
+    removeItem(itemOrIndex: motorData | number): void {
         const current = this.savedItems.value;
-        let updated: MotorData[];
+        let updated: motorData[];
 
         if (typeof itemOrIndex === 'number') {
             updated = current.filter((_, i) => i !== itemOrIndex);

@@ -27,7 +27,6 @@ import { ImageEditorComponent } from './image-editor';
 import { motorData, uploadedFiles } from '../motor-data'
 
 
-
 @Component({
     selector: 'app-ocr',
     templateUrl: './ocr.component.html',
