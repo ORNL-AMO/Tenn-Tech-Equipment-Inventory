@@ -3,7 +3,9 @@
 <mat-divider style="margin: 20px 0px"></mat-divider>
 <!-- Dynamically load the file preview window only when files selected -->
 @if(filesInput.length > 0){
-<button matButton="filled" (click)="clearPreview()">Clear Preview</button>
+<button matButton class="mat-bg-error-container" (click)="clearPreview()">
+    <p class="mat-text-on-error-container">Clear Preview</p>
+    </button>
 <mat-grid-list cols="2" gutterSize="15px" rowHeight="2:1">
 
     <!-- File preview loop to display up to 10 files to prevent extremely long page -->
@@ -55,10 +57,14 @@
     @if (inventory.length>1){
     <mat-paginator class="mat-bg-primary-container" [pageSizeOptions]="[1,5,10]" [length]="inventory.length"
         (page)="switchPage($event)"></mat-paginator>}
-    <button matButton="filled" (click)="clearInventory()">Clear Inventory</button>
+    <button matButton class="mat-bg-error-container" (click)="clearInventory()">
+        <p class="mat-text-on-error-container">Clear Inventory</p>
+    </button>
     <br>
     @for(item of inventory.slice(currentPage, pageOver); track item.id){
-    <button matButton="tonal" (click)="deleteInventoryItem(item.id)">X</button>
+    <button matButton="tonal" (click)="deleteInventoryItem(item.id)">
+        <mat-icon>close</mat-icon>
+    </button>
 
     <h2>Result for {{item.name}}</h2>
     <br>
