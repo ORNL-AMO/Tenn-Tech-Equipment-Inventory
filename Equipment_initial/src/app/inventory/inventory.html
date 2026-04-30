@@ -1,0 +1,170 @@
+<div class="inventory-container">
+  <h1>Equipment Inventory</h1>
+
+  @if (inventoryItems.length > 0) {
+    <!-- Clear All Button -->
+    <div class="controls">
+      <button mat-stroked-button color="warn" (click)="clearAll()">
+        <mat-icon>delete_sweep</mat-icon> Clear Inventory
+      </button>
+    </div>
+
+    <!-- Expandable Cards -->
+    <mat-accordion class="cards-container">
+      @for (item of inventoryItemsForDisplay; track item.name + $index; let idx = $index) {
+        <mat-expansion-panel #panel>
+          <!-- Card Header (Collapsed View) -->
+          <mat-expansion-panel-header>
+            <div class="header-meta">
+              <img src="{{ item.image }}" alt="Thumbnail" class="header-thumbnail" />
+              <span class="header-timestamp">{{ item.savedAt || 'Unknown time' }}</span>
+            </div>
+            <div class="header-actions">
+              <button matFab extended color="primary" aria-label="Download this entry" (click)="exportItem(item, 'json'); $event.stopPropagation();">
+                <mat-icon>download</mat-icon><span class="button-text">Download as</span>
+              </button>
+              <button matFab extended color="warn" aria-label="Delete entry" (click)="deleteItem(item); $event.stopPropagation();">
+                <mat-icon>delete</mat-icon><span class="button-text">Delete</span>
+              </button>
+              <a style="padding-right:8px"></a>
+            </div>
+          </mat-expansion-panel-header>
+
+          <!-- Card Content (Expanded View) -->
+          <div class="card-content">
+            @if(item.image){
+            <div class="inventory-image-wrapper">
+              <img src="{{ item.image }}" alt="Source image" class="inventory-thumb" (click)="openImage(item.image)" />
+            </div>
+            }
+            <div class="details-specs-wrapper">
+              <div class="details-grid">
+                <div class="detail-item">
+                  <strong>Equipment Name:</strong>
+                  <p>{{ item.name }}</p>
+                </div>
+                <div class="detail-item">
+                  <strong>Description:</strong>
+                  <p>{{ item.description }}</p>
+                </div>
+                <div class="detail-item">
+                  <strong>Raw OCR Result:</strong>
+                  <p class="raw-result">{{ item.result }}</p>
+                </div>
+              </div>
+              
+              <div class="specs-grid">
+              <div class="spec-item">
+                <strong>CAT_NO</strong>
+                <p>{{ item.CAT_NO || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>SPEC</strong>
+                <p>{{ item.SPEC || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>HORSEPOWER</strong>
+                <p>{{ item.HORSEPOWER || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>VOLTAGE</strong>
+                <p>{{ item.VOLTAGE || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>AMPERAGE</strong>
+                <p>{{ item.AMPERAGE || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>RPM</strong>
+                <p>{{ item.RPM || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>FRAME</strong>
+                <p>{{ item.FRAME || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>HERTZ</strong>
+                <p>{{ item.HERTZ || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>PH</strong>
+                <p>{{ item.PH || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>SER_F</strong>
+                <p>{{ item.SER_F || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>CODE</strong>
+                <p>{{ item.CODE || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>DES</strong>
+                <p>{{ item.DES || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>CLASS</strong>
+                <p>{{ item.CLASS || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>NEMA_NOM_EFF</strong>
+                <p>{{ item.NEMA_NOM_EFF || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>P_F</strong>
+                <p>{{ item.P_F || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>RATING</strong>
+                <p>{{ item.RATING || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>CC</strong>
+                <p>{{ item.CC || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>USABLE_AT</strong>
+                <p>{{ item.USABLE_AT || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>BEARINGS_DE</strong>
+                <p>{{ item.BEARINGS_DE || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>BEARINGS_ODE</strong>   
+                <p>{{ item.BEARINGS_ODE || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>ENCL</strong>
+                <p>{{ item.ENCL || ' ' }}</p>
+              </div>
+              <div class="spec-item">
+                <strong>SERIAL_NUMBER</strong>
+                <p>{{ item.SERIAL_NUMBER || ' ' }}</p>
+              </div>
+            </div>
+          </div>
+
+            <mat-divider style="margin: 20px 0;"></mat-divider>
+          </div>
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+
+    @if(selectedImage){
+    <div class="image-modal-backdrop" (click)="closeImage()">
+      <div class="image-modal-content" (click)="$event.stopPropagation()">
+        <button class="image-modal-close" (click)="closeImage()" aria-label="Close image">✕</button>
+        <img src="{{ selectedImage }}" alt="Full screen photo" class="image-modal-img" />
+      </div>
+    </div>
+    }
+
+  } @else {
+    <!-- Empty State -->
+    <div class="empty-state">
+      <mat-icon class="empty-icon">inventory_2</mat-icon>
+      <h2>Nothing Yet</h2>
+    </div>
+  }
+</div>

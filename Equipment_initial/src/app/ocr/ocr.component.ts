@@ -23,7 +23,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from '@angular/material/menu';
 import { GenericErrorDialog } from "../error.dialog";
 import { MatDialog } from "@angular/material/dialog";
-import { ImageEditorComponent } from '../image-editor/image-editor';
+import { ImageEditorComponent } from './image-editor';
 import { MotorConverterService } from "./motor-converter";
 import { motorData, uploadedFiles } from '../motor-data.model';
 
