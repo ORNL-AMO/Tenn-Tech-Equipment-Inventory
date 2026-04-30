@@ -10,7 +10,7 @@
             <mat-icon>file_upload</mat-icon>Drop only .png, .jpg, .jpeg files!
         </mat-label>
         <ngx-mat-dropzone>
-            <input type="file" fileInput mode="append" multiple [formControl]="profileImg"
+            <input type="file" fileInput mode="replace" multiple [formControl]="profileImg"
                 accept="image/jpg, image/jpeg, image/png" (selectionChange)="onControlChange()" />
             @for (image of images; track image.name) {
             <mat-chip-row>
