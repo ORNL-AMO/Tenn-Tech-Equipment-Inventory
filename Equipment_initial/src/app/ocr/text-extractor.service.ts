@@ -1,14 +1,11 @@
 import { Injectable } from '@angular/core';
 
-export interface FieldMapping {
-    signals: string[];
-    field: string;
-}
-
 export interface ExtractedValues {
     CAT_NO: string;
     SPEC: string;
     HORSEPOWER: string;
+    KILOWATTS: string;
+    WATTS: string;
     VOLTAGE: string;
     AMPERAGE: string;
     RPM: string;
@@ -30,150 +27,54 @@ export interface ExtractedValues {
     SERIAL_NUMBER: string;
 }
 
+const MOTOR_DICTIONARY: Record<string, RegExp> = {
+    CAT_NO: /(?:^|\s)(?:CATALOG\s*NUMBER|CATALOG|CAT\.?\s*NO\.?|CAT\s*NO)(?=[\s:\-\.])\s*[:\-\.]?\s*([A-Z0-9\-]+)/,
+    SPEC: /(?:^|\s)(?:SPECIFICATION|SPEC)(?=[\s:\-\.])\s*[:\-\.]?\s*([A-Z0-9\-]+)/,
+    HORSEPOWER: /(?:^|\s)(?:HORSEPOWER|H\.P\.|HP|CV|PS)(?=[\s:\-\.])\s*[:\-\.]?\s*([\d\.]+)/,
+    KILOWATTS: /(?:^|\s)(?:KILOWATTS|KILOWATT|KW)(?=[\s:\-\.])\s*[:\-\.]?\s*([\d\.]+)/,
+    WATTS: /(?:^|\s)(?:WATTS|WATT)(?=[\s:\-\.])\s*[:\-\.]?\s*([\d\.]+)/,
+    VOLTAGE: /(?:^|\s)(?:VOLTAGE|VOLTS|VAC|VOL|V)(?=[\s:\-\.])\s*[:\-\.]?\s*([\d\.\-\/]+)/,
+    AMPERAGE: /(?:^|\s)(?:AMPERAGE|AMPS|AVPS|AMP|A)(?=[\s:\-\.])\s*[:\-\.]?\s*([\d\.\-\/]+)/,
+    RPM: /(?:^|\s)(?:SPEED|R\.P\.M\.|RPMM|RPM)(?=[\s:\-\.])\s*[:\-\.]?\s*([\d]+)/,
+    FRAME: /(?:^|\s)(?:FRAME|FRM|FR)(?=[\s:\-\.])\s*[:\-\.]?\s*([A-Z0-9]+)/,
+    HERTZ: /(?:^|\s)(?:FREQUENCY|HERTZ|HZ|UZ)(?=[\s:\-\.])\s*[:\-\.]?\s*([\d\.]+)/,
+    PH: /(?:^|\s)(?:PHASE|PH|PU)(?=[\s:\-\.])\s*[:\-\.]?\s*([\d]+)/,
+    SER_F: /(?:^|\s)(?:SERVICE\s*FACTOR|SER\s*F|SER_F|S\.F\.|SF)(?=[\s:\-\.])\s*[:\-\.]?\s*([\d\.]+)/,
+    CODE: /(?:^|\s)(?:KVA\s*CODE|CODE)(?=[\s:\-\.])\s*[:\-\.]?\s*([A-Z])/,
+    DES: /(?:^|\s)(?:DESIGN|DES)(?=[\s:\-\.])\s*[:\-\.]?\s*([A-Z])/,
+    CLASS: /(?:^|\s)(?:INSULATION|INS\s*CLASS|CLASS)(?=[\s:\-\.])\s*[:\-\.]?\s*([A-Z]+)/,
+    NEMA_NOM_EFF: /(?:^|\s)(?:NEMA\s*NOM\s*EFF|NEMA_NOM_EFF|NOM\s*EFF|EFFICIENCY|EFF)(?=[\s:\-\.])\s*[:\-\.]?\s*([\d\.]+)/,
+    P_F: /(?:^|\s)(?:POWER\s*FACTOR|P\.F\.|P_F|PF)(?=[\s:\-\.])\s*[:\-\.]?\s*([\d\.]+)/,
+    RATING: /(?:^|\s)(?:TIME\s*RATING|RATING|DUTY)(?=[\s:\-\.])\s*[:\-\.]?\s*([A-Z0-9\-]+)/,
+    CC: /(?:^|\s)(?:CC\s*NO\.?|C\.C\.|CC)(?=[\s:\-\.])\s*[:\-\.]?\s*([A-Z0-9\-]+)/,
+    USABLE_AT: /(?:^|\s)(?:USABLE\s*AT|USABLE\s*ON)(?=[\s:\-\.])\s*[:\-\.]?\s*([A-Z0-9\.\-\/V]+)/,
+    BEARINGS_DE: /(?:^|\s)(?:DRIVE\s*END|DE\s*BRG|BRG\s*DE|D\.E\.|DE)(?=[\s:\-\.])\s*[:\-\.]?\s*([A-Z0-9\-]+)/,
+    BEARINGS_ODE: /(?:^|\s)(?:OPP\s*DRIVE\s*END|OPP\s*D\.E\.|ODE\s*BRG|BRG\s*ODE|O\.D\.E\.|OPEL|ODE)(?=[\s:\-\.])\s*[:\-\.]?\s*([A-Z0-9\-]+)/,
+    ENCL: /(?:^|\s)(?:ENCL\s*TYPE|ENCLTYPE|ENCLOSURE|ENCL)(?=[\s:\-\.])\s*[:\-\.]?\s*([A-Z0-9\-]+)/,
+    SERIAL_NUMBER: /(?:^|\s)(?:SERIAL\s*NUMBER|SERIAL\s*NO\.?|SER\.?\s*NO\.?|S\/N|S\.N\.|SERIAL|SN)(?=[\s:\-\.])\s*[:\-\.]?\s*([A-Z0-9\-]+)/
+};
+
 @Injectable({
     providedIn: 'root'
 })
 export class TextExtractorService {
 
-    private fieldMappings: FieldMapping[] = [
-        { signals: ['CAT NO', 'CAT_NO', 'CATALOG NO', 'CAT.NO'], field: 'CAT_NO' },
-        { signals: ['SPEC', 'SPECIFICATION', 'SPEC.'], field: 'SPEC' },
-        { signals: ['HORSEPOWER', 'HP'], field: 'HORSEPOWER' },
-        { signals: ['VOLTAGE', 'VOLTS'], field: 'VOLTAGE' },
-        { signals: ['AMPERAGE', 'AMPS', 'AVPS'], field: 'AMPERAGE' },
-        { signals: ['RPM', 'SPEED', 'REM.'], field: 'RPM' },
-        { signals: ['FRAME'], field: 'FRAME' },
-        { signals: ['HERTZ', 'HZ', 'FREQUENCY', 'UZ'], field: 'HERTZ' },
-        { signals: ['PH', 'PHASE', 'PU'], field: 'PH' },
-        { signals: ['SER F', 'SER. F.', 'SER_F', 'SERVICE FACTOR'], field: 'SER_F' },
-        { signals: ['CODE'], field: 'CODE' },
-        { signals: ['DES', 'DESIGN'], field: 'DES' },
-        { signals: ['CLASS'], field: 'CLASS' },
-        { signals: ['NEMA NOM EFF', 'NEMA_NOM_EFF', 'NEMA NOMINAL EFFICIENCY'], field: 'NEMA_NOM_EFF' },
-        { signals: ['P F', 'P_F', 'POWER FACTOR'], field: 'P_F' },
-        { signals: ['RATING'], field: 'RATING' },
-        { signals: ['CC'], field: 'CC' },
-        { signals: ['USABLE AT'], field: 'USABLE_AT' },
-        // OPEL, PU, UZ, 
-        // Remove these extra words, once the scanner starts working properly. these are just a stop gap to get some values extracted until the scanner is fixed.
-        { signals: ['BEARINGS DE', 'BEARINGS_DE', 'DE'], field: 'BEARINGS_DE' },
-        { signals: ['BEARINGS ODE', 'BEARINGS_ODE', 'ODE', 'OPEL'], field: 'BEARINGS_ODE' },
-        { signals: ['ENCL', 'ENCLOSURE'], field: 'ENCL' },
-        { signals: ['SERIAL NUMBER', 'SERIAL_NUMBER', 'SERIAL NO', 'S/N'], field: 'SERIAL_NUMBER' }
-    ];
-
     constructor() { }
 
-    /**
-     * Extracts equipment specification values from OCR description text
-     * Algorithm: For each field, find its signal word, then extract text until the next signal word
-     * @param description The cleaned OCR text to extract values from
-     * @returns Object containing extracted values for each field
-     */
     extractValues(description: string): Partial<ExtractedValues> {
         const extractedValues: any = {};
         const textUpper = description.toUpperCase();
 
-        // Flatten all signal words into a single array with their field mappings for quick lookup
-        const allSignals = new Map<string, string>(); // signal -> field
-        for (const mapping of this.fieldMappings) {
-            for (const signal of mapping.signals) {
-                if (signal.trim() !== '') {
-                    allSignals.set(signal, mapping.field);
-                }
-            }
-        }
-
-        // Process each field
-        for (const fieldMapping of this.fieldMappings) {
-            let startIndex = -1;
-            let matchedSignal = '';
-
-            // Step 1: Find the first signal word for this field
-            for (const signal of fieldMapping.signals) {
-                if (signal.trim() === '') continue;
-                const index = textUpper.indexOf(signal);
-                if (index !== -1 && (startIndex === -1 || index < startIndex)) {
-                    startIndex = index;
-                    matchedSignal = signal;
-                }
-            }
-
-            // Signal word not found, skip this field
-            if (startIndex === -1 || !matchedSignal) {
-                continue;
-            }
-
-            // Step 2: Delete everything before and including the signal word
-            const afterSignalIndex = startIndex + matchedSignal.length;
-            let remainingText = description.substring(afterSignalIndex);
-            let remainingTextUpper = textUpper.substring(afterSignalIndex);
-
-            // Step 3: Find the next signal word (any signal word that isn't for this field)
-            let nextSignalIndex = -1;
-            let nextSignalLength = 0;
-
-            // Search for any signal word in the remaining text
-            for (const [signal, field] of allSignals.entries()) {
-                // Skip signals for the current field
-                if (field === fieldMapping.field) continue;
-
-                const index = remainingTextUpper.indexOf(signal);
-                if (index !== -1 && (nextSignalIndex === -1 || index < nextSignalIndex)) {
-                    nextSignalIndex = index;
-                    nextSignalLength = signal.length;
-                }
-            }
-
-            // Step 4: Extract text between current signal and next signal
-            let value: string;
-            if (nextSignalIndex !== -1) {
-                // Delete everything from the next signal word onwards
-                value = remainingText.substring(0, nextSignalIndex);
+        for (const [field, regex] of Object.entries(MOTOR_DICTIONARY)) {
+            const match = textUpper.match(regex);
+            
+            if (match && match[1]) {
+                extractedValues[field] = match[1].trim();
             } else {
-                // No next signal found, take rest of text
-                value = remainingText;
-            }
-
-            // Step 5: Clean and assign the value
-            value = this.cleanExtractedValue(value);
-            if (value) {
-                extractedValues[fieldMapping.field] = value;
+                extractedValues[field] = undefined;
             }
         }
 
         return extractedValues;
-    }
-
-    /**
-     * Intelligently cleans extracted values by removing noise and keeping meaningful content
-     * @param rawValue The raw extracted text
-     * @returns Cleaned value
-     */
-    private cleanExtractedValue(rawValue: string): string {
-        // Trim whitespace
-        let value = rawValue.trim();
-        
-        // Remove leading/trailing punctuation and special characters
-        value = value.replace(/^[^a-zA-Z0-9]+/, '');
-        value = value.replace(/[^a-zA-Z0-9.]+$/, '');
-        
-        // Split by common delimiters to get the first meaningful chunk
-        // This helps when multiple values are crammed together
-        const chunks = value.split(/[\s,;/|\-]+/);
-        
-        if (chunks.length === 0) {
-            return '';
-        }
-
-        // Get the first chunk that contains alphanumeric characters
-        for (const chunk of chunks) {
-            const cleaned = chunk.replace(/[^a-zA-Z0-9.]/g, '').trim();
-            if (cleaned.length > 0) {
-                return cleaned;
-            }
-        }
-
-        return '';
     }
 }

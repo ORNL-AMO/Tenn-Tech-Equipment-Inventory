@@ -23,7 +23,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from '@angular/material/menu';
 import { GenericErrorDialog } from "../error.dialog";
 import { MatDialog } from "@angular/material/dialog";
-import { ImageEditorComponent } from './image-editor';
+import { ImageEditorComponent } from '../image-editor/image-editor';
+import { MotorConverterService } from "./motor-converter";
 
 
 interface uploadedFiles {
@@ -73,6 +74,7 @@ interface motorData {
 })
 export class OCRComponent {
     private dialog = inject(MatDialog);
+    private converter = inject(MotorConverterService);
     pageOver: number = 1;
     currentPage: number = 0;
     inputType: String = 'Camera';
@@ -224,6 +226,33 @@ export class OCRComponent {
                     const text = await this.ocr.extractText(canvas, file.name);
                     const description = new NormalizeTextPipe().transform(text);
                     const extractedValues = await this.textExtractor.extractValues(description);
+
+                    let finalHorsepower = extractedValues.HORSEPOWER;
+
+                    if (!finalHorsepower && extractedValues.KILOWATTS) {
+                        const calculatedHp = this.converter.kwToHp(extractedValues.KILOWATTS);
+                        if (calculatedHp) finalHorsepower = calculatedHp.toFixed(2); 
+                    } else if (!finalHorsepower && extractedValues.WATTS) {
+                        const calculatedHp = this.converter.wattsToHp(extractedValues.WATTS);
+                        if (calculatedHp) finalHorsepower = calculatedHp.toFixed(2);
+                    }
+
+                    let finalEff = extractedValues.NEMA_NOM_EFF;
+                    if (finalEff) {
+                        const effNum = parseFloat(finalEff);
+                        if (!isNaN(effNum) && effNum > 0 && effNum < 1) {
+                            finalEff = (effNum * 100).toFixed(1);
+                        }
+                    }
+
+                    let finalPf = extractedValues.P_F;
+                    if (finalPf) {
+                        const pfNum = parseFloat(finalPf);
+                        if (!isNaN(pfNum) && pfNum > 0 && pfNum < 1) {
+                            finalPf = (pfNum * 100).toFixed(1);
+                        }
+                    }
+
                     const motor: motorData = {
                         id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
                         name: file.name,
@@ -233,7 +262,8 @@ export class OCRComponent {
                         savedAt: new Date().toLocaleString(),
                         CAT_NO: extractedValues.CAT_NO,
                         SPEC: extractedValues.SPEC,
-                        HORSEPOWER: extractedValues.HORSEPOWER,
+                        HORSEPOWER: finalHorsepower,
+   
                         VOLTAGE: extractedValues.VOLTAGE,
                         AMPERAGE: extractedValues.AMPERAGE,
                         RPM: extractedValues.RPM,
@@ -244,8 +274,8 @@ export class OCRComponent {
                         CODE: extractedValues.CODE,
                         DES: extractedValues.DES,
                         CLASS: extractedValues.CLASS,
-                        NEMA_NOM_EFF: extractedValues.NEMA_NOM_EFF,
-                        P_F: extractedValues.P_F,
+                        NEMA_NOM_EFF: finalEff,
+                        P_F: finalPf,
                         RATING: extractedValues.RATING,
                         CC: extractedValues.CC,
                         USABLE_AT: extractedValues.USABLE_AT,
@@ -279,6 +309,7 @@ export class OCRComponent {
             this._snackBar.open("All Files Processed", "Ok", { duration: 5000 });
         }
     }
+
 
     deleteInventoryItem(deleteId: string | undefined) {
         this.inventory = this.inventory.filter(saved => saved.id !== deleteId);
