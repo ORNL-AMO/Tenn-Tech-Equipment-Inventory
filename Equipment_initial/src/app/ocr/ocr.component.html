@@ -1,16 +1,18 @@
-<app-upload-image (fileAdded)="onFileSelected($event)"/>
+<app-upload-image (fileAdded)="onFileSelected($event)" [fileRemoved]="fileRemove" />
 <app-webcam (fileSelected)="onFileSelected($event)" />
 <mat-divider style="margin: 20px 0px"></mat-divider>
 <!-- Dynamically load the file preview window only when files selected -->
 @if(filesInput.length > 0){
-<button matButton="filled" (click)="clearPreview()">Clear Preview</button>
+<button matButton class="mat-bg-error-container" (click)="clearPreview()">
+    <p class="mat-text-on-error-container">Clear Preview</p>
+    </button>
 <mat-grid-list cols="2" gutterSize="15px" rowHeight="2:1">
 
     <!-- File preview loop to display up to 10 files to prevent extremely long page -->
     @for(file of filesInput.slice(0, 10); track file.name){
     <!-- Image Preview -->
     <mat-grid-tile>
-        <button class="image-modal-close" (click)="deletePreviewItem(file.content)">
+        <button class="image-modal-close" (click)="deletePreviewItem(file.fullFile)">
             <mat-icon>close</mat-icon>
         </button>
         <img [src]="file.content" [alt]="file.name" class="preview-img" (click)="openEditor(file)" />
@@ -28,7 +30,7 @@
 @if(filesInput.length > 10){
 <h2 style="text-align: center">10 Image Preview Limit Reached</h2>
 }
-<!-- information of how many files where uploaded (so user isn't confused)-->
+<!-- information of how many files were uploaded (so user isn't confused)-->
 <p>recieved {{filesInput.length}} files </p>
 }
 
@@ -55,10 +57,14 @@
     @if (inventory.length>1){
     <mat-paginator class="mat-bg-primary-container" [pageSizeOptions]="[1,5,10]" [length]="inventory.length"
         (page)="switchPage($event)"></mat-paginator>}
-    <button matButton="filled" (click)="clearInventory()">Clear Inventory</button>
+    <button matButton class="mat-bg-error-container" (click)="clearInventory()">
+        <p class="mat-text-on-error-container">Clear Inventory</p>
+    </button>
     <br>
     @for(item of inventory.slice(currentPage, pageOver); track item.id){
-    <button matButton="tonal" (click)="deleteInventoryItem(item.id)">X</button>
+    <button matButton="tonal" (click)="deleteInventoryItem(item.id)">
+        <mat-icon>close</mat-icon>
+    </button>
 
     <h2>Result for {{item.name}}</h2>
     <br>

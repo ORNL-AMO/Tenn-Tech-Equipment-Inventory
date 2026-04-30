@@ -1,25 +1,14 @@
-<section>
-    <div class="help">
-        <button matFab extended type="button" (click)="openHelpDialog()">
-            <mat-icon>help_outline</mat-icon>Help
-        </button>
-    </div>
-    <div class="example-wrap">
-        <span class="example-trigger">Example</span>
-        <mat-card class="mat-surface-container-highest" appearance="outlined">
-            <img mat-card-l-image class="example-img" src="assets/motor-nameplate-example1.jpg"
-                alt="Motor nameplate example 1">
-            <img mat-card-l-image class="example-img" src="assets/motor-nameplate-example2.jpg"
-                alt="Motor nameplate example 2" />
-            <img mat-card-l-image class="example-img" src="assets/motor-nameplate-example3.jpg"
-                alt="Motor nameplate example 3" />
-        </mat-card>
-    </div>
-</section>
-
+<div>
+    <button matButton="filled" type="button" (click)="openHelpDialog()">
+        <mat-icon>help_outline</mat-icon>Help
+    </button>
+        <button matButton class="example-trigger" (click)="openExampleDialog()" >Example</button>
+</div>
 <div class="app-container">
     <mat-form-field appearance="outline">
-        <mat-label><mat-icon>file_upload</mat-icon>Drop only .png, .jpg, .jpeg files!</mat-label>
+        <mat-label>
+            <mat-icon>file_upload</mat-icon>Drop only .png, .jpg, .jpeg files!
+        </mat-label>
         <ngx-mat-dropzone>
             <input type="file" fileInput mode="replace" multiple [formControl]="profileImg"
                 accept="image/jpg, image/jpeg, image/png" (selectionChange)="onControlChange()" />

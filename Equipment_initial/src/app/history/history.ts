@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { HistoryService, MotorData } from './history.service';
+import { HistoryService } from './history.service';
+import { motorData } from '../motor-data.model';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,7 +23,7 @@ export class History implements OnInit {
   private historyService = inject(HistoryService);
   private snackBar = inject(MatSnackBar);
   
-  savedItems: MotorData[] = [];
+  savedItems: motorData[] = [];
   searchTerm: string = '';
   selectedImage: string | null = null;
 
@@ -45,12 +46,12 @@ export class History implements OnInit {
     panel.toggle();
   }
 
-  get filteredItems(): MotorData[] {
+  get filteredItems(): motorData[] {
     const term = this.searchTerm.toLowerCase();
     const matchedItems = this.searchTerm
       ? this.savedItems.filter(item =>
           item.name.toString().toLowerCase().includes(term) ||
-          item.CAT_NO.toString().toLowerCase().includes(term) ||
+          // item.CAT_NO.toString().toLowerCase().includes(term) ||
           item.description.toString().toLowerCase().includes(term)
         )
       : this.savedItems;
@@ -58,7 +59,7 @@ export class History implements OnInit {
     return [...matchedItems].reverse();
   }
 
-  deleteItem(item: MotorData): void {
+  deleteItem(item: motorData): void {
     this.historyService.removeItem(item);
     this.snackBar.open('Item removed from history', 'Ok', { duration: 5000 });
   }
@@ -70,7 +71,7 @@ export class History implements OnInit {
     }
   }
 
-  exportItem(item: MotorData, format: string): void {
+  exportItem(item: motorData, format: string): void {
     if (format === 'json') {
       const dataStr = JSON.stringify(item, null, 2);
       const dataBlob = new Blob([dataStr], { type: 'application/json' });

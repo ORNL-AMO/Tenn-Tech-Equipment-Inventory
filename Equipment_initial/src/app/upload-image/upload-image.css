@@ -2,54 +2,42 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 15vh;
+  padding: 56px 24px 40px;
 }
 
 mat-form-field {
-  width: 100%;
+  width: min(100%, 900px);
+  max-width: 900px;
   height: fit-content;
 }
 
-
-/* CSS for the Help Button - Geo*/
-.help {
-  display:inline-block;
-  margin-left: 8px;
+ngx-mat-dropzone {
+  min-height: 110px;
+  display: flex;
+  align-items: center;
 }
-
-
 /* CSS for the Example hover-over - Sam*/
-.example-wrap {
-  position: relative;
-  display: inline-block;
-  margin-left: 8px;
-}
-
 .example-trigger {
-  color: #366b38;
   cursor: help;
   text-decoration: underline;
   font-size: 0.9rem;
 }
+@media (max-width: 768px) {
+  .app-container {
+    padding: 32px 16px 28px;
+  }
 
-mat-card {
-  display: none;
-  flex-wrap: wrap;
-  width: max-content;
-  width: fill;
-  max-width: 80vw;
-  position: absolute;
-  z-index: 2;
-  align-content: center;
+  ngx-mat-dropzone {
+    min-height: 88px;
+  }
 }
 
-.example-wrap:hover mat-card {
-  display: block;
-}
+@media (max-width: 480px) {
+  .app-container {
+    padding: 20px 8px 20px;
+  }
 
-.example-img {
-  max-height: 40vh;
-  max-width: 80vw;
-  width: 33%;
-  display: inline-block;
+  ngx-mat-dropzone {
+    min-height: 76px;
+  }
 }
