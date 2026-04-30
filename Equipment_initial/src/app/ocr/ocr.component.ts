@@ -21,7 +21,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from '@angular/material/menu';
 import { GenericErrorDialog } from "../error.dialog";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { ImageEditorComponent } from './image-editor';
+import { ImageEditorComponent } from '../image-editor/image-editor';
 import { ImagePreviewDialogComponent } from './image-preview-dialog';
 import { InventoryReviewDialogComponent } from './inventory-review-dialog';
 import { MotorConverterService } from "./motor-converter";
