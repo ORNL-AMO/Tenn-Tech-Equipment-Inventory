@@ -14,4 +14,9 @@ import { OCRComponent } from './ocr/ocr.component';
 })
 export class App {
   protected readonly title = signal('MEASUR Proof of Concept');
+  selectedTabIndex = 0;
+
+  showInventoryTab(): void {
+    this.selectedTabIndex = 1;
+  }
 }

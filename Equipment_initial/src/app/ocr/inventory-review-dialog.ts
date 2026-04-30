@@ -22,6 +22,7 @@ interface InventoryReviewDialogData {
     toggleAllFields: () => void;
     isFieldSelected: (fieldName: string) => boolean;
     areAllFieldsSelected: () => boolean;
+    openInventoryTab: () => void;
 }
 
 @Component({
@@ -80,6 +81,11 @@ export class InventoryReviewDialogComponent {
         if (this.currentPage >= this.inventory.length && this.currentPage > 0) {
             this.currentPage = Math.max(0, this.currentPage - 1);
             this.pageOver = this.currentPage + 1;
+        }
+
+        if (this.inventory.length === 0) {
+            this.dialogRef.close();
+            this.data.openInventoryTab();
         }
     }
 

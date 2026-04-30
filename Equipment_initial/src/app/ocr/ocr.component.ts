@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectorRef, NgZone } from "@angular/core";
+import { Component, inject, ChangeDetectorRef, NgZone, output } from "@angular/core";
 import { OCRService } from "./ocr";
 import { ImageUtils } from "./image-utils";
 import { NormalizeTextPipe } from "./normalize-text-pipe";
@@ -38,6 +38,7 @@ export class OCRComponent {
     private dialog = inject(MatDialog);
     private converter = inject(MotorConverterService);
     private zone = inject(NgZone);
+    inventoryReviewCompleted = output<void>();
     pageOver: number = 1;
     currentPage: number = 0;
     inputType: String = 'Camera';
@@ -222,7 +223,8 @@ export class OCRComponent {
                 toggleField: (fieldName: string) => this.toggleField(fieldName),
                 toggleAllFields: () => this.toggleAllFields(),
                 isFieldSelected: (fieldName: string) => this.isFieldSelected(fieldName),
-                areAllFieldsSelected: () => this.allFieldsSelected
+                areAllFieldsSelected: () => this.allFieldsSelected,
+                openInventoryTab: () => this.inventoryReviewCompleted.emit()
             },
             width: '92vw',
             height: '82vh',
