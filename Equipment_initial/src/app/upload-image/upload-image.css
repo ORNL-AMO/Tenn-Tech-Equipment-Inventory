@@ -22,6 +22,7 @@ ngx-mat-dropzone {
   text-decoration: underline;
   font-size: 0.9rem;
 }
+/* these are for the sizing of differing devices */
 @media (max-width: 768px) {
   .app-container {
     padding: 32px 16px 28px;
