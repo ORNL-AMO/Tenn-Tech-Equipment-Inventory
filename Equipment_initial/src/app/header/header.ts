@@ -6,7 +6,7 @@ import { MatToolbarModule} from '@angular/material/toolbar';
   selector: 'app-header',
   imports: [NgOptimizedImage, MatToolbarModule],
   templateUrl: './header.html',
-  styleUrl: './header.css'
+  styleUrls: ['./header.css']
 })
 export class Header {
   logoUrl = '/assets/measure-app-icon.png';

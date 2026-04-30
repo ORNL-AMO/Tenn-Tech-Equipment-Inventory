@@ -1,14 +1,12 @@
-import { Component, inject, ChangeDetectorRef } from "@angular/core";
+import { Component, inject, ChangeDetectorRef, NgZone } from "@angular/core";
 import { OCRService } from "./ocr";
 import { ImageUtils } from "./image-utils";
 import { NormalizeTextPipe } from "./normalize-text-pipe";
 import { UploadImage } from "../upload-image/upload-image";
 import { Webcam } from '../webcam/webcam';
-import { DecimalPipe } from "@angular/common"
 import { FormsModule } from "@angular/forms";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { TextExtractorService } from "./text-extractor.service";
@@ -22,8 +20,10 @@ import { InventoryService } from '../inventory/inventory.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from '@angular/material/menu';
 import { GenericErrorDialog } from "../error.dialog";
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { ImageEditorComponent } from './image-editor';
+import { ImagePreviewDialogComponent } from './image-preview-dialog';
+import { InventoryReviewDialogComponent } from './inventory-review-dialog';
 import { MotorConverterService } from "./motor-converter";
 import { motorData, uploadedFiles } from '../motor-data.model';
 
@@ -31,12 +31,13 @@ import { motorData, uploadedFiles } from '../motor-data.model';
 @Component({
     selector: 'app-ocr',
     templateUrl: './ocr.component.html',
-    styleUrl: './ocr.component.css',
-    imports: [DecimalPipe, UploadImage, Webcam, MatProgressBarModule, MatButtonToggleModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule, MatGridListModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule, MatInputModule, MatFormFieldModule, MatCheckboxModule, MatMenuModule]
+    styleUrls: ['./ocr.component.css'],
+    imports: [UploadImage, Webcam, MatProgressBarModule, MatButtonToggleModule, MatPaginatorModule, MatIconModule, MatProgressSpinnerModule, MatButtonModule, MatDividerModule, MatInputModule, FormsModule, MatInputModule, MatFormFieldModule, MatCheckboxModule, MatMenuModule]
 })
 export class OCRComponent {
     private dialog = inject(MatDialog);
     private converter = inject(MotorConverterService);
+    private zone = inject(NgZone);
     pageOver: number = 1;
     currentPage: number = 0;
     inputType: String = 'Camera';
@@ -49,15 +50,19 @@ export class OCRComponent {
     allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
     private _snackBar = inject(MatSnackBar)
     fileRemove: File | undefined = undefined
+    private previewDialogRef?: MatDialogRef<ImagePreviewDialogComponent>;
+    private inventoryReviewDialogRef?: MatDialogRef<InventoryReviewDialogComponent>;
 
-    // Field selection for save filtering
-    selectedFields: Set<string> = new Set([
+    readonly saveSelectableFields = [
         'name', 'result', 'description',
         'CAT_NO', 'SPEC', 'HORSEPOWER', 'VOLTAGE', 'AMPERAGE', 'RPM',
         'FRAME', 'HERTZ', 'PH', 'SER_F', 'CODE', 'DES', 'CLASS',
         'NEMA_NOM_EFF', 'P_F', 'RATING', 'CC', 'USABLE_AT',
         'BEARINGS_DE', 'BEARINGS_ODE', 'ENCL', 'SERIAL_NUMBER'
-    ]);
+    ];
+
+    // Field selection for save filtering
+    selectedFields: Set<string> = new Set(this.saveSelectableFields);
     allFieldsSelected: boolean = true;
 
     constructor(private ocr: OCRService,
@@ -72,23 +77,24 @@ export class OCRComponent {
         this.cd.detectChanges();
     }
 
-    saveItem(item: motorData): void {
+    saveItemToInventory(item: motorData): void {
+        if (item.savedToInventory) {
+            this._snackBar.open(`"${item.name}" is already saved`, "Ok", { duration: 3000 });
+            return;
+        }
+
         // Filter out unselected fields by setting them to undefined
         const filteredItem = { ...item };
-        const fieldsToCheck = [
-            'CAT_NO', 'SPEC', 'HORSEPOWER', 'VOLTAGE', 'AMPERAGE', 'RPM',
-            'FRAME', 'HERTZ', 'PH', 'SER_F', 'CODE', 'DES', 'CLASS',
-            'NEMA_NOM_EFF', 'P_F', 'RATING', 'CC', 'USABLE_AT',
-            'BEARINGS_DE', 'BEARINGS_ODE', 'ENCL', 'SERIAL_NUMBER'
-        ];
-
-        fieldsToCheck.forEach(field => {
+        this.saveSelectableFields.forEach(field => {
             if (!this.selectedFields.has(field)) {
                 (filteredItem as any)[field] = undefined;
             }
         });
 
         this.inventoryService.saveItem(filteredItem as any);
+        item.savedToInventory = true;
+        this.inventory = this.inventory.filter(saved => saved !== item);
+        this.cd.detectChanges();
         this._snackBar.open(`Saved "${item.name}" to inventory`, "Ok", { duration: 3000 });
     }
 
@@ -140,9 +146,11 @@ export class OCRComponent {
                                 fullFile: file
                             });
                             console.log('File added:', file.name);
+                            this.openPreviewDialog();
                         }
                     }
                     this.cd.detectChanges();
+                    this.previewDialogRef?.componentInstance.refresh();
                 };
                 reader.onerror = () => {
                     console.error('Error reading file: ${file.name}');
@@ -154,22 +162,81 @@ export class OCRComponent {
         }
     }
 
-    deletePreviewItem(deleteThis: File) {
+    deletePreviewItem(deleteThis: File, refreshDialog = true) {
         this.fileRemove = this.filesInput.find(saved => saved.fullFile === deleteThis)?.fullFile
         this.filesInput = this.filesInput.filter(saved => saved.fullFile !== deleteThis);
         this.cd.detectChanges();
+        if (refreshDialog) {
+            this.previewDialogRef?.componentInstance.refresh();
+        }
     }
 
     clearPreview() {
         this.filesInput.forEach(item => {
-            this.deletePreviewItem(item.fullFile)
+            this.deletePreviewItem(item.fullFile, false)
         })
         this.filesInput = [];
         this.cd.detectChanges();
+        this.previewDialogRef?.close();
+    }
+
+    openPreviewDialog(): void {
+        if (this.previewDialogRef) {
+            this.previewDialogRef.componentInstance.refresh();
+            return;
+        }
+
+        this.previewDialogRef = this.dialog.open(ImagePreviewDialogComponent, {
+            data: {
+                getFiles: () => this.filesInput,
+                clearPreview: () => this.clearPreview(),
+                deletePreviewItem: (file: File) => this.deletePreviewItem(file),
+                openEditor: (file: uploadedFiles) => this.openEditor(file),
+                openNextStep: () => this.openInventoryReviewDialog(),
+                scanImages: () => this.onUpload(),
+                getScanProgress: () => this.extractionProgress
+            },
+            width: '92vw',
+            height: '82vh',
+            maxWidth: '100vw',
+            panelClass: 'image-preview-dialog-panel'
+        });
+
+        this.previewDialogRef.afterClosed().subscribe(() => {
+            this.previewDialogRef = undefined;
+        });
+    }
+
+    openInventoryReviewDialog(): void {
+        if (this.inventoryReviewDialogRef) {
+            return;
+        }
+
+        this.inventoryReviewDialogRef = this.dialog.open(InventoryReviewDialogComponent, {
+            data: {
+                openPreviousStep: () => this.openPreviewDialog(),
+                getInventory: () => this.inventory,
+                clearInventory: () => this.clearInventory(),
+                deleteInventoryItem: (id: string | undefined) => this.deleteInventoryItem(id),
+                saveItemToInventory: (item: motorData) => this.saveItemToInventory(item),
+                toggleField: (fieldName: string) => this.toggleField(fieldName),
+                toggleAllFields: () => this.toggleAllFields(),
+                isFieldSelected: (fieldName: string) => this.isFieldSelected(fieldName),
+                areAllFieldsSelected: () => this.allFieldsSelected
+            },
+            width: '92vw',
+            height: '82vh',
+            maxWidth: '100vw',
+            panelClass: 'inventory-review-dialog-panel'
+        });
+
+        this.inventoryReviewDialogRef.afterClosed().subscribe(() => {
+            this.inventoryReviewDialogRef = undefined;
+        });
     }
 
 
-    async onUpload(): Promise<void> {
+    async onUpload(): Promise<boolean> {
         // No file selected, let the user know and stop
         if (!(this.filesInput.length > 0)) {
             console.error('No Files Imported');
@@ -179,12 +246,15 @@ export class OCRComponent {
                     message: "Please select a file or picture to process."
                 }
             });
-            return;
+            return false;
         }
-        this.loading = true;
+        this.zone.run(() => {
+            this.loading = true;
+            this.cd.detectChanges();
+        });
         try {
             for (let i = 0; i < this.filesInput.length; i++) {
-                this.cd.detectChanges();
+                this.zone.run(() => this.cd.detectChanges());
                 const file = this.filesInput[i];
                 try {
                     const canvas = await this.imageUtils.prepareImage(file.fullFile);
@@ -225,6 +295,7 @@ export class OCRComponent {
                         description,
                         image: typeof file.content === 'string' ? file.content : undefined,
                         savedAt: new Date().toLocaleString(),
+                        savedToInventory: false,
                         CAT_NO: extractedValues.CAT_NO,
                         SPEC: extractedValues.SPEC,
                         HORSEPOWER: finalHorsepower,
@@ -249,30 +320,41 @@ export class OCRComponent {
                         ENCL: extractedValues.ENCL,
                         SERIAL_NUMBER: extractedValues.SERIAL_NUMBER
                     };
-                    this.inventory.push(motor);
-                    this.saveItem(motor);
+                    this.zone.run(() => {
+                        this.inventory.push(motor);
+                        this.cd.detectChanges();
+                    });
 
                 } catch (err: any) {
                     console.warn(`Skipping ${file.name}`, err);
-                    this.dialog.open(GenericErrorDialog, {
-                        data: {
-                            title: 'An Error Occurred',
-                            message: `Error processing file ${file.name}. Skipping file.`
-                        }
+                    this.zone.run(() => {
+                        this.dialog.open(GenericErrorDialog, {
+                            data: {
+                                title: 'An Error Occurred',
+                                message: `Error processing file ${file.name}. Skipping file.`
+                            }
+                        });
                     });
                 }
-                this.extractionProgress = ((i + 1) / this.filesInput.length) * 100;
-                this.cd.detectChanges();
+                this.zone.run(() => {
+                    this.extractionProgress = ((i + 1) / this.filesInput.length) * 100;
+                    this.cd.detectChanges();
+                });
             }
 
         } catch (error) {
             console.error('Unexpected batch error:', error);
+            return false;
         } finally {
-            this.loading = false;
-            this.cd.detectChanges();
-            this.extractionProgress = 0;
-            this._snackBar.open("All Files Processed", "Ok", { duration: 5000 });
+            this.zone.run(() => {
+                this.loading = false;
+                this.extractionProgress = 0;
+                this.cd.detectChanges();
+                this._snackBar.open("All Files Processed", "Ok", { duration: 5000 });
+            });
         }
+
+        return true;
     }
 
 
@@ -300,25 +382,13 @@ export class OCRComponent {
         if (this.allFieldsSelected) {
             this.selectedFields.clear();
         } else {
-            const allFields = [
-                'CAT_NO', 'SPEC', 'HORSEPOWER', 'VOLTAGE', 'AMPERAGE', 'RPM',
-                'FRAME', 'HERTZ', 'PH', 'SER_F', 'CODE', 'DES', 'CLASS',
-                'NEMA_NOM_EFF', 'P_F', 'RATING', 'CC', 'USABLE_AT',
-                'BEARINGS_DE', 'BEARINGS_ODE', 'ENCL', 'SERIAL_NUMBER'
-            ];
-            allFields.forEach(field => this.selectedFields.add(field));
+            this.saveSelectableFields.forEach(field => this.selectedFields.add(field));
         }
         this.allFieldsSelected = !this.allFieldsSelected;
     }
 
     updateAllFieldsSelected(): void {
-        const allFields = [
-            'CAT_NO', 'SPEC', 'HORSEPOWER', 'VOLTAGE', 'AMPERAGE', 'RPM',
-            'FRAME', 'HERTZ', 'PH', 'SER_F', 'CODE', 'DES', 'CLASS',
-            'NEMA_NOM_EFF', 'P_F', 'RATING', 'CC', 'USABLE_AT',
-            'BEARINGS_DE', 'BEARINGS_ODE', 'ENCL', 'SERIAL_NUMBER'
-        ];
-        this.allFieldsSelected = allFields.every(field => this.selectedFields.has(field));
+        this.allFieldsSelected = this.saveSelectableFields.every(field => this.selectedFields.has(field));
     }
 
     isFieldSelected(fieldName: string): boolean {

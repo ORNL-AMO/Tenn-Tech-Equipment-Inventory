@@ -26,7 +26,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatButtonModule
   ],
   templateUrl: './upload-image.html',
-  styleUrl: './upload-image.css',
+  styleUrls: ['./upload-image.css'],
 })
 
 export class UploadImage {

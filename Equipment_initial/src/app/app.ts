@@ -10,7 +10,7 @@ import { OCRComponent } from './ocr/ocr.component';
   selector: 'app-root',
   imports: [RouterOutlet, OCRComponent, MatTabsModule, Header, Inventory],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
 export class App {
   protected readonly title = signal('MEASUR Proof of Concept');

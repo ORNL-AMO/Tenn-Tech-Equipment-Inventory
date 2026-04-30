@@ -32,6 +32,20 @@ mat-form-field {
     width: 100%;
 }
 
+.preview-reopen-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin: 0 var(--content-padding);
+    padding: 8px 0;
+}
+
+.preview-reopen-bar span {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.9rem;
+}
+
 .caption-content {
     display: flex;
     justify-content: space-between;
@@ -97,6 +111,17 @@ mat-form-field {
         max-width: 100%;
         padding: 0 8px;
     }
+
+    .preview-reopen-bar {
+        align-items: stretch;
+        flex-direction: column;
+        margin: 0 8px;
+    }
+
+    .preview-reopen-bar button {
+        width: 100%;
+    }
+
 }
 
 td {

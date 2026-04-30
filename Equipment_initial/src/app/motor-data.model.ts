@@ -5,6 +5,7 @@ export interface motorData {
     description: string;
     image?: string;
     savedAt?: string;
+    savedToInventory?: boolean;
     CAT_NO: string | undefined;
     SPEC: string | undefined;
     HORSEPOWER: string | undefined;

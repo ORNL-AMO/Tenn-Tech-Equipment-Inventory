@@ -13,7 +13,7 @@ import { motorData } from '../motor-data.model';
   selector: 'app-inventory',
   imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatExpansionModule, MatDividerModule],
   templateUrl: './inventory.html',
-  styleUrl: './inventory.css',
+  styleUrls: ['./inventory.css'],
 })
 export class Inventory implements OnInit {
   private inventoryService = inject(InventoryService);
