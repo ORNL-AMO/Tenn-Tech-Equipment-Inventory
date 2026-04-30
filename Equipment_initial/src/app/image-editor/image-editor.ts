@@ -61,7 +61,7 @@ export class ImageEditorComponent implements AfterViewInit {
   }
 
   handleZoom(delta: number) {
-    let newZoomPercent = this.zoomLevel + (delta * 100);
+    let newZoomPercent = this.zoomLevel + (delta * 10);
 
     if (newZoomPercent > 1000) {
         newZoomPercent = 1000;
