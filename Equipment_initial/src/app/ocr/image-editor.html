@@ -6,6 +6,19 @@
       <span class="file-name">{{ data.name }}</span>
     </div>
 
+    <div class="actions">
+      <button matButton="outlined" (click)="close()">CANCEL</button>
+      <button matButton="filled" (click)="save()">APPLY</button>
+    </div>
+  </header>
+
+  <div class="stage">
+    <div class="image-wrapper">
+      <img #imageAsset [src]="data.image" />
+    </div>
+  </div>
+
+  <footer class="toolbar">
     <div class="control-group">
       <div class="btn-row">
         <button mat-icon-button (click)="handleHardRotate(-90)"><mat-icon>rotate_left</mat-icon></button>
@@ -25,17 +38,5 @@
       </div>
       <input type="range" min="10" max="1000" step="10" [value]="zoomLevel" (input)="manualZoom($event)" class="slider">
     </div>
-
-    <div class="actions">
-      <button matButton="outlined" (click)="close()">CANCEL</button>
-      <button matButton="filled" (click)="save()">APPLY</button>
-    </div>
-    
-  </header>
-
-  <div class="stage">
-    <div class="image-wrapper">
-      <img #imageAsset [src]="data.image" />
-    </div>
-  </div>
+  </footer>
 </div>
