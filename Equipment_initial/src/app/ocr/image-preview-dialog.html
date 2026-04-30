@@ -1,0 +1,47 @@
+<div class="preview-dialog">
+    <header class="preview-toolbar">
+        <div>
+            <h2>Selected Images</h2>
+            <p>{{ files.length }} file{{ files.length === 1 ? '' : 's' }} ready to scan</p>
+        </div>
+
+        <div class="preview-actions">
+            <button matButton="outlined" type="button" [disabled]="scanning" (click)="clearPreview()">Clear Preview</button>
+            <button matButton="filled" type="button" [disabled]="scanning" (click)="scanImages()">
+                @if(scanning){<mat-spinner diameter="18"></mat-spinner>}
+                {{ scanning ? 'Scanning Images' : 'Scan Images' }}
+            </button>
+            <button matButton="filled" type="button" [disabled]="scanning" (click)="close()">Done</button>
+        </div>
+    </header>
+
+    @if(scanning){
+    <section class="scan-progress" aria-label="Image scan progress">
+        <p>Extracting text...</p>
+        <mat-progress-bar mode="buffer" [value]="scanProgress"></mat-progress-bar>
+    </section>
+    }
+
+    <section class="preview-stage">
+        <mat-grid-list cols="2" gutterSize="15px" rowHeight="2:1">
+            @for(file of files.slice(0, 10); track file.name){
+            <mat-grid-tile>
+                <button class="image-modal-close" type="button" (click)="deleteFile(file)">
+                    <mat-icon>close</mat-icon>
+                </button>
+                <img [src]="file.content" [alt]="file.name" class="preview-img" (click)="openEditor(file)" />
+                <div class="caption">
+                    <div class="caption-content">
+                        <span class="file-info">{{ file.name }} ({{ file.size / 1024 | number:'1.0-2' }} KB)</span>
+                        <button type="button" class="edit-btn" (click)="openEditor(file)">EDIT</button>
+                    </div>
+                </div>
+            </mat-grid-tile>
+            }
+        </mat-grid-list>
+
+        @if(files.length > 10){
+        <p class="preview-limit-message">10 Image Preview Limit Reached</p>
+        }
+    </section>
+</div>

@@ -1,29 +1,17 @@
-<div class="history-container">
-  <h1>Equipment History</h1>
+<div class="inventory-container">
+  <h1>Equipment Inventory</h1>
 
-  @if (savedItems.length > 0) {
-    <!-- Search Bar -->
-    <div class="search-section">
-      <mat-form-field appearance="outline" class="search-field">
-        <mat-label>Search history</mat-label>
-        <input matInput [(ngModel)]="searchTerm" placeholder="Search by name, CAT_NO, or description">
-        <mat-icon matIconPrefix>search</mat-icon>
-      </mat-form-field>
-      @if (searchTerm) {
-        <p class="search-result-count">Found {{ filteredItems.length }} of {{ savedItems.length }} items</p>
-      }
-    </div>
-
+  @if (inventoryItems.length > 0) {
     <!-- Clear All Button -->
     <div class="controls">
       <button mat-stroked-button color="warn" (click)="clearAll()">
-        <mat-icon>delete_sweep</mat-icon> Clear All History
+        <mat-icon>delete_sweep</mat-icon> Clear Inventory
       </button>
     </div>
 
     <!-- Expandable Cards -->
     <mat-accordion class="cards-container">
-      @for (item of filteredItems; track item.name + $index; let idx = $index) {
+      @for (item of inventoryItemsForDisplay; track item.name + $index; let idx = $index) {
         <mat-expansion-panel #panel>
           <!-- Card Header (Collapsed View) -->
           <mat-expansion-panel-header>
@@ -45,8 +33,8 @@
           <!-- Card Content (Expanded View) -->
           <div class="card-content">
             @if(item.image){
-            <div class="history-image-wrapper">
-              <img src="{{ item.image }}" alt="Source image" class="history-thumb" (click)="openImage(item.image)" />
+            <div class="inventory-image-wrapper">
+              <img src="{{ item.image }}" alt="Source image" class="inventory-thumb" (click)="openImage(item.image)" />
             </div>
             }
             <div class="details-specs-wrapper">
@@ -175,7 +163,7 @@
   } @else {
     <!-- Empty State -->
     <div class="empty-state">
-      <mat-icon class="empty-icon">history</mat-icon>
+      <mat-icon class="empty-icon">inventory_2</mat-icon>
       <h2>Nothing Yet</h2>
     </div>
   }

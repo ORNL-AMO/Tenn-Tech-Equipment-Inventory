@@ -11,7 +11,7 @@ import { MatDividerModule } from '@angular/material/divider';
     MatDividerModule
   ],
   templateUrl: './examples.html',
-  styleUrl: './examples.css',
+  styleUrls: ['./examples.css'],
 })
 export class Examples {
 }

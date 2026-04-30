@@ -14,7 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatIconModule,
     MatButtonModule],
   templateUrl: './help-button.html',
-  styleUrl: './help-button.css',
+  styleUrls: ['./help-button.css'],
 })
 export class HelpButtonDialog {
   

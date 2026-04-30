@@ -12,7 +12,7 @@ import { GenericErrorDialog } from '../error.dialog';
   selector: 'app-webcam',
   imports: [MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule],
   templateUrl: './webcam.html',
-  styleUrl: './webcam.css',
+  styleUrls: ['./webcam.css'],
 })
 
 export class Webcam {

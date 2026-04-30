@@ -26,16 +26,17 @@ import { MatButtonModule } from '@angular/material/button';
     MatButtonModule
   ],
   templateUrl: './upload-image.html',
-  styleUrl: './upload-image.css',
+  styleUrls: ['./upload-image.css'],
 })
 
 export class UploadImage {
   fileAdded = output<Event | { target: { files: File[] } }>();
-  fileRemoved = input<File>();
+  fileRemoved = input<File | undefined>(undefined);
   constructor(private readonly cd: ChangeDetectorRef) {
     effect(() => {
-      if (this.fileRemoved() !== undefined) {
-        this.remove(this.fileRemoved());
+      const removedFile = this.fileRemoved();
+      if (removedFile) {
+        this.remove(removedFile);
       }
     });
    }
