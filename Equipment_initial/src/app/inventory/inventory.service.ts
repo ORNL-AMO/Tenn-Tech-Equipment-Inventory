@@ -1,36 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-
-export interface MotorData {
-    id?: string;
-    name: string;
-    result: string;
-    description: string;
-    image?: string;
-    savedAt?: string;
-    CAT_NO: string;
-    SPEC: string;
-    HORSEPOWER: string;
-    VOLTAGE: string;
-    AMPERAGE: string;
-    RPM: string;
-    FRAME: string;
-    HERTZ: string;
-    PH: string;
-    SER_F: string;
-    CODE: string;
-    DES: string;
-    CLASS: string;
-    NEMA_NOM_EFF: string;
-    P_F: string;
-    RATING: string;
-    CC: string;
-    USABLE_AT: string;
-    BEARINGS_DE: string;
-    BEARINGS_ODE: string;
-    ENCL: string;
-    SERIAL_NUMBER: string;
-}
+import { motorData } from '../motor-data.model';
 
 @Injectable({
     providedIn: 'root'
@@ -38,7 +8,7 @@ export interface MotorData {
 export class InventoryService {
     private readonly inventoryStorageKey = 'inventoryItems';
     private readonly legacyStorageKey = 'savedItems';
-    private inventoryItems = new BehaviorSubject<MotorData[]>([]);
+    private inventoryItems = new BehaviorSubject<motorData[]>([]);
     public inventoryItems$ = this.inventoryItems.asObservable();
 
     constructor() {
@@ -52,14 +22,14 @@ export class InventoryService {
         }
     }
 
-    saveItem(item: MotorData): void {
+    saveItem(item: motorData): void {
         const current = this.inventoryItems.value;
         const updated = [...current, item];
         this.inventoryItems.next(updated);
         this.persistInventory(updated);
     }
 
-    getInventoryItems(): MotorData[] {
+    getInventoryItems(): motorData[] {
         return this.inventoryItems.value;
     }
 
@@ -69,9 +39,9 @@ export class InventoryService {
         localStorage.removeItem(this.legacyStorageKey);
     }
 
-    removeItem(itemOrIndex: MotorData | number): void {
+    removeItem(itemOrIndex: motorData | number): void {
         const current = this.inventoryItems.value;
-        let updated: MotorData[];
+        let updated: motorData[];
 
         if (typeof itemOrIndex === 'number') {
             updated = current.filter((_, i) => i !== itemOrIndex);
@@ -87,7 +57,7 @@ export class InventoryService {
         this.persistInventory(updated);
     }
 
-    private persistInventory(items: MotorData[]): void {
+    private persistInventory(items: motorData[]): void {
         try {
             localStorage.setItem(this.inventoryStorageKey, JSON.stringify(items));
         } catch (error) {

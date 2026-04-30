@@ -18,7 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { HistoryService } from '../history/history.service';
+import { InventoryService } from '../inventory/inventory.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from '@angular/material/menu';
 import { GenericErrorDialog } from "../error.dialog";
@@ -63,7 +63,7 @@ export class OCRComponent {
     constructor(private ocr: OCRService,
         private readonly cd: ChangeDetectorRef,
         private textExtractor: TextExtractorService,
-        private historyService: HistoryService) { }
+        private inventoryService: InventoryService) { }
 
 
     switchPage(e: PageEvent) {
@@ -88,8 +88,8 @@ export class OCRComponent {
             }
         });
 
-        this.historyService.saveItem(filteredItem as any);
-        this._snackBar.open(`Saved "${item.name}" to history`, "Ok", { duration: 5000 });
+        this.inventoryService.saveItem(filteredItem as any);
+        this._snackBar.open(`Saved "${item.name}" to inventory`, "Ok", { duration: 3000 });
     }
 
 

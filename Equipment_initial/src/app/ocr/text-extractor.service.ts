@@ -58,7 +58,34 @@ const MOTOR_DICTIONARY: Record<string, RegExp> = {
     providedIn: 'root'
 })
 export class TextExtractorService {
-
+/*
+    private fieldMappings: FieldMapping[] = [
+        { signals: ['CAT NO', 'CAT_NO', 'CATALOG NO', 'CAT.NO', 'CAT. NO.', 'CAT. NO', 'CAR. NO.', 'CAR. NO', 'CAR NO', 'CAR NO.', 'CARNO.', 'CARNO'], field: 'CAT_NO' },
+        { signals: ['SPEC.', 'SPECIFICATION', 'SPEC'], field: 'SPEC' },
+        { signals: ['HORSEPOWER', 'HP', 'WP'], field: 'HORSEPOWER' },
+        { signals: ['VOLTAGE', 'VOLTS', 'VOS'], field: 'VOLTAGE' },
+        { signals: ['AMPERAGE', 'AMPS', 'AVPS'], field: 'AMPERAGE' },
+        { signals: ['RPM', 'SPEED', 'REM.', 'REY'], field: 'RPM' },
+        { signals: ['FRAME'], field: 'FRAME' },
+        { signals: ['HERTZ', 'HZ', 'FREQUENCY', 'UZ', 'LNZ', 'LIZ'], field: 'HERTZ' },
+        { signals: ['PH', 'PHASE', 'PU'], field: 'PH' },
+        { signals: ['SER F', 'SER. F.', 'SER_F', 'SERVICE FACTOR'], field: 'SER_F' },
+        { signals: ['CODE', 'JEOOEY'], field: 'CODE' },
+        { signals: ['DES', 'DESIGN', 'JOSS'], field: 'DES' },
+        { signals: ['CLASS',], field: 'CLASS' },
+        { signals: ['NEMA NOM EFF', 'NEMA_NOM_EFF', 'NEMA NOMINAL EFFICIENCY', 'NEMA NOW EFF.', 'NEMA NOW EFF'], field: 'NEMA_NOM_EFF' },
+        { signals: ['P F', 'P_F', 'POWER FACTOR'], field: 'P_F' },
+        { signals: ['RATING'], field: 'RATING' },
+        { signals: ['CC'], field: 'CC' },
+        { signals: ['USABLE AT'], field: 'USABLE_AT' },
+        // OPEL, PU, UZ, 
+        // Remove these extra words, once the scanner starts working properly. these are just a stop gap to get some values extracted until the scanner is fixed.
+        { signals: ['BEARINGS DE', 'BEARINGS_DE', 'DE'], field: 'BEARINGS_DE' },
+        { signals: ['BEARINGS ODE', 'BEARINGS_ODE', 'ODE', 'OPEL'], field: 'BEARINGS_ODE' },
+        { signals: ['ENCL', 'ENCLOSURE'], field: 'ENCL' },
+        { signals: ['SERIAL NUMBER', 'SERIAL_NUMBER', 'SERIAL NO', 'S/N'], field: 'SERIAL_NUMBER' }
+    ];
+*/
     constructor() { }
 
     extractValues(description: string): Partial<ExtractedValues> {
@@ -76,5 +103,14 @@ export class TextExtractorService {
         }
 
         return extractedValues;
+    }
+
+    /**
+     * Keeps the full extracted span while removing whitespace from the outside.
+     * @param rawValue The raw extracted text
+     * @returns Trimmed value
+     */
+    private cleanExtractedValue(rawValue: string): string {
+        return rawValue.trim();
     }
 }

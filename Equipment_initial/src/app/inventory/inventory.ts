@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { InventoryService, MotorData } from './inventory.service';
+import { InventoryService } from './inventory.service';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule, MatExpansionPanel } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { motorData } from '../motor-data.model';
 
 @Component({
   selector: 'app-inventory',
@@ -18,8 +19,8 @@ export class Inventory implements OnInit {
   private inventoryService = inject(InventoryService);
   private snackBar = inject(MatSnackBar);
   
-  inventoryItems: MotorData[] = [];
-  inventoryItemsForDisplay: MotorData[] = [];
+  inventoryItems: motorData[] = [];
+  inventoryItemsForDisplay: motorData[] = [];
   selectedImage: string | null = null;
 
   ngOnInit(): void {
@@ -42,7 +43,7 @@ export class Inventory implements OnInit {
     panel.toggle();
   }
 
-  deleteItem(item: MotorData): void {
+  deleteItem(item: motorData): void {
     this.inventoryService.removeItem(item);
     this.snackBar.open('Item removed from inventory', 'Ok', { duration: 5000 });
   }
@@ -54,7 +55,7 @@ export class Inventory implements OnInit {
     }
   }
 
-  exportItem(item: MotorData, format: string): void {
+  exportItem(item: motorData, format: string): void {
     if (format === 'json') {
       const dataStr = JSON.stringify(item, null, 2);
       const dataBlob = new Blob([dataStr], { type: 'application/json' });
