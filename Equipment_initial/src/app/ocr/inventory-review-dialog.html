@@ -297,9 +297,8 @@
                             SERIAL_NUMBER</mat-checkbox>
                     </div>
                 </mat-menu>
-                <button mat-raised-button color="primary" [disabled]="item.savedToInventory"
-                    (click)="saveItemToInventory(item)">
-                    <mat-icon>save</mat-icon> {{ item.savedToInventory ? 'Saved to Inventory' : 'Save to Inventory' }}
+                <button mat-raised-button color="primary" (click)="saveItemToInventory(item)">
+                    <mat-icon>save</mat-icon> Save to Inventory
                 </button>
             </div>
         </article>
