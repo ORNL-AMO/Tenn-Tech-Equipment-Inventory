@@ -1,0 +1,128 @@
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.toolbar {
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.title-section {
+  flex: 1;
+  min-width: 150px;
+  overflow: hidden;
+}
+
+.file-name {
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  opacity: 0.7;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
+  min-width: 250px;
+}
+
+.btn-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.slider {
+  width: 80%;
+  cursor: pointer;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.stage {
+  flex: 1;
+  width: 100%;
+  min-height: 0; 
+  position: relative;
+}
+
+.image-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+.value-display {
+  font-family: 'Courier New', monospace;
+  min-width: 50px;
+  text-align: center;
+}
+
+
+/* Mobile */
+@media (max-width: 900px) {
+  .editor-container {
+    position: relative; /* Acts as the anchor for our absolute sliders */
+    padding-bottom: 170px; /* Creates an empty void at the bottom so the canvas isn't covered */
+  }
+
+  .toolbar {
+    position: static; /* CRITICAL: Allows the sliders to escape the header */
+    padding: 10px;
+    /* Since the sliders are gone, Title and Actions will naturally space-between on the top row! */
+  }
+
+  .title-section {
+    flex: 1;
+    min-width: 0; /* Ensures the long file name truncates with an ellipsis (...) */
+  }
+
+  .actions {
+    flex-shrink: 0; /* Prevents your Cancel/Save buttons from getting squished */
+  }
+
+  /* * THE ESCAPE HATCH
+   * Yank the sliders out of the flex row and pin them to the bottom 
+   */
+  .control-group {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    min-width: 100%;
+    background: #1a1a1a; /* Solid dark background so the canvas doesn't bleed through */
+    padding: 10px 20px;
+    box-sizing: border-box;
+    z-index: 100;
+  }
+
+  /* Rotation Controls (Positioned above Zoom) */
+  .toolbar .control-group:nth-child(2) {
+    bottom: 85px; 
+  }
+
+  /* Zoom Controls (Positioned at the very bottom) */
+  .toolbar .control-group:nth-child(3) {
+    bottom: 0;
+    padding-bottom: 30px; /* Extra thumb space so you don't accidentally hit the iPhone home bar */
+  }
+}
