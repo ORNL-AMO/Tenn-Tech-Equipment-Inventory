@@ -109,7 +109,7 @@ export class OCRComponent {
         if (input.files && input.files.length > 0) {
             // Load a preview of images for the user
             const maxSizeMB = 10;
-
+            let badFiles: File[] = []
             Array.from(input.files).forEach(file => {
                 const reader = new FileReader();
                 // Read as Data URL
@@ -117,7 +117,8 @@ export class OCRComponent {
                 reader.onload = () => {
                     const fileSizeMB = file.size / (1024 * 1024);
                     if (fileSizeMB > maxSizeMB) {
-                        console.log("${file.name} is too big of a file. Skipping file.");
+                        badFiles.push(file);
+                        console.log(file.name + " is too big of a file. Skipping file.");
                         this.dialog.open(GenericErrorDialog, {
                             data: {
                                 title: 'File Too Large',
@@ -126,6 +127,7 @@ export class OCRComponent {
                         });
                     }
                     else if (!this.allowedTypes.includes(file.type)) {
+                        badFiles.push(file);
                         this.dialog.open(GenericErrorDialog, {
                             data: {
                                 title: 'Invalid File Type',
@@ -157,6 +159,9 @@ export class OCRComponent {
                     console.error('Error reading file: ${file.name}');
                     throw ("Error reading file: ${file.name}");
                 };
+            });
+            badFiles.forEach(file => {
+                this.deletePreviewItem(file);
             });
         } else {
             this.cd.detectChanges();
@@ -268,7 +273,7 @@ export class OCRComponent {
 
                     if (!finalHorsepower && extractedValues.KILOWATTS) {
                         const calculatedHp = this.converter.kwToHp(extractedValues.KILOWATTS);
-                        if (calculatedHp) finalHorsepower = calculatedHp.toFixed(2); 
+                        if (calculatedHp) finalHorsepower = calculatedHp.toFixed(2);
                     } else if (!finalHorsepower && extractedValues.WATTS) {
                         const calculatedHp = this.converter.wattsToHp(extractedValues.WATTS);
                         if (calculatedHp) finalHorsepower = calculatedHp.toFixed(2);
@@ -301,7 +306,7 @@ export class OCRComponent {
                         CAT_NO: extractedValues.CAT_NO,
                         SPEC: extractedValues.SPEC,
                         HORSEPOWER: finalHorsepower,
-   
+
                         VOLTAGE: extractedValues.VOLTAGE,
                         AMPERAGE: extractedValues.AMPERAGE,
                         RPM: extractedValues.RPM,

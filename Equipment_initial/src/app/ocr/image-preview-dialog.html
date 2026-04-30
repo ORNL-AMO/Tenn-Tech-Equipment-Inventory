@@ -24,9 +24,9 @@
 
     <section class="preview-stage">
         <mat-grid-list cols="2" gutterSize="15px" rowHeight="2:1">
-            @for(file of files.slice(0, 10); track file.name){
+            @for(file of files; track file.name){
             <mat-grid-tile>
-                <button class="image-modal-close" type="button" (click)="deleteFile(file)">
+                <button class="image-modal-close" matMiniFab type="button" (click)="deleteFile(file)">
                     <mat-icon>close</mat-icon>
                 </button>
                 <img [src]="file.content" [alt]="file.name" class="preview-img" (click)="openEditor(file)" />

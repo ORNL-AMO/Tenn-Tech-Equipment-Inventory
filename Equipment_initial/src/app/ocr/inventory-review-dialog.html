@@ -22,14 +22,13 @@
                 (page)="switchPage($event)"></mat-paginator>
             }
             <button matButton class="mat-bg-error-container" type="button" (click)="clearInventory()">
-                <p class="mat-text-on-error-container">Clear Inventory</p>
-            </button>
+                Clear Inventory</button>
         </div>
 
         @for(item of visibleInventory; track item.id) {
         <article class="review-item">
             <div class="item-title-row">
-                <button matButton="tonal" type="button" (click)="deleteInventoryItem(item.id)">
+                <button matMiniFab type="button" (click)="deleteInventoryItem(item.id)">
                     <mat-icon>close</mat-icon>
                 </button>
                 <h3>Result for {{ item.name }}</h3>
@@ -262,7 +261,8 @@
                         </mat-checkbox>
                     </div>
                     <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
-                        <mat-checkbox [checked]="isFieldSelected('NEMA_NOM_EFF')" (change)="toggleField('NEMA_NOM_EFF')">
+                        <mat-checkbox [checked]="isFieldSelected('NEMA_NOM_EFF')"
+                            (change)="toggleField('NEMA_NOM_EFF')">
                             NEMA_NOM_EFF</mat-checkbox>
                     </div>
                     <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
@@ -285,7 +285,8 @@
                             BEARINGS_DE</mat-checkbox>
                     </div>
                     <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
-                        <mat-checkbox [checked]="isFieldSelected('BEARINGS_ODE')" (change)="toggleField('BEARINGS_ODE')">
+                        <mat-checkbox [checked]="isFieldSelected('BEARINGS_ODE')"
+                            (change)="toggleField('BEARINGS_ODE')">
                             BEARINGS_ODE</mat-checkbox>
                     </div>
                     <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
@@ -293,7 +294,8 @@
                         </mat-checkbox>
                     </div>
                     <div mat-menu-item (click)="$event.stopPropagation()" class="field-checkbox">
-                        <mat-checkbox [checked]="isFieldSelected('SERIAL_NUMBER')" (change)="toggleField('SERIAL_NUMBER')">
+                        <mat-checkbox [checked]="isFieldSelected('SERIAL_NUMBER')"
+                            (change)="toggleField('SERIAL_NUMBER')">
                             SERIAL_NUMBER</mat-checkbox>
                     </div>
                 </mat-menu>
