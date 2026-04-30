@@ -1,3 +1,4 @@
+/* Main box that holds everything and stops the page from scrolling */
 .editor-container {
   display: flex;
   flex-direction: column;
@@ -6,6 +7,7 @@
   overflow: hidden;
 }
 
+/* Spaces out the items nicely along the top or bottom */
 .toolbar {
   padding: 10px 20px;
   display: flex;
@@ -14,12 +16,14 @@
   gap: 20px;
 }
 
+/* Gives the title area enough room to stretch out */
 .title-section {
   flex: 1;
   min-width: 150px;
   overflow: hidden;
 }
 
+/* Fades the text slightly and adds dots if the file name is too long */
 .file-name {
   font-size: 0.8rem;
   white-space: nowrap;
@@ -29,6 +33,7 @@
   opacity: 0.7;
 }
 
+/* Stacks the slider and its buttons neatly together */
 .control-group {
   display: flex;
   flex-direction: column;
@@ -38,22 +43,26 @@
   min-width: 250px;
 }
 
+/* Lines up the buttons side by side */
 .btn-row {
   display: flex;
   align-items: center;
   gap: 5px;
 }
 
+/* Makes the slider bar wide enough to easily grab */
 .slider {
   width: 80%;
   cursor: pointer;
 }
 
+/* Puts a little space between the cancel and apply buttons */
 .actions {
   display: flex;
   gap: 10px;
 }
 
+/* Gives the picture all the leftover room in the middle of the screen */
 .stage {
   flex: 1;
   width: 100%;
@@ -61,16 +70,19 @@
   position: relative;
 }
 
+/* Makes sure the picture area fills its space completely */
 .image-wrapper {
   width: 100%;
   height: 100%;
 }
 
+/* Keeps the picture from growing wider than the screen */
 img {
   display: block;
   max-width: 100%;
 }
 
+/* Uses a typewriter style font so the changing numbers don't wiggle around */
 .value-display {
   font-family: 'Courier New', monospace;
   min-width: 50px;
@@ -78,51 +90,24 @@ img {
 }
 
 
-/* Mobile */
+/* Mobile phone adjustments */
 @media (max-width: 900px) {
-  .editor-container {
-    position: relative; /* Acts as the anchor for our absolute sliders */
-    padding-bottom: 170px; /* Creates an empty void at the bottom so the canvas isn't covered */
-  }
-
-  .toolbar {
-    position: static; /* CRITICAL: Allows the sliders to escape the header */
-    padding: 10px;
-    /* Since the sliders are gone, Title and Actions will naturally space-between on the top row! */
-  }
-
+  
+  /* Makes sure a long file name doesn't push the top buttons off the screen */
   .title-section {
-    flex: 1;
-    min-width: 0; /* Ensures the long file name truncates with an ellipsis (...) */
+    min-width: 0; 
   }
 
-  .actions {
-    flex-shrink: 0; /* Prevents your Cancel/Save buttons from getting squished */
+  /* Stacks the sliders perfectly inside the new bottom bar */
+  footer.toolbar {
+    flex-direction: column; 
+    background: #1a1a1a;
+    padding-bottom: 30px; /* Safe space so we don't hit the iPhone's swiping "home button" */
   }
 
-  /* * THE ESCAPE HATCH
-   * Yank the sliders out of the flex row and pin them to the bottom 
-   */
+  /* Lets the sliders stretch to fill the width of the phone screen */
   .control-group {
-    position: absolute;
-    left: 0;
-    right: 0;
     width: 100%;
     min-width: 100%;
-    background: #1a1a1a; /* Solid dark background so the canvas doesn't bleed through */
-    padding: 10px 20px;
-    box-sizing: border-box;
-    z-index: 100;
-  }
-
-  /* Rotation Controls (Positioned above Zoom) */
-  .toolbar .control-group:nth-child(2) {
-    bottom: 85px; 
-  }
-
-  /* Zoom Controls (Positioned at the very bottom) */
-  .toolbar .control-group:nth-child(3) {
-    bottom: 0;
-    padding-bottom: 30px; /* Extra thumb space so you don't accidentally hit the iPhone home bar */
   }
 }

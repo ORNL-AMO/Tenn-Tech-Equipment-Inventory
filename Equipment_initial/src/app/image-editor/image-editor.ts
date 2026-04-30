@@ -11,10 +11,11 @@ import Cropper from 'cropperjs';
   standalone: true,
   imports: [MatIconModule, MatButtonModule]
 })
+
 export class ImageEditorComponent implements AfterViewInit {
   public dialogRef = inject(MatDialogRef<ImageEditorComponent>);
   public data = inject(MAT_DIALOG_DATA) as { image: string, name: string };
-  private cdr = inject(ChangeDetectorRef);
+  private cdr = inject(ChangeDetectorRef); 
 
   @ViewChild('imageAsset') imageElement!: ElementRef<HTMLImageElement>;
   
@@ -22,12 +23,14 @@ export class ImageEditorComponent implements AfterViewInit {
   currentAngle = 0;
   zoomLevel = 100;
 
+  // Sets up the crop tool once the picture is on the screen
   ngAfterViewInit() {
     const options: any = {
       viewMode: 0,
       autoCropArea: 0.9,
       responsive: true,
       zoom: (event: any) => {
+        // Stops the mouse wheel from zooming past 1000%
         if (event.detail.ratio > 10) {
           event.preventDefault(); 
           this.cropper.zoomTo(10); 
@@ -41,27 +44,32 @@ export class ImageEditorComponent implements AfterViewInit {
     this.cropper = new Cropper(this.imageElement.nativeElement, options);
   }
 
+  // Keeps the rotation numbers cleanly between 0 and 359
   private normalizeAngle(angle: number): number {
     return ((angle % 360) + 360) % 360;
   }
 
+  // Nudges the picture by a few degrees
   adjustAngle(delta: number) {
     this.currentAngle = this.normalizeAngle(this.currentAngle + delta);
     this.cropper.rotateTo(this.currentAngle);
   }
 
+  // Snaps the picture by full 90-degree turns
   handleHardRotate(deg: number) {
     this.currentAngle = this.normalizeAngle(this.currentAngle + deg);
     this.cropper.rotateTo(this.currentAngle);
   }
 
+  // Turns the picture to match the slider exactly
   manualRotate(event: any) {
     this.currentAngle = Number(event.target.value);
     this.cropper.rotateTo(this.currentAngle);
   }
 
+  // Steps the zoom in or out by a flat 10%
   handleZoom(delta: number) {
-    let newZoomPercent = this.zoomLevel + (delta * 10);
+    let newZoomPercent = this.zoomLevel + (delta * 100);
 
     if (newZoomPercent > 1000) {
         newZoomPercent = 1000;
@@ -72,7 +80,8 @@ export class ImageEditorComponent implements AfterViewInit {
     this.cropper.zoomTo(newZoomPercent / 100);
     this.zoomLevel = newZoomPercent;
   }
-  
+
+  // Sets the zoom to match the slider exactly
   manualZoom(event: any) {
     let newZoomPercent = Number(event.target.value);
     
@@ -84,6 +93,7 @@ export class ImageEditorComponent implements AfterViewInit {
     this.zoomLevel = newZoomPercent;
   }
 
+  // Crops the picture and sends it back to the main screen
   save() {
     const canvas = this.cropper.getCroppedCanvas();
     if (canvas) {
@@ -92,6 +102,7 @@ export class ImageEditorComponent implements AfterViewInit {
     }
   }
 
+  // Closes the window without saving anything
   close() {
     this.dialogRef.close();
   }
