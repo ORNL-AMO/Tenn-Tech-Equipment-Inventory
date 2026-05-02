@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -27,6 +27,7 @@ interface ImagePreviewDialogData {
 })
 export class ImagePreviewDialogComponent {
     private dialogRef = inject(MatDialogRef<ImagePreviewDialogComponent>);
+    private cdr = inject(ChangeDetectorRef);
     data = inject<ImagePreviewDialogData>(MAT_DIALOG_DATA);
     files = this.data.getFiles();
     scanning = false;
@@ -35,6 +36,7 @@ export class ImagePreviewDialogComponent {
 
     refresh(): void {
         this.files = this.data.getFiles();
+        this.cdr.detectChanges();
         if (this.files.length === 0) {
             this.dialogRef.close();
         }

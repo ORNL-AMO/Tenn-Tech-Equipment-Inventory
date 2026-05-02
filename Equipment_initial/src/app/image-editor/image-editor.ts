@@ -11,7 +11,6 @@ import Cropper from 'cropperjs';
   standalone: true,
   imports: [MatIconModule, MatButtonModule]
 })
-
 export class ImageEditorComponent implements AfterViewInit {
   public dialogRef = inject(MatDialogRef<ImageEditorComponent>);
   public data = inject(MAT_DIALOG_DATA) as { image: string, name: string };
@@ -22,6 +21,7 @@ export class ImageEditorComponent implements AfterViewInit {
   cropper!: any;
   currentAngle = 0;
   zoomLevel = 100;
+  baseRatio = 1; // <--- Fit to screen baseline
 
   // Sets up the crop tool once the picture is on the screen
   ngAfterViewInit() {
@@ -29,13 +29,25 @@ export class ImageEditorComponent implements AfterViewInit {
       viewMode: 0,
       autoCropArea: 0.9,
       responsive: true,
+      
+      // Wait for Cropper to finish shrinking the image to fit the screen
+      ready: () => {
+        // Divide the canvas width by the actual image width
+        const canvasData = this.cropper.getCanvasData();
+        this.baseRatio = canvasData.width / canvasData.naturalWidth;
+      },
+      
       zoom: (event: any) => {
+        // Calculate the scale based off that initial fit
+        const currentUiPercentage = (event.detail.ratio / this.baseRatio) * 100;
+
         // Stops the mouse wheel from zooming past 1000%
-        if (event.detail.ratio > 10) {
+        if (currentUiPercentage > 1000) {
           event.preventDefault(); 
-          this.cropper.zoomTo(10); 
+          this.cropper.zoomTo(this.baseRatio * 10);
+          this.zoomLevel = 1000;
         } else {
-          this.zoomLevel = Math.round(event.detail.ratio * 100);
+          this.zoomLevel = Math.round(currentUiPercentage);
         }
         this.cdr.detectChanges(); 
       }
@@ -77,7 +89,8 @@ export class ImageEditorComponent implements AfterViewInit {
         newZoomPercent = 10;
     }
 
-    this.cropper.zoomTo(newZoomPercent / 100);
+    // Multiply our slider percentage by the base ratio
+    this.cropper.zoomTo(this.baseRatio * (newZoomPercent / 100));
     this.zoomLevel = newZoomPercent;
   }
 
@@ -89,7 +102,8 @@ export class ImageEditorComponent implements AfterViewInit {
         newZoomPercent = 1000;
     }
 
-    this.cropper.zoomTo(newZoomPercent / 100);
+    // Multiply slider percentage by the base ratio
+    this.cropper.zoomTo(this.baseRatio * (newZoomPercent / 100));
     this.zoomLevel = newZoomPercent;
   }
 

@@ -417,13 +417,19 @@ export class OCRComponent {
         dialogRef.afterClosed().subscribe((editedBase64: string) => {
             if (editedBase64) {
 
-                file.content = editedBase64;
+                // Force Angular to pay attention to changes
+                this.zone.run(() => {
+                    file.content = editedBase64;
 
-                const blob = this.dataURItoBlob(editedBase64);
-                file.fullFile = new File([blob], file.name, { type: 'image/jpeg' });
+                    const blob = this.dataURItoBlob(editedBase64);
+                    file.fullFile = new File([blob], file.name, { type: 'image/jpeg' });
 
-                this.cd.detectChanges();
-                this._snackBar.open(`Applied edits to ${file.name}`, "Ok", { duration: 2000 });
+                    this.filesInput = [...this.filesInput];
+
+                    this.cd.detectChanges();
+                    this.previewDialogRef?.componentInstance.refresh();
+                    this._snackBar.open(`Applied edits to ${file.name}`, "Ok", { duration: 2000 });
+                });
             }
         });
     }
